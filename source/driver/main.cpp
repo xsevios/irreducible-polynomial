@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    LibraryInterface lib("lib.so");
+    LibraryInterface lib("libirredpoly.so");
     
     if(!lib)
     {
