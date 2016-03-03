@@ -1,4 +1,3 @@
-all: main
-
-%: %.cpp
-	g++ -std=c++11 $< -o $@
+all:
+	cd lib; make
+	cd driver; make
