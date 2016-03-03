@@ -1,11 +1,11 @@
 ## Сборка
 
-    $ ./Build
+    $ ./shell/Build
     
 ## Запуск
 
-    $ ./Run
+    $ ./shell/Run
     
 ## Сборка и запуск
 
-    $ ./BuildRun
+    $ ./shell/BuildRun
