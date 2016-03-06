@@ -1,4 +1,7 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 cd ../source
-make 
+set -e
+echo --- BUILD START ---;
+make
+echo --- BUILD SUCCESS ---;

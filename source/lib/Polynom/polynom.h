@@ -4,19 +4,17 @@
 #include <iostream>
 #include <stdio.h>
 #include <vector>
-using std::string;
+using namespace std;
 
 class Polynom
 {
     int dimGF;
     vector<double> coef;
-    bool Irreducible;
+    int irreducible;
     
 public:
-    Polynom();
     Polynom(int dimGF, vector<double> coef);
-    Polynom(int dimGF);
-    ~Polynom()
+    ~Polynom();
     
     void setDim(int dim);
     void setCoef(vector<double> coef);

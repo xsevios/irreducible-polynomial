@@ -1,9 +1,7 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 set -e
-echo --- BUILD START ---;
 ./Build
-echo --- BUILD END ---;
 echo ;
 echo --- RUN ---;
 ./Run
