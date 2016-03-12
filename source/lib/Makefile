@@ -10,7 +10,7 @@ all:$(SOURCES) $(LIB) clean
 
 
 $(LIB): $(OBJECTS)
-	g++ -shared -fPIC -o $(LIB) $(OBJECTS)
+	$(CC) -shared -fPIC -o $(LIB) $(OBJECTS)
 	
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@

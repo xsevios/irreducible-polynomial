@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <vector>
+#include <string>
 using namespace std;
 
 class Polynom
@@ -21,12 +22,13 @@ class Polynom
     
 public:
     Polynom(int dimGF, vector<double> coef);
-    ~Polynom();
+    Polynom(string strPolynom);
+    virtual ~Polynom();
     
     void setIrreducible(bool);
     
     vector<double> getCoef();
-    int getDim();
+    virtual int getDim();
     int isIrreducible();
     
     Polynom& operator=(Polynom p);
