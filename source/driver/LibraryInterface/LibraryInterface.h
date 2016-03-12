@@ -4,8 +4,10 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>
+#include "../../lib/Polynom/polynom.h"
+#include "../../lib/Scheduler/scheduler.h"
 
-using std::string;
+using namespace std;
 
 class LibraryInterface
 {
@@ -13,7 +15,11 @@ class LibraryInterface
     string errorMessage;
     char cCurrentPath[FILENAME_MAX];
 public:
-    void (*SomeFunction)();
+    Polynom* (*createPolynom)(string strPolynom);
+    void (*destroyPolynom)(Polynom*);
+    
+    Scheduler* (*createScheduler)(list<Polynom*>, int);
+    void (*destroyScheduler)(Scheduler*);
     
     LibraryInterface(string libraryName);
     

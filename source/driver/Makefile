@@ -8,7 +8,7 @@ LDFLAGS=-ldl
 all:$(SOURCES) $(BIN) clean
 
 $(BIN):$(OBJECTS)
-	g++ $(OBJECTS) $(LDFLAGS) -o $(BIN) -std=c++11
+	$(CC) $(OBJECTS) $(LDFLAGS) -o $(BIN) -std=c++11
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
