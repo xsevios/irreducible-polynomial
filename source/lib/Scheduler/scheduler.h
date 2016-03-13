@@ -13,7 +13,7 @@ class Scheduler
 {
     int numThread;
 public:
-    Scheduler(list<Polynom*>, int numThread);
+    Scheduler(list<Polynom*>*, int numThread);
     virtual ~Scheduler();
     virtual void start();
 };

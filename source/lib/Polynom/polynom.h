@@ -27,9 +27,9 @@ public:
     
     void setIrreducible(bool);
     
-    vector<double> getCoef();
+    virtual vector<double> getCoef();
     virtual int getDim();
-    int isIrreducible();
+    virtual int isIrreducible();
     
     Polynom& operator=(Polynom p);
 

@@ -29,3 +29,12 @@ int Polynom::getDim()
     return dimGF;
 }
 
+vector<double> Polynom::getCoef()
+{
+    return coef;
+}
+
+int Polynom::isIrreducible()
+{
+    return irreducible;
+}

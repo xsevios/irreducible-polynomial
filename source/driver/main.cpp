@@ -42,13 +42,13 @@ int main()
     
     //--- Чтение файла с многочленами ---
     
-    string pathToPol = "./polynoms";
+    string pathToPol = "in";
     ifstream file(pathToPol.c_str());
     list<Polynom*> polynoms;
     string strPolynom;
     if(file.is_open())
     {
-        while ( getline(file, strPolynom) )
+        while (getline(file, strPolynom))
         {
             Polynom* polynom = lib.createPolynom(strPolynom);
             polynoms.push_back(polynom);
@@ -63,18 +63,43 @@ int main()
     
     //---
     
+    
     //--- Планировщик ---
     
-    Scheduler* schel = lib.createScheduler(polynoms, cfg.getNumThread());
-    
+    Scheduler* schel = lib.createScheduler(&polynoms, cfg.getNumThread());
     schel->start();
     
     //---
     
+    //--- WRITE RESULT IN FILE ---
+    
+    string pathToOut = "out";
+    ofstream fout(pathToOut.c_str());
+    if(fout.is_open())
+    {
+        for(list<Polynom*>::iterator i = polynoms.begin(); i != polynoms.end(); i++)
+        {
+            fout << (*i)->isIrreducible() << " " << (*i)->getDim();
+            for(vector<double>::iterator j = (*i)->getCoef().begin(); j != (*i)->getCoef().end(); j++)
+            {
+                fout << " " << (*j);
+            }
+            fout << endl;
+        }
+        
+        fout.close();
+    }
+    else
+    {
+        std::cerr << "File isn't available.\n\t" << "Path:" << pathToPol << std::endl;
+        return ERROR_POLY;
+    }
+    
     //---
     
-    lib.destroyScheduler(schel);
     
+    //---FREE MEMORY---
+    lib.destroyScheduler(schel);
     list<Polynom*>::iterator cur = polynoms.begin();
     while (cur != polynoms.end())
     {
@@ -82,6 +107,6 @@ int main()
         polynoms.erase(cur);
         cur = polynoms.begin();
     }
-    
+    //---
     return 0;
 }

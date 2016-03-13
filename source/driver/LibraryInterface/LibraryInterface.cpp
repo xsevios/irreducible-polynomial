@@ -28,7 +28,7 @@ LibraryInterface::LibraryInterface(string libraryName)
     createPolynom = (Polynom* (*)(string))dlsym(handle, "create_polynom");
     destroyPolynom = (void (*)(Polynom*))dlsym(handle, "destroy_polynom");
     
-    createScheduler = (Scheduler* (*)(list<Polynom*>, int))dlsym(handle, "create_scheduler");
+    createScheduler = (Scheduler* (*)(list<Polynom*>*, int))dlsym(handle, "create_scheduler");
     destroyScheduler = (void (*)(Scheduler*))dlsym(handle, "destroy_scheduler");
 }
     
