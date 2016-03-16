@@ -27,11 +27,11 @@ public:
     
     void setIrreducible(bool);
     
-    virtual vector<double> getCoef();
-    virtual int getDim();
-    virtual int isIrreducible();
+    virtual vector<double> getCoef() const;
+    virtual int getDim() const;
+    virtual int isIrreducible() const;
     
-    Polynom& operator=(Polynom p);
+    Polynom& operator=(const Polynom& p);
 
     Polynom operator+(const Polynom& p);
     Polynom operator-(const Polynom& p);

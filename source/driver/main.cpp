@@ -66,7 +66,7 @@ int main()
     
     //--- Планировщик ---
     
-    Scheduler* schel = lib.createScheduler(&polynoms, cfg.getNumThread());
+    Scheduler* schel = lib.createScheduler(polynoms, cfg.getNumThread());
     schel->start();
     
     //---
@@ -79,12 +79,13 @@ int main()
     {
         for(list<Polynom*>::iterator i = polynoms.begin(); i != polynoms.end(); i++)
         {
-            fout << (*i)->isIrreducible() << " " << (*i)->getDim();
-            for(vector<double>::iterator j = (*i)->getCoef().begin(); j != (*i)->getCoef().end(); j++)
-            {
-                fout << " " << (*j);
-            }
-            fout << endl;
+            //fout << (*i)->isIrreducible() << " " << (*i)->getDim();
+            //for(vector<double>::iterator j = (*i)->getCoef().begin(); j != (*i)->getCoef().end(); j++)
+            //{
+            //    fout << " " << (*j);
+            //}
+            //fout << endl;
+            fout << (*i) << endl;
         }
         
         fout.close();
@@ -108,5 +109,6 @@ int main()
         cur = polynoms.begin();
     }
     //---
+
     return 0;
 }
