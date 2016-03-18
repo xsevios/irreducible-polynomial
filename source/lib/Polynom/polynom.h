@@ -32,12 +32,12 @@ public:
     virtual int isIrreducible() const;
     
     Polynom& operator=(const Polynom& p);
-
+    
     Polynom operator+(const Polynom& p);
     Polynom operator-(const Polynom& p);
     Polynom operator*(const Polynom& p);
     Polynom operator/(const Polynom& p);
-    
+   
     friend ostream& operator<<(ostream& out, const Polynom& p);
     friend istream& operator>>(istream& in, Polynom& p);
     

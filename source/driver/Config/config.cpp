@@ -1,5 +1,6 @@
 #include "config.h"
 #include <iostream>
+#include <string>
 
 Config::Config(string path)
 {
@@ -24,4 +25,16 @@ string Config::GetErrorMessage()
 int Config::getNumThread()
 {
     return numThread;
+}
+
+string Config::getInFileName()
+{
+    //return "in";
+    return fileIn;
+}
+
+string Config::getOutFileName()
+{
+    //return "out";
+    return fileOut;
 }
