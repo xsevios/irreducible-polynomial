@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-c -Wall -fPIC -std=c++11
+CFLAGS=-c -Wall -fPIC -lpthread -std=c++11
 SOURCES=Scheduler/scheduler.cpp Polynom/polynom.cpp Polynom/checkIrreducible.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 LIB=../../build/libirredpoly.so${LIBVER}
