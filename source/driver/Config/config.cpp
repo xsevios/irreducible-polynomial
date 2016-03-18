@@ -29,12 +29,12 @@ int Config::getNumThread()
 
 string Config::getInFileName()
 {
-    //return "in";
+    return "in"; /* Заглушка */
     return fileIn;
 }
 
 string Config::getOutFileName()
 {
-    //return "out";
+    return "out"; /* Заглушка */
     return fileOut;
 }

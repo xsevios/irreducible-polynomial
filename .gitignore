@@ -1,8 +1,11 @@
+build/driver
+
 # Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
+.so
 
 # Precompiled Headers
 *.gch
@@ -27,3 +30,4 @@
 *.app
 
 .c9
+build
