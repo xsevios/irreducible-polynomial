@@ -33,7 +33,7 @@ public:
     virtual PolynomState isIrreducible() const;
     
     Polynom& operator=(const Polynom& p);
-
+    
     Polynom operator+(const Polynom& p);
     Polynom operator-(const Polynom& p);
     Polynom operator*(const Polynom& p);

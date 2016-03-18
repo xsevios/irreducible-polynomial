@@ -1,3 +1,7 @@
-all:
-	cd lib; make
+all: d l
+
+
+d:
 	cd driver; make
+l:
+	cd lib; make

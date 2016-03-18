@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall -std=c++11
-SOURCES=main.cpp LibraryInterface/LibraryInterface.cpp Config/config.cpp
-OBJECTS=main.o LibraryInterface/LibraryInterface.o Config/config.o
+SOURCES=main.cpp driver.cpp LibraryInterface/LibraryInterface.cpp Config/config.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
 BIN=../../build/driver
 LDFLAGS=-ldl
 

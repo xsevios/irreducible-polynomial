@@ -8,6 +8,8 @@ using namespace std;
 class Config
 {
     int numThread;
+    string fileIn;
+    string fileOut;
     string errorMessage;
 public:
     Config(string path);
@@ -17,6 +19,8 @@ public:
     string GetErrorMessage();
     
     int getNumThread();
+    string getInFileName();
+    string getOutFileName();
 };
 
 #endif

@@ -4,8 +4,7 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>
-#include "../../lib/Polynom/polynom.h"
-#include "../../lib/Scheduler/scheduler.h"
+#include "../../lib/lib.h"
 
 using namespace std;
 
