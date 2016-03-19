@@ -10,7 +10,7 @@ ostream& operator<<(ostream& out, const Polynom& p)
 {
     out << p.isIrreducible() << " " << p.getDim();
     
-    vector<double> coef = p.getCoef();
+    vector<int> coef = p.getCoef();
     for(unsigned i = 0; i < coef.size(); i++)
         out << " " << coef[i];
 

@@ -1,21 +1,23 @@
 #ifndef _SCHEDULER_H
 #define _SCHEDULER_H
 
-#include <stdio.h>
-#include <iostream>
 #include <list>
+#include <pthread.h>
 #include "../Polynom/polynom.h"
-#include "../Polynom/checkIrreducible.h"
 
 using namespace std;
 
 class Scheduler
 {
-    int numThread;
+    unsigned int numThreads;
+    volatile static unsigned int numProc;
+    list<Polynom*> polynoms;
+    static pthread_mutex_t mutex;
 public:
     Scheduler(list<Polynom*>, int numThread);
     virtual ~Scheduler();
     virtual void start();
+    static void* main_func(void *arg);
 };
 
 #endif

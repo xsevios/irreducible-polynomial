@@ -6,7 +6,8 @@
 class PolynomChecker
 {
 public:
-    
+    PolynomChecker();
+    //void static check(Polynom* polynom);
     void operator()(Polynom* polynom);
 };
 
