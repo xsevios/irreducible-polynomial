@@ -5,7 +5,7 @@ build/driver
 *.lo
 *.o
 *.obj
-.so
+*.so
 
 # Precompiled Headers
 *.gch
@@ -31,3 +31,4 @@ build/driver
 
 .c9
 build
+*.d
