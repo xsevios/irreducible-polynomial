@@ -5,19 +5,21 @@
 #include <pthread.h>
 #include "../Polynom/polynom.h"
 
+#ifndef _DRIVER
+#include "../Polynom/checkIrreducible.h"
+#endif
+
 using namespace std;
 
 class Scheduler
 {
     unsigned int numThreads;
-    volatile static unsigned int numProc;
     list<Polynom*> polynoms;
-    //static pthread_mutex_t mutex;
 public:
-    Scheduler(list<Polynom*>, int numThread);
+    Scheduler(list<Polynom*>, unsigned);
+    unsigned countBusy(PolynomChecker* pCheck);
     virtual ~Scheduler();
     virtual void start();
-    static void* main_func(void *arg);
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include "scheduler.h"
 #include <pthread.h>
 #include <iostream>
+#include <assert.h>
 #include "../Polynom/checkIrreducible.h"
 
 extern PolynomChecker polynomChecker;
@@ -15,62 +16,38 @@ extern "C" void destroy_scheduler(Scheduler* object)
     delete object;
 }
 
-Scheduler::Scheduler(list<Polynom*> p, int numThread)
-{
-    numThreads=numThread;
-    //numProc = 0;
-    polynoms = p;
-    //pthread_mutex_init(&mutex, NULL);
-    //mutex = PTHREAD_MUTEX_INITIALIZER; 
-}
+Scheduler::Scheduler(list<Polynom*> p, unsigned numThread) : polynoms(p), numThreads(numThread) { }
 
-Scheduler::~Scheduler()
-{
-    
-}
+Scheduler::~Scheduler() { }
 
-struct PolynomStruct
+unsigned Scheduler::countBusy(PolynomChecker* pCheck)
 {
-    Polynom* p;
-    int flag;
-};
-
-void* Scheduler::main_func(void *arg)
-{
-    PolynomStruct* name = (PolynomStruct*) arg;
-    polynomChecker(name->p);
+    int count = 0;
     
-    //pthread_mutex_lock(&mutex);
-    //pthread_mutex_unlock(&mutex);
+    for(unsigned i = 0; i < numThreads; i++)
+        if(pCheck[i].isBusy())
+            count++;
     
-    name->flag = 0;
-    pthread_exit(NULL);
+    return count;
 }
 
 void Scheduler::start()
 {
-    int id=0, numProc = 0;
-    //pthread_mutex_init(&mutex, NULL);
     pthread_t Threads[numThreads];
-    PolynomStruct freeThread[numThreads];
+    PolynomChecker* pCheck = new PolynomChecker[numThreads];
     
     for (list<Polynom*>::iterator i = polynoms.begin(), j = polynoms.end(); i != j; ++i)
-    {
-        while (numProc >= numThreads);
+    { 
+        while (countBusy(pCheck) >= numThreads);
         
-        //pthread_mutex_lock(&mutex);
-        numProc++;
-        //pthread_mutex_unlock(&mutex);
-        
-        while (!freeThread[id].flag)
-            id++;
-        
-        freeThread[id].flag = 1;
-        freeThread[id].p = *(i);
-        pthread_create(&Threads[id], NULL, main_func, &freeThread[id]);
-        id = 0;
+        for(unsigned j = 0; j < numThreads; j++)
+            if(!pCheck[j].isBusy())
+            {
+                pCheck[j].init(*i);
+                pthread_create(&Threads[j], NULL, &PolynomChecker::check, &pCheck[j]);
+                break;
+            }
     }
     
-    //for (int i=numThreads-1; i>=0; --i)
-    //    pthread_join(Threads[i], NULL);
+    while (countBusy(pCheck));
 }
