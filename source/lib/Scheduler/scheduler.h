@@ -12,7 +12,7 @@ class Scheduler
     unsigned int numThreads;
     volatile static unsigned int numProc;
     list<Polynom*> polynoms;
-    static pthread_mutex_t mutex;
+    //static pthread_mutex_t mutex;
 public:
     Scheduler(list<Polynom*>, int numThread);
     virtual ~Scheduler();
