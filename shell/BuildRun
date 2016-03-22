@@ -5,3 +5,4 @@ set -e
 echo ;
 echo --- RUN ---;
 ./Run
+echo --- RUN SUCCESS ---;
