@@ -49,5 +49,6 @@ void Scheduler::start()
             }
     }
     
-    while (countBusy(pCheck));
+    for(unsigned j = 0; j < numThreads; j++)
+        pthread_join(Threads[j], NULL);
 }
