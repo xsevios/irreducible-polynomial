@@ -49,6 +49,6 @@ void Scheduler::start()
             }
     }
     
-    for(unsigned j = 0; j < numThreads; j++)
+    for(unsigned j = 0; j < numThreads && j < polynoms.size() ; j++)
         pthread_join(Threads[j], NULL);
 }
