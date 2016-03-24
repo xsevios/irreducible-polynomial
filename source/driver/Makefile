@@ -4,7 +4,7 @@ SOURCES=main.cpp driver.cpp LibraryInterface/LibraryInterface.cpp Config/config.
 OBJECTS=$(SOURCES:.cpp=.o)
 BIN=../../build/driver
 LDFLAGS=-ldl
-DFLAGS = -MD
+DFLAGS=-MD -MP
 
 all:$(SOURCES) $(BIN) clean
 
@@ -13,11 +13,8 @@ $(BIN):$(OBJECTS)
 
 -include $(OBJECTS:.o=.d)
 
-.%.o : %.cpp
+%.o: %.cpp
 	$(CC) $(CFLAGS) $(DFLAGS) $< -o $@
-
-#lib.o:
-#	g++ -с lib/lib.cpp
 	
 clean:
-	rm -f *.o */*.o
+	rm -f *.o */*.o */*.d *.d

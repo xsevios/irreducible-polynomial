@@ -5,8 +5,8 @@ OBJECTS=$(SOURCES:.cpp=.o)
 LIB=../../build/libirredpoly.so${LIBVER}
 LIBVER=
 LDFLAGS=-ldl
-DFLAGS = -MD -MP
-PTHFLAG = -lpthread
+DFLAGS=-MD -MP
+PTHFLAG=-lpthread
 
 all:$(LIB) clean
 
@@ -15,7 +15,7 @@ $(LIB): $(OBJECTS)
 	
 -include $(OBJECTS:.o=.d)
 
-%.o : %.cpp
+%.o: %.cpp
 	$(CC) $(CFLAGS) $(PTHFLAG) $(DFLAGS) $< -o $@
 
 clean:

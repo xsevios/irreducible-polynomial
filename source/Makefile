@@ -1,7 +1,7 @@
 all: d l
 
-
 d:
-	cd driver; make
+	@echo "-- DRIVER --" && cd driver && make -s && echo "-- DRIVER SUCCESS --"
+
 l:
-	cd lib; make
+	@echo "-- LIBRARY --" && cd lib && make -s && echo "-- LIBRARY SUCCESS --"
