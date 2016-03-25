@@ -37,7 +37,9 @@ public:
     Polynom operator+(const Polynom& p);
     Polynom operator-(const Polynom& p);
     Polynom operator*(const Polynom& p);
+    friend Polynom operator*(const int number, const Polynom& p);
     Polynom operator/(const Polynom& p);
+    Polynom operator/(const int number);
     
     bool operator==(const Polynom& p);
     bool operator!=(const Polynom& p);
