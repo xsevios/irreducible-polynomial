@@ -34,13 +34,30 @@ public:
     
     Polynom& operator=(const Polynom& p);
     
-    Polynom operator+(const Polynom& p);
-    Polynom operator-(const Polynom& p);
-    Polynom operator*(const Polynom& p);
-    Polynom operator/(const Polynom& p);
+    Polynom operator-();
+    friend Polynom operator-(const Polynom& p);
     
-    bool operator==(const Polynom& p);
-    bool operator!=(const Polynom& p);
+    Polynom& operator+=(const Polynom& p);
+    Polynom& operator-=(const Polynom& p);
+    Polynom& operator*=(const Polynom& p);
+    Polynom& operator/=(const Polynom& p);
+    Polynom& operator%=(const Polynom& p);
+    Polynom& operator*=(const int number);
+    
+    friend Polynom operator+(Polynom lp, const Polynom& rp);
+    friend Polynom operator-(Polynom lp, const Polynom& rp);
+    friend Polynom operator*(Polynom lp, const Polynom& rp);
+    friend Polynom operator/(Polynom lp, const Polynom& rp);
+    
+    friend Polynom operator%(Polynom lp, const Polynom& rp);
+    
+    friend Polynom operator*(const int number, const Polynom& p);
+    friend Polynom operator*(const Polynom& p, const int number);
+    
+    friend Polynom operator/(const Polynom& p,const int number);
+    
+    friend bool operator==(const Polynom& lp, const Polynom& rp);
+    friend bool operator!=(const Polynom& lp, const Polynom& rp);
 };
 
 #endif
