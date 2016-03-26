@@ -2,6 +2,9 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <iterator>
+#include <algorithm>
+#include <assert.h>  
 
 extern "C" Polynom* create_polynom(std::string strPolynom)
 {
@@ -67,82 +70,240 @@ Polynom& Polynom::operator=(const Polynom& p)
     return *this;
 }
 
-Polynom Polynom::operator+(const Polynom& p)
+Polynom& Polynom::operator+=(const Polynom& p)
 {
-    int new_dim = dimGF;
+    assert(dimGF == p.dimGF);
     
-    int count = coef.size() > p.coef.size() ? coef.size() : p.coef.size();
+    if (coef.size() < p.coef.size())
+        coef.resize(p.coef.size());
     
-    vector<int> new_coef;
-    new_coef.resize(count);
-    for(unsigned i = 0; i < new_coef.size(); i++)
+    for(unsigned i = 0; i < coef.size(); i++)
     {
-        new_coef[i] = 0;
+        coef[i] += p.coef[i];
         
-        if (i < coef.size())
-            new_coef[i] += coef[i];
-            
-        if (i < p.coef.size())
-            new_coef[i] += p.coef[i];
-        
-        new_coef[i] %= new_dim;
+        if (coef[i] >= dimGF)
+            coef[i] -= dimGF;
     }
     
-    Polynom result(new_dim, new_coef);
-    return result;
+    while(!coef.empty() && !coef[p.coef.size()-1]) 
+        coef.pop_back();
+    
+    return *this;
 }
 
-Polynom Polynom::operator-(const Polynom& p)
+Polynom operator+(Polynom lp, const Polynom& rp)
 {
-    int new_dim = dimGF;
-    unsigned count = coef.size() > p.coef.size() ? coef.size() : p.coef.size();
+    lp += rp;
+    return lp;
+}
+
+Polynom& Polynom::operator-=(const Polynom& p)
+{
+    *this += -p;
+    return *this;
+}
+
+Polynom operator-(Polynom lp, const Polynom& rp)
+{
+    lp -= rp;
+    return lp;
+}
+
+Polynom& Polynom::operator*=(const Polynom& p)
+{
+    assert(dimGF == p.dimGF);
     
-    vector<int> new_coef;
-    new_coef.resize(count);
+    vector<int> resCoef(coef.size() + p.coef.size() - 2, 0);
     
-    for(unsigned i = 0; i < count; i++)
+    const Polynom* large;
+    const Polynom* small;
+    
+    if (coef.size() > p.coef.size())
     {
-        new_coef[i] = 0;
-        
-        if (i < coef.size())
-            new_coef[i] += coef[i];
-            
-        if (i < p.coef.size())
-            new_coef[i] -= p.coef[i];
-            
-        if(new_coef[i] < 0)
-            new_coef[i] += new_dim;
+        large = this;
+        small = &p;
+    }
+    else
+    {
+        large = &p;
+        small = this;
     }
     
-    Polynom result(new_dim, new_coef);
-    return result;
+    for (unsigned i = 0; i < large->coef.size(); i++)
+    {
+        if (!coef[i])
+            continue;
+        
+        for (unsigned j = 0; j < small->coef.size(); j++)
+        {
+            resCoef[i + j] = (resCoef[i + j] + (large->coef[i] * small->coef[j])) % dimGF;
+        }
+    }
+    
+    while(!coef.empty() && !coef[p.coef.size()-1]) 
+        coef.pop_back();
+    
+    coef = resCoef;
+    
+    return *this;
 }
 
-Polynom Polynom::operator*(const Polynom& p)
+Polynom operator*(Polynom lp, const Polynom& rp)
+{
+    lp *= rp;
+    return lp;
+}
+
+Polynom operator*(const int number, const Polynom& p)
+{
+    assert(number >= p.dimGF);
+    
+    if(!number)
+        return Polynom(p.dimGF, vector<int>());
+    else if(number == 1)
+        return p;
+    
+    Polynom res = p;
+    
+    for(vector<int>::iterator i = res.coef.begin(); i < res.coef.end(); i++)
+        *i = (*i * number) % p.dimGF;
+    
+    return res;
+}
+
+Polynom operator*(const Polynom& p, const int number)
+{
+    return number*p;
+}
+
+Polynom operator-(const Polynom& p)
+{
+    return -1*p;
+}
+
+Polynom Polynom::operator-()
+{
+    return -1*(*this);
+}
+
+
+Polynom& Polynom::operator/=(const Polynom& p)
+{
+    assert(dimGF == p.dimGF);
+    
+    Polynom divider(dimGF, p.coef);
+    Polynom source = p / (*(--(p.coef.end())));
+    vector<int> resCoef;
+    
+    if(coef.size() - divider.coef.size() > 0)
+    {
+        divider.coef.insert(divider.coef.begin(), coef.size() - divider.coef.size(), 0);
+    }
+    else if(coef.size() - divider.coef.size() < 0)
+    {
+        this->coef = vector<int>();
+        return *this;    
+    }
+    
+    while(coef.size() >= divider.coef.size())
+    {
+        divider = (*(--coef.end())) * source;
+        resCoef.insert(resCoef.begin(), *--(p.coef.end()));
+        *this -= divider;
+    }
+    
+    this->coef = resCoef;
+    
+    return *this;
+}
+
+Polynom operator/(Polynom lp, const Polynom& rp)
+{
+    lp /= rp;
+    return lp;
+}
+
+Polynom& Polynom::operator%=(const Polynom& p)
 {
     // TODO
+    assert(dimGF == p.dimGF);
+    
+    Polynom divider(dimGF, p.coef);
+    Polynom source = p / (*(--(p.coef.end())));
+    
+    if(coef.size() - divider.coef.size() > 0)
+    {
+        divider.coef.insert(divider.coef.begin(), coef.size() - divider.coef.size(), 0);
+    }
+    else if(coef.size() - divider.coef.size() < 0)
+    {
+        this->coef = vector<int>();
+        return *this;    
+    }
+    
+    while(coef.size() >= divider.coef.size())
+    {
+        divider = (*(--coef.end())) * source;
+        *this -= divider;
+    }
+    
+    return *this;
 }
 
-Polynom Polynom::operator/(const Polynom& p)
+Polynom operator%(Polynom lp, const Polynom& rp)
 {
-    // TODO
+    lp %= rp;
+    return lp;
 }
 
-bool Polynom::operator==(const Polynom& p)
-{
-    unsigned size = coef.size();
+// Расширенный алгоритм Евклида
+int gcdex(int a, int b, int& x, int& y) {
+	if (a == 0)
+	{
+		x = 0; y = 1;
+		return b;
+	}
+	int x1, y1;
+	int d = gcdex(b%a, a, x1, y1);
+	x = y1 - (b / a) * x1;
+	y = x1;
+	return d;
+}
 
-    if (size != p.coef.size())
+Polynom operator/(const Polynom& p, const int number)
+{
+    assert((number >= p.dimGF) || number == 0);
+    
+    if (number == 1)
+        return p;
+    
+    int inverse = 0;
+    int y = 0;
+    gcdex(number, p.dimGF, inverse, y);
+    inverse = (inverse % p.dimGF + p.dimGF) % p.dimGF;
+    
+    return inverse * p;
+}
+
+bool operator==(const Polynom& lp, const Polynom& rp)
+{
+    assert(lp.dimGF == rp.dimGF);
+    
+    unsigned size = lp.coef.size();
+
+    if (size != rp.coef.size())
         return false;
     else
-        for(unsigned i = 0; i < size; i++)
-            if (coef[i] != p.coef[i]) 
+        for (unsigned i = 0; i < size; i++)
+            if (lp.coef[i] != rp.coef[i]) 
                 return false;
     
     return true;
 }
 
-bool Polynom::operator!=(const Polynom& p)
+bool operator!=(const Polynom& lp, const Polynom& rp)
 {
-    return !operator==(p);
+    assert(lp.dimGF == rp.dimGF);
+    
+    return !(lp == rp);
 }
