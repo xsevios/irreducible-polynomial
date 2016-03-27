@@ -97,7 +97,7 @@ void Driver::writePolynoms()
             //    fout << " " << (*j);
             //}
             //fout << endl;
-            fout << (*i) << endl;
+            fout << *(*i) << endl;
         }
         
         fout.close();
