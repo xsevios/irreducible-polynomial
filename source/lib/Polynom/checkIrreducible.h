@@ -13,6 +13,7 @@ public:
     PolynomChecker();
     void init(Polynom* p);
     static void* check(void *arg);
+    void checkPol(void);
 };
 
 #endif

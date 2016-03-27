@@ -5,14 +5,14 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
-
+#include <math.h>
 using namespace std;
 
 enum PolynomState
 {
     NEED_CHECK  = -1,
-    REDUCIBLE   = 0,
-    IRREDUCIBLE = 1
+    REDUCIBLE   = 1,
+    IRREDUCIBLE = 0
 };
 
 class Polynom
