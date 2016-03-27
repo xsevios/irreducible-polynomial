@@ -61,6 +61,11 @@ void Polynom::setIrreducible(PolynomState state)
    irreducible = state;
 }
 
+int Polynom::getDegree()
+{
+    return coef.size() -1;
+}
+
 Polynom& Polynom::operator=(const Polynom& p)
 {
     dimGF = p.dimGF;
@@ -295,7 +300,7 @@ bool operator==(const Polynom& lp, const Polynom& rp)
         return false;
     else
         for (unsigned i = 0; i < size; i++)
-            if (lp.coef[i] != rp.coef[i]) 
+            if (lp[i] != rp[i]) 
                 return false;
     
     return true;
@@ -306,4 +311,14 @@ bool operator!=(const Polynom& lp, const Polynom& rp)
     assert(lp.dimGF == rp.dimGF);
     
     return !(lp == rp);
+}
+
+int& Polynom::operator[](size_t id)
+{
+    return coef[id]; 
+}
+
+const int& Polynom::operator[](size_t id) const 
+{
+    return coef[id]; 
 }

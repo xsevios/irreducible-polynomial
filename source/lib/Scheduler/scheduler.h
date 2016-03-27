@@ -13,8 +13,8 @@ using namespace std;
 
 class Scheduler
 {
-    unsigned int numThreads;
     list<Polynom*> polynoms;
+    unsigned numThreads;
 public:
     Scheduler(list<Polynom*>, unsigned);
     unsigned countBusy(PolynomChecker* pCheck);
