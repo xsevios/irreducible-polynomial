@@ -31,9 +31,10 @@ public:
     virtual vector<int> getCoef() const;
     virtual int getDim() const;
     virtual PolynomState isIrreducible() const;
-    
+    int getDegree();
     Polynom& operator=(const Polynom& p);
-    
+    int& operator[](size_t id);
+    const int& operator[](size_t id) const; 
     Polynom operator-();
     friend Polynom operator-(const Polynom& p);
     
@@ -48,13 +49,11 @@ public:
     friend Polynom operator-(Polynom lp, const Polynom& rp);
     friend Polynom operator*(Polynom lp, const Polynom& rp);
     friend Polynom operator/(Polynom lp, const Polynom& rp);
-    
     friend Polynom operator%(Polynom lp, const Polynom& rp);
     
     friend Polynom operator*(const int number, const Polynom& p);
     friend Polynom operator*(const Polynom& p, const int number);
-    
-    friend Polynom operator/(const Polynom& p,const int number);
+    friend Polynom operator/(const Polynom& p, const int number);
     
     friend bool operator==(const Polynom& lp, const Polynom& rp);
     friend bool operator!=(const Polynom& lp, const Polynom& rp);
