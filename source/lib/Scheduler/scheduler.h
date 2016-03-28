@@ -5,9 +5,7 @@
 #include <pthread.h>
 #include "../Polynom/polynom.h"
 
-#ifndef _DRIVER
-#include "../Polynom/checkIrreducible.h"
-#endif
+class PolynomChecker;
 
 using namespace std;
 
