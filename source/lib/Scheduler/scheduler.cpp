@@ -35,11 +35,11 @@ void Scheduler::start()
 {
     pthread_t Threads[numThreads];
     PolynomChecker* pCheck = new PolynomChecker[numThreads];
-    
+
     for (list<Polynom*>::iterator i = polynoms.begin(), j = polynoms.end(); i != j; ++i)
     { 
         while (countBusy(pCheck) >= numThreads);
-        
+
         for(unsigned j = 0; j < numThreads; j++)
             if(!pCheck[j].isBusy())
             {

@@ -54,8 +54,6 @@ void PolynomChecker::checkPol(void)
     {
         int tmp = test_dec[idx];
         
-        LOG_TRACE
-        
         test_poly->getRefCoef().resize(at->getDegree());
         
         for (int i = 0; i < polynom->getDegree(); ++i)
@@ -68,12 +66,7 @@ void PolynomChecker::checkPol(void)
         while(!test_poly->getRefCoef().empty() && !test_poly->getRefCoef()[test_poly->getRefCoef().size()-1]) 
             test_poly->getRefCoef().pop_back();
         
-        LOG_TRACE
-        at->print(cout);
-        test_poly->print(cout);
         Polynom r = ((*at) % *test_poly);
-        LOG_TRACE
-        r.print(cout);
         
         if(r.getCoef().size() == 0)
         {

@@ -75,21 +75,13 @@ void Polynom::setIrreducible(PolynomState state)
 
 int Polynom::getDegree()
 {
-    return coef.size() -1;
+    return coef.size() ? coef.size() - 1 : 0;
 }
 
 Polynom& Polynom::operator=(const Polynom& p)
 {
     if(this == &p)
         return *this;
-    /*
-    LOG_TRACE
-    
-    cout << &p << " " << this << endl;
-    
-    print(cout);
-    p.print(cout);
-    */
     
     dimGF = p.dimGF;
     irreducible = p.irreducible;
@@ -102,9 +94,6 @@ Polynom& Polynom::operator+=(const Polynom& p)
 {
     assert(dimGF == p.dimGF);
     
-    LOG_TRACE
-    p.print(cout);
-    this->print(cout);
     if (coef.size() < p.coef.size())
         coef.resize(p.coef.size());
     
@@ -118,14 +107,8 @@ Polynom& Polynom::operator+=(const Polynom& p)
             coef[i] -= dimGF;
     }
     
-    print(cout);
-    
     while(!coef.empty() && !coef[coef.size()-1]) 
         coef.pop_back();
-    
-    print(cout);
-    
-    LOG_TRACE
     
     return *this;
 }
@@ -269,12 +252,6 @@ Polynom& Polynom::operator%=(const Polynom& p)
 {
     assert(dimGF == p.dimGF);
     
-    
-    LOG_TRACE
-    
-    print(cout);
-    p.print(cout);
-    
     Polynom divider(dimGF, p.coef);
     Polynom source = p / *(p.coef.end() - 1);
     
@@ -284,29 +261,21 @@ Polynom& Polynom::operator%=(const Polynom& p)
         return *this;    
     }
     
-    print(cout);
     while(coef.size() >= source.coef.size())
     {
         divider = *(coef.end() - 1) * source;
         if(coef.size() - divider.coef.size() > 0)
             divider.coef.insert(divider.coef.begin(), coef.size() - divider.coef.size(), 0);
        
-        divider.print(cout);
         *this -= divider;
-        print(cout);
     }
-    LOG_TRACE
+
     return *this;
 }
 
 Polynom operator%(Polynom lp, const Polynom& rp)
 {
-    LOG_TRACE
-    
     lp %= rp;
-    
-    lp.print(cout);
-    LOG_TRACE
     return lp;
 }
 
