@@ -6,6 +6,14 @@
 #include <algorithm>
 #include <assert.h>  
 
+//#define DEBUG
+
+#ifdef DEBUG
+#define LOG_TRACE std::cout << "Entering " << __FUNCTION__ << "() - (" << __FILE__ << ":" << __LINE__ << ")" << std::endl;
+#else
+#define LOG_TRACE
+#endif
+
 extern "C" Polynom* create_polynom(std::string strPolynom)
 {
     return new Polynom(strPolynom);
@@ -32,9 +40,8 @@ Polynom::Polynom(string strPolynom)
     iss >> sub;
     dimGF = stoi(sub);
     
-    while(iss)
+    while(iss >> sub)
     {
-        iss >> sub;
         coef.push_back(stoi(sub));
     }
 }
@@ -47,6 +54,11 @@ int Polynom::getDim() const
 }
 
 vector<int> Polynom::getCoef() const
+{
+    return coef;
+}
+
+vector<int>& Polynom::getRefCoef()
 {
     return coef;
 }
@@ -68,6 +80,17 @@ int Polynom::getDegree()
 
 Polynom& Polynom::operator=(const Polynom& p)
 {
+    if(this == &p)
+        return *this;
+    /*
+    LOG_TRACE
+    
+    cout << &p << " " << this << endl;
+    
+    print(cout);
+    p.print(cout);
+    */
+    
     dimGF = p.dimGF;
     irreducible = p.irreducible;
     coef = p.coef;
@@ -79,19 +102,30 @@ Polynom& Polynom::operator+=(const Polynom& p)
 {
     assert(dimGF == p.dimGF);
     
+    LOG_TRACE
+    p.print(cout);
+    this->print(cout);
     if (coef.size() < p.coef.size())
         coef.resize(p.coef.size());
     
     for(unsigned i = 0; i < coef.size(); i++)
     {
-        coef[i] += p.coef[i];
+        if (i == p.coef.size())
+            break;
         
+        coef[i] += p.coef[i];
         if (coef[i] >= dimGF)
             coef[i] -= dimGF;
     }
     
-    while(!coef.empty() && !coef[p.coef.size()-1]) 
+    print(cout);
+    
+    while(!coef.empty() && !coef[coef.size()-1]) 
         coef.pop_back();
+    
+    print(cout);
+    
+    LOG_TRACE
     
     return *this;
 }
@@ -145,8 +179,8 @@ Polynom& Polynom::operator*=(const Polynom& p)
         }
     }
     
-    while(!coef.empty() && !coef[p.coef.size()-1]) 
-        coef.pop_back();
+    while(!resCoef.empty() && !resCoef[resCoef.size()-1]) 
+        resCoef.pop_back();
     
     coef = resCoef;
     
@@ -161,18 +195,21 @@ Polynom operator*(Polynom lp, const Polynom& rp)
 
 Polynom operator*(const int number, const Polynom& p)
 {
-    assert(number >= p.dimGF);
+    int modNum = number % p.dimGF;
     
-    if(!number)
+    if (modNum < 0)
+        modNum += p.dimGF;
+    
+    if(!modNum)
         return Polynom(p.dimGF, vector<int>());
-    else if(number == 1)
+    else if(modNum == 1)
         return p;
     
     Polynom res = p;
     
     for(vector<int>::iterator i = res.coef.begin(); i < res.coef.end(); i++)
-        *i = (*i * number) % p.dimGF;
-    
+        *i = (*i * modNum) % p.dimGF;
+        
     return res;
 }
 
@@ -230,34 +267,46 @@ Polynom operator/(Polynom lp, const Polynom& rp)
 
 Polynom& Polynom::operator%=(const Polynom& p)
 {
-    // TODO
     assert(dimGF == p.dimGF);
     
-    Polynom divider(dimGF, p.coef);
-    Polynom source = p / (*(--(p.coef.end())));
     
-    if(coef.size() - divider.coef.size() > 0)
+    LOG_TRACE
+    
+    print(cout);
+    p.print(cout);
+    
+    Polynom divider(dimGF, p.coef);
+    Polynom source = p / *(p.coef.end() - 1);
+    
+    if(coef.size() - divider.coef.size() < 0)
     {
-        divider.coef.insert(divider.coef.begin(), coef.size() - divider.coef.size(), 0);
-    }
-    else if(coef.size() - divider.coef.size() < 0)
-    {
-        this->coef = vector<int>();
+        coef = vector<int>();
         return *this;    
     }
     
-    while(coef.size() >= divider.coef.size())
+    print(cout);
+    while(coef.size() >= source.coef.size())
     {
-        divider = (*(--coef.end())) * source;
+        divider = *(coef.end() - 1) * source;
+        if(coef.size() - divider.coef.size() > 0)
+            divider.coef.insert(divider.coef.begin(), coef.size() - divider.coef.size(), 0);
+       
+        divider.print(cout);
         *this -= divider;
+        print(cout);
     }
-    
+    LOG_TRACE
     return *this;
 }
 
 Polynom operator%(Polynom lp, const Polynom& rp)
 {
+    LOG_TRACE
+    
     lp %= rp;
+    
+    lp.print(cout);
+    LOG_TRACE
     return lp;
 }
 
@@ -277,14 +326,19 @@ int gcdex(int a, int b, int& x, int& y) {
 
 Polynom operator/(const Polynom& p, const int number)
 {
-    assert((number >= p.dimGF) || number == 0);
+    assert(number != 0);
     
-    if (number == 1)
+    int modNum = number % p.dimGF;
+    
+    if(modNum < 0)
+        modNum += p.dimGF;
+    
+    if (modNum == 1)
         return p;
     
     int inverse = 0;
     int y = 0;
-    gcdex(number, p.dimGF, inverse, y);
+    gcdex(modNum, p.dimGF, inverse, y);
     inverse = (inverse % p.dimGF + p.dimGF) % p.dimGF;
     
     return inverse * p;
@@ -321,4 +375,16 @@ int& Polynom::operator[](size_t id)
 const int& Polynom::operator[](size_t id) const 
 {
     return coef[id]; 
+}
+
+void Polynom::print(ostream& out) const
+{
+#ifdef DEBUG
+    out << this->dimGF << " ";
+    for(unsigned i = 0; i < this->coef.size(); ++i)
+    {
+        out << this->coef[i] << " ";  
+    }
+    out << endl;
+#endif
 }

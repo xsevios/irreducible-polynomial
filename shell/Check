@@ -1,3 +1,5 @@
 #!/bin/bash
 
-cat res_file.txt | awk '{getline line < "test_file.txt"; split(line,s); if (s[1]!=$1) {print line, $0}}'
+cd "$(dirname "$0")"
+cd ../build
+cat out | awk '{getline line < "judge"; split(line,s); if (s[1]!=$1) {print line,",\t", $0}}'

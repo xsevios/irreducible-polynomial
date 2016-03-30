@@ -11,8 +11,8 @@ using namespace std;
 enum PolynomState
 {
     NEED_CHECK  = -1,
-    REDUCIBLE   = 1,
-    IRREDUCIBLE = 0
+    REDUCIBLE   = 0,
+    IRREDUCIBLE = 1
 };
 
 class Polynom
@@ -34,7 +34,11 @@ public:
     int getDegree();
     Polynom& operator=(const Polynom& p);
     int& operator[](size_t id);
-    const int& operator[](size_t id) const; 
+    const int& operator[](size_t id) const;
+    void print(ostream& out = cout) const;
+    
+    vector<int>& getRefCoef();
+    
     Polynom operator-();
     friend Polynom operator-(const Polynom& p);
     
