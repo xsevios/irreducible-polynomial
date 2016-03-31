@@ -9,9 +9,11 @@
 #define LOG_TRACE
 #endif
 
-void PolynomChecker::init(Polynom* p)
+void PolynomChecker::init(Polynom* polynom, pthread_mutex_t* mutex, pthread_cond_t* cond)
 {
-    polynom = p;
+    this->polynom = polynom;
+    this->mutex = mutex;
+    this->cond = cond;
     busy = true;
 }
 
@@ -56,7 +58,7 @@ void PolynomChecker::checkPol(void)
         
         test_poly->getRefCoef().resize(at->getDegree());
         
-        for (int i = 0; i < polynom->getDegree(); ++i)
+        for (unsigned i = 0; i < polynom->getDegree(); ++i)
         {
             assert(i < test_poly->getRefCoef().size());
             test_poly->getRefCoef()[i] = tmp % polynom->getDim();
@@ -84,6 +86,11 @@ void* PolynomChecker::check(void *arg)
 {
     ((PolynomChecker *)arg)->checkPol();
     ((PolynomChecker *)arg)->free();
+    
+    pthread_mutex_lock(((PolynomChecker *)arg)->mutex);
+    pthread_cond_signal(((PolynomChecker *)arg)->cond);
+    pthread_mutex_unlock(((PolynomChecker *)arg)->mutex);
+    
     pthread_exit(NULL);
 }
 

@@ -73,7 +73,7 @@ void Polynom::setIrreducible(PolynomState state)
    irreducible = state;
 }
 
-int Polynom::getDegree()
+unsigned Polynom::getDegree()
 {
     return coef.size() ? coef.size() - 1 : 0;
 }

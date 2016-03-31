@@ -6,12 +6,18 @@
 class PolynomChecker
 {
     Polynom* polynom;
+    pthread_mutex_t* mutex;
+    pthread_cond_t* cond;
+    
     bool busy;
+    
 public:
+    PolynomChecker();
+    void init(Polynom* polynom, pthread_mutex_t* mutex, pthread_cond_t* cond);
+    
     bool isBusy();
     void free();
-    PolynomChecker();
-    void init(Polynom* p);
+    
     static void* check(void *arg);
     void checkPol(void);
 };

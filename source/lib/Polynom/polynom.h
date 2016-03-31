@@ -31,7 +31,7 @@ public:
     virtual vector<int> getCoef() const;
     virtual int getDim() const;
     virtual PolynomState isIrreducible() const;
-    int getDegree();
+    unsigned getDegree();
     Polynom& operator=(const Polynom& p);
     int& operator[](size_t id);
     const int& operator[](size_t id) const;
