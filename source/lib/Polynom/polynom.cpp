@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <assert.h>  
 
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 #define LOG_TRACE std::cout << "Entering " << __FUNCTION__ << "() - (" << __FILE__ << ":" << __LINE__ << ")" << std::endl;
@@ -73,7 +73,7 @@ void Polynom::setIrreducible(PolynomState state)
    irreducible = state;
 }
 
-int Polynom::getDegree()
+unsigned Polynom::getDegree() const
 {
     return coef.size() ? coef.size() - 1 : 0;
 }
@@ -344,6 +344,26 @@ int& Polynom::operator[](size_t id)
 const int& Polynom::operator[](size_t id) const 
 {
     return coef[id]; 
+}
+
+Polynom Polynom::derivative()
+{
+    vector<int> derCoef;
+	int derDim = getDim();
+	
+	for (unsigned i = 1; i < coef.size(); i++)
+		derCoef.push_back(i * coef[i] % derDim);
+		
+    while(!derCoef.empty() && !derCoef[derCoef.size()-1]) 
+        derCoef.pop_back();
+	
+	Polynom der(derDim, derCoef);
+	return der;
+}
+
+bool Polynom::isZero()
+{
+    return coef.empty();
 }
 
 void Polynom::print(ostream& out) const

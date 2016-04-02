@@ -29,15 +29,18 @@ public:
     void setIrreducible(PolynomState);
     
     virtual vector<int> getCoef() const;
+    vector<int>& getRefCoef();
     virtual int getDim() const;
+    
     virtual PolynomState isIrreducible() const;
-    int getDegree();
+    unsigned getDegree() const;
     Polynom& operator=(const Polynom& p);
     int& operator[](size_t id);
     const int& operator[](size_t id) const;
     void print(ostream& out = cout) const;
     
-    vector<int>& getRefCoef();
+    Polynom derivative();
+    bool isZero();
     
     Polynom operator-();
     friend Polynom operator-(const Polynom& p);

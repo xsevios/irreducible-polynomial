@@ -14,6 +14,12 @@ public:
     void init(Polynom* p);
     static void* check(void *arg);
     void checkPol(void);
+    
+    // berlekamp
+    void checkPol(int);
+    vector<vector<int>> generateMatrix(const Polynom& p);
+    int getRank(vector<vector<int>> m, int dimGF);
+    PolynomState checkMatrix(const Polynom& p);
 };
 
 #endif
