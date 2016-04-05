@@ -7,15 +7,20 @@
 class PolynomChecker
 {
     Polynom* polynom;
+    pthread_mutex_t* mutex;
+    pthread_cond_t* cond;
+    
     bool busy;
     Method method;
     
 public:
+    PolynomChecker();
+    void init(Polynom* polynom, pthread_mutex_t* mutex, pthread_cond_t* cond);
+    
     bool isBusy();
     void free();
-    PolynomChecker();
     void init(Method method);
-    void setPoly(Polynom* p);
+    void setPoly(Polynom* polynom, pthread_mutex_t* mutex, pthread_cond_t* cond);
     static void* check(void *arg);
     
     void matlab();

@@ -96,5 +96,5 @@ void Driver::writePolynoms()
     for(list<Polynom*>::iterator i = polynoms.begin(); i != polynoms.end(); i++)
             fout << *(*i) << endl;
         
-        fout.close();
+    fout.close();
 }

@@ -30,5 +30,6 @@ build/driver
 *.app
 
 .c9
-build
+build/out
+build/driver
 *.d

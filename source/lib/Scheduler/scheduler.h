@@ -19,6 +19,7 @@ class Scheduler
     list<Polynom*> polynoms;
     unsigned numThreads;
     Method method;
+    
 public:
     Scheduler(list<Polynom*>, unsigned, Method);
     unsigned countBusy(PolynomChecker* pCheck);

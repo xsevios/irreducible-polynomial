@@ -9,9 +9,11 @@
 #define LOG_TRACE
 #endif
 
-void PolynomChecker::setPoly(Polynom* p)
+void PolynomChecker::setPoly(Polynom* polynom, pthread_mutex_t* mutex, pthread_cond_t* cond)
 {
-    polynom = p;
+    this->polynom = polynom;
+    this->mutex = mutex;
+    this->cond = cond;
     busy = true;
 }
 
@@ -255,6 +257,11 @@ void* PolynomChecker::check(void *arg)
     }
     
     ((PolynomChecker *)arg)->free();
+    
+    pthread_mutex_lock(((PolynomChecker *)arg)->mutex);
+    pthread_cond_signal(((PolynomChecker *)arg)->cond);
+    pthread_mutex_unlock(((PolynomChecker *)arg)->mutex);
+    
     pthread_exit(NULL);
 }
 

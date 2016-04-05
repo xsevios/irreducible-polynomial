@@ -43,7 +43,6 @@ Config::Config(string path)
 		    {
 		    	continue;
 		    }
-
 	    }
     }
     catch(...) // в случае ошибок устанавливаем стандартные значения
