@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <assert.h>  
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define LOG_TRACE std::cout << "Entering " << __FUNCTION__ << "() - (" << __FILE__ << ":" << __LINE__ << ")" << std::endl;

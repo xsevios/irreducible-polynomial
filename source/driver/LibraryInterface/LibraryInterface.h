@@ -17,7 +17,7 @@ public:
     Polynom* (*createPolynom)(string strPolynom);
     void (*destroyPolynom)(Polynom*);
     
-    Scheduler* (*createScheduler)(list<Polynom*>, int);
+    Scheduler* (*createScheduler)(list<Polynom*>, int, Method);
     void (*destroyScheduler)(Scheduler*);
     
     LibraryInterface(string libraryName);

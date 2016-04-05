@@ -9,12 +9,18 @@ class PolynomChecker;
 
 using namespace std;
 
+enum Method {
+    Matlab      = 1,
+    Berlekamp   = 2
+};
+
 class Scheduler
 {
     list<Polynom*> polynoms;
     unsigned numThreads;
+    Method method;
 public:
-    Scheduler(list<Polynom*>, unsigned);
+    Scheduler(list<Polynom*>, unsigned, Method);
     unsigned countBusy(PolynomChecker* pCheck);
     virtual ~Scheduler();
     virtual void start();

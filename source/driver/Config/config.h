@@ -2,12 +2,14 @@
 #define _CONFIG_H
 
 #include <string>
+#include "../../lib/lib.h"
 
 using namespace std;
 
 class Config
 {
     int numThread;
+    Method method;
     string fileIn;
     string fileOut;
     string errorMessage;
@@ -19,6 +21,7 @@ public:
     string GetErrorMessage();
     
     int getNumThread();
+    Method getMethod();
     string getInFileName();
     string getOutFileName();
 };

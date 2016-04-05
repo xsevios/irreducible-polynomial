@@ -6,9 +6,9 @@
 
 extern PolynomChecker polynomChecker;
 
-extern "C" Scheduler* create_scheduler(list<Polynom*> polynoms, int numThread)
+extern "C" Scheduler* create_scheduler(list<Polynom*> polynoms, int numThread, Method method)
 {
-  return new Scheduler(polynoms, numThread);
+  return new Scheduler(polynoms, numThread, method);
 }
 
 extern "C" void destroy_scheduler(Scheduler* object)
@@ -16,7 +16,7 @@ extern "C" void destroy_scheduler(Scheduler* object)
     delete object;
 }
 
-Scheduler::Scheduler(list<Polynom*> p, unsigned numThread) : polynoms(p), numThreads(numThread) { }
+Scheduler::Scheduler(list<Polynom*> p, unsigned numThread, Method method) : polynoms(p), numThreads(numThread), method(method) { }
 
 Scheduler::~Scheduler() { }
 
@@ -35,7 +35,10 @@ void Scheduler::start()
 {
     pthread_t Threads[numThreads];
     PolynomChecker* pCheck = new PolynomChecker[numThreads];
-
+    
+    for(unsigned j = 0; j < numThreads; j++)
+        pCheck[j].init(method);
+    
     for (list<Polynom*>::iterator i = polynoms.begin(), j = polynoms.end(); i != j; ++i)
     { 
         while (countBusy(pCheck) >= numThreads);
@@ -43,7 +46,7 @@ void Scheduler::start()
         for(unsigned j = 0; j < numThreads; j++)
             if(!pCheck[j].isBusy())
             {
-                pCheck[j].init(*i);
+                pCheck[j].setPoly(*i);
                 pthread_create(&Threads[j], NULL, &PolynomChecker::check, &pCheck[j]);
                 break;
             }

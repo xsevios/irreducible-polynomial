@@ -1,7 +1,7 @@
 #include "checkIrreducible.h"
 #include <assert.h>
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define LOG_TRACE std::cout << "Entering " << __FUNCTION__ << "() - (" << __FILE__ << ":" << __LINE__ << ")" << std::endl;
@@ -9,13 +9,18 @@
 #define LOG_TRACE
 #endif
 
-void PolynomChecker::init(Polynom* p)
+void PolynomChecker::setPoly(Polynom* p)
 {
     polynom = p;
     busy = true;
 }
 
-void PolynomChecker::checkPol(void)
+void PolynomChecker::init(Method method)
+{
+    this->method = method;
+}
+
+void PolynomChecker::matlab()
 {
     polynom->setIrreducible(IRREDUCIBLE);
     Polynom* at = polynom;
@@ -92,7 +97,7 @@ Polynom gcd(Polynom a, Polynom b)
 // Расширенный алгоритм Евклида для чисел
 int gcdex(int a, int b, int& x, int& y);
 
-void PolynomChecker::checkPol(int)
+void PolynomChecker::berlekamp()
 {
     Polynom* test_poly = new Polynom(polynom->getDim(), polynom->getCoef());
     vector<int> tmp = test_poly->getCoef();
@@ -227,6 +232,7 @@ int PolynomChecker::getRank(vector<vector<int>> m, int dimGF)
                 rank++;
                 break;
             }
+    
     return rank;
 }
 
@@ -238,7 +244,16 @@ PolynomState PolynomChecker::checkMatrix(const Polynom& p)
 
 void* PolynomChecker::check(void *arg)
 {
-    ((PolynomChecker *)arg)->checkPol(0);
+    switch(((PolynomChecker *)arg)->method)
+    {
+        case Matlab:
+            ((PolynomChecker *)arg)->matlab();
+            break;
+        case Berlekamp:
+            ((PolynomChecker *)arg)->berlekamp();
+            break;
+    }
+    
     ((PolynomChecker *)arg)->free();
     pthread_exit(NULL);
 }

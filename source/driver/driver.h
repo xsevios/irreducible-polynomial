@@ -24,6 +24,7 @@ class Driver
     list<Polynom*> polynoms;
     string libPath;
     string confPath;
+    
 public:
     Driver(string libPath, string confPath);
     ~Driver();

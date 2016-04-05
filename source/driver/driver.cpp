@@ -75,7 +75,7 @@ void Driver::readPolynoms()
 
 void Driver::initScheduler()
 {
-    scheduler = lib->createScheduler(polynoms, conf->getNumThread());
+    scheduler = lib->createScheduler(polynoms, conf->getNumThread(), conf->getMethod());
 }
 
 void Driver::startScheduler()
@@ -87,24 +87,14 @@ void Driver::writePolynoms()
 {
     ofstream fout(conf->getOutFileName().c_str());
     
-    if(fout.is_open())
-    {
-        for(list<Polynom*>::iterator i = polynoms.begin(); i != polynoms.end(); i++)
-        {
-            //fout << (*i)->isIrreducible() << " " << (*i)->getDim();
-            //for(vector<double>::iterator j = (*i)->getCoef().begin(); j != (*i)->getCoef().end(); j++)
-            //{
-            //    fout << " " << (*j);
-            //}
-            //fout << endl;
-            fout << *(*i) << endl;
-        }
-        
-        fout.close();
-    }
-    else
+    if(!fout.is_open())
     {
         std::cerr << "File isn't available.\n\t" << "Path:" << conf->getOutFileName().c_str() << std::endl;
         exit(ERROR_WRITE_POLY);
     }
+    
+    for(list<Polynom*>::iterator i = polynoms.begin(); i != polynoms.end(); i++)
+            fout << *(*i) << endl;
+        
+        fout.close();
 }

@@ -34,6 +34,11 @@ Config::Config(string path)
 			    substr=str.substr(pr+2); 
 				fileOut = substr;
 		    }
+		    else if (substr=="method")
+		    {
+		    	substr=str.substr(pr+2);
+		    	method = (Method)atoi(substr.c_str());
+		    }
 		    else // считываемое значение не определено или не требуется в нашем случае
 		    {
 		    	continue;
@@ -77,4 +82,9 @@ string Config::getInFileName()
 string Config::getOutFileName()
 {
     return fileOut;
+}
+
+Method Config::getMethod()
+{
+    return method;
 }
