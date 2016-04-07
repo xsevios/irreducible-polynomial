@@ -3,26 +3,30 @@
 #include <fstream>
 #include <string>
 
+/**
+ Произдится считывание данных из файла, который лежит по пути path, и приравнивает их переменным
+ \param[in] path Путь к файлу
+ */
 Config::Config(string path)
 {
-    try // пробуем загрузить данные из файла
+    try 
     {
-        ifstream f_o(path.c_str()); // открываем поток 
-        string str, substr; // str-считываемая строка из файла, substr-сочетание, которое ищется в строке str
-	    int pr;             // позиция найденного вхождения
+        ifstream f_o(path.c_str()); 
+        string str, substr; 
+	    int pr;             
 	    
-	    while(getline(f_o,str)) // считываение строк и приравние каждой по очереди str
+	    while(getline(f_o,str))
 	    {
-	        if (str[0]=='#') // проверяем на наличие комментария
+	        if (str[0]=='#') 
 	            continue;
 	         
-	        pr=str.find("="); // ищем начало вхождения "="
-		    substr=str.substr(0,pr-1); // считываем слово, находящееся до "=" 
+	        pr=str.find("="); 
+		    substr=str.substr(0,pr-1); 
 		    
-		    if (substr=="numThread") // проверяем, что нашли 
+		    if (substr=="numThread")
 			{
-				substr=str.substr(pr+2); // выделяем строку, являющуюся значением 
-				numThread = atoi(substr.c_str()); // преобразовываем в int
+				substr=str.substr(pr+2); 
+				numThread = atoi(substr.c_str()); 
 			}
 			else if (substr=="pathToSourse") 
 			{
@@ -39,20 +43,22 @@ Config::Config(string path)
 		    	substr=str.substr(pr+2);
 		    	method = (Method)atoi(substr.c_str());
 		    }
-		    else // считываемое значение не определено или не требуется в нашем случае
+		    else
 		    {
 		    	continue;
 		    }
 	    }
     }
-    catch(...) // в случае ошибок устанавливаем стандартные значения
+    catch(...) ///< в случае ошибок устанавливаем стандартные значения
     {
         numThread = 1;
         fileIn = "in";
         fileOut = "out";
+        method = 2;
     }
 }
 
+/// Деструктор класса Config
 Config::~Config()
 {
 }
@@ -63,26 +69,42 @@ Config::operator bool() const
     return true;
 }
 
+/**
+Возвращает сообщение об ошибке
+\return Сообщение об ошибке
+*/
 string Config::GetErrorMessage()
 {
     return errorMessage;
 }
-
+/**
+Возвращает значение количества ядер процессора
+\return Количество ядер процессора
+*/
 int Config::getNumThread()
 {
     return numThread;
 }
-
+/**
+Возвращает значение пути входного файла
+\return Входной файл
+*/
 string Config::getInFileName()
 {
     return fileIn;
 }
-
+/**
+Возвращает значение пути выходного файла
+\return Выходной файл
+*/
 string Config::getOutFileName()
 {
     return fileOut;
 }
-
+/**
+Возвращает значение метода
+\return Значение метода
+*/
 Method Config::getMethod()
 {
     return method;
