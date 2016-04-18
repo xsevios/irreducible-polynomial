@@ -1,3 +1,12 @@
+/**
+\file
+\brief Файл содержащий описание методов класса "планировщик"
+
+Данный файл содержит определние конструктора класса "планировщик", 
+метода подсчёта занятых потоков 
+и метода распараллеливания алгоритма проверки многочлена на неприводимость
+*/
+
 #include "scheduler.h"
 #include <pthread.h>
 #include <iostream>
@@ -16,10 +25,17 @@ extern "C" void destroy_scheduler(Scheduler* object)
     delete object;
 }
 
+///Конструктор класса "планировщик"
 Scheduler::Scheduler(list<Polynom*> p, unsigned numThread, Method method) : polynoms(p), numThreads(numThread), method(method) { }
 
+///Деструктор класса "планировщик"
 Scheduler::~Scheduler() { }
 
+/**
+Возвращает количество обрабатываемых в данный момент многочленов
+\param[out] pCheck многочлены подлежащие проверке
+\return количество проверяемых в данный момент многочленов
+*/
 unsigned Scheduler::countBusy(PolynomChecker* pCheck)
 {
     int count = 0;
@@ -31,10 +47,13 @@ unsigned Scheduler::countBusy(PolynomChecker* pCheck)
     return count;
 }
 
+/**
+Распараллеливает проверку многочленов на неприводимость на указанное число потоков
+*/
 void Scheduler::start()
 {
-    pthread_t Threads[numThreads];
-    PolynomChecker* pCheck = new PolynomChecker[numThreads];
+    pthread_t Threads[numThreads];///< Потоки
+    PolynomChecker* pCheck = new PolynomChecker[numThreads];///< Многочлены на проверку
     
     for(unsigned j = 0; j < numThreads; j++)
         pCheck[j].init(method);
@@ -51,23 +70,23 @@ void Scheduler::start()
     pthread_mutex_lock(&mutex);
     for (list<Polynom*>::iterator i = polynoms.begin(), j = polynoms.end(); i != j; ++i)
     {
-        while (countBusy(pCheck) >= numThreads)
-            pthread_cond_wait(&cond, &mutex);
+        while (countBusy(pCheck) >= numThreads)///Проверяем, есть ли свободные потоки
+            pthread_cond_wait(&cond, &mutex);///ждём изменения числа занятых потоков
         
-        for(unsigned j = 0; j < numThreads; j++)
+        for(unsigned j = 0; j < numThreads; j++)///Проходим по всем потокам
         {
-            if(!pCheck[j].isBusy())
+            if(!pCheck[j].isBusy())///находим первый не занятый поток
             {
-                pCheck[j].setPoly(*i, &mutex, &cond);
-                pthread_create(&Threads[j], NULL, &PolynomChecker::check, &pCheck[j]);
-                pthread_detach(Threads[j]);
+                pCheck[j].setPoly(*i, &mutex, &cond);///Определяем многочлен на проверку
+                pthread_create(&Threads[j], NULL, &PolynomChecker::check, &pCheck[j]);///Создаём поток для проверки многочлена
+                pthread_detach(Threads[j]);///Отсоединеняем поток
                 break;
             }
         }
         
     }
     
-    while (countBusy(pCheck))
+    while (countBusy(pCheck))///Ждём завершения всех созданных потоков
         pthread_cond_wait(&cond, &mutex);
     
     pthread_mutex_unlock(&mutex);
