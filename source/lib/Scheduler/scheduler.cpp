@@ -53,7 +53,7 @@ unsigned Scheduler::countBusy(PolynomChecker* pCheck)
 void Scheduler::start()
 {
     pthread_t Threads[numThreads];///< Потоки
-    PolynomChecker* pCheck = new PolynomChecker[numThreads];///< Многочлены на проверку
+    PolynomChecker* pCheck = new PolynomChecker[numThreads];///< Класс проверки многочленов на неприводимость
     
     for(unsigned j = 0; j < numThreads; j++)
         pCheck[j].init(method);
@@ -77,7 +77,7 @@ void Scheduler::start()
         {
             if(!pCheck[j].isBusy())///находим первый не занятый поток
             {
-                pCheck[j].setPoly(*i, &mutex, &cond);///Определяем многочлен на проверку
+                pCheck[j].setPoly(*i, &mutex, &cond);///Определяем элемент класса для проверки многочлена
                 pthread_create(&Threads[j], NULL, &PolynomChecker::check, &pCheck[j]);///Создаём поток для проверки многочлена
                 pthread_detach(Threads[j]);///Отсоединеняем поток
                 break;
