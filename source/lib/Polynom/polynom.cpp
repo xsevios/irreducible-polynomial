@@ -279,7 +279,7 @@ Polynom operator%(Polynom lp, const Polynom& rp)
     return lp;
 }
 
-// Расширенный алгоритм Евклида
+/// Расширенный алгоритм Евклида
 int gcdex(int a, int b, int& x, int& y) {
 	if (a == 0)
 	{
@@ -346,6 +346,10 @@ const int& Polynom::operator[](size_t id) const
     return coef[id]; 
 }
 
+/// Находит производную многочлена
+/**
+    i-й коэффициент производной равен (i + 1)-му коэффициенту многочлена, умноженному на (i + 1); i = 0, 1, ..., (n-1), где n -- степень многочлена.
+*/
 Polynom Polynom::derivative()
 {
     vector<int> derCoef;
@@ -361,6 +365,7 @@ Polynom Polynom::derivative()
 	return der;
 }
 
+/// Проверяет, является ли многочлен нулём
 bool Polynom::isZero()
 {
     return coef.empty();
