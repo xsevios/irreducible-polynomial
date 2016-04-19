@@ -22,6 +22,10 @@ void PolynomChecker::init(Method method)
     this->method = method;
 }
 
+/**
+ Проверяет, является ли многочлен из класса Polynom неприводимым на нерасширенном поле Галуа. 
+\return polynom->setIrreducible присваивается значение REDUCIBLE или IRREDUCIBLE, что соответствует приводимости или неприводимости многочлена.
+ */
 void PolynomChecker::matlab()
 {
     polynom->setIrreducible(IRREDUCIBLE);
