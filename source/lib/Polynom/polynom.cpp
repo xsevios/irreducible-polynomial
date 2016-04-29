@@ -1,3 +1,8 @@
+/**
+* \file
+* \brief Файл с реализацией методов класса Polynom и перегрузкой операторов
+*/
+
 #include "polynom.h"
 #include <iostream>
 #include <string>
@@ -23,7 +28,11 @@ extern "C" void destroy_polynom(Polynom* object)
 {
     delete object;
 }
-
+/**
+ * \brief Конструктор класса, инициализирующий поля
+ * \param[in] dim размерность поля
+ * \param[in] coef вектор коеффициентов многочлена
+ */ 
 Polynom::Polynom(int dim, vector<int> coef)
 {
     this->dimGF = dim;
@@ -31,6 +40,11 @@ Polynom::Polynom(int dim, vector<int> coef)
     this->irreducible = NEED_CHECK;
 }
 
+
+/**
+ * \brief Конструктор класса, разбирающий строку сожержащую полином 
+ * \param[in] strPolynom строка содержащая полином в формате "ПРИЗНАК_ПРИВОДИМОСТИ РАЗМЕРНОСТЬ_ПОЛЯ КОЭФФИЦИЕНТ КОЭФФИЦИЕНТ ... КОЭФФИЦИЕНТ"
+ */
 Polynom::Polynom(string strPolynom)
 {
     irreducible = NEED_CHECK;
@@ -46,33 +60,52 @@ Polynom::Polynom(string strPolynom)
     }
 }
 
+
 Polynom::~Polynom(){} // don't change
 
 int Polynom::getDim() const
 {
     return dimGF;
 }
-
+/**
+ * Возвращает коэффициенты многочлена
+ * \return коэффициенты многочлена
+ */ 
 vector<int> Polynom::getCoef() const
 {
     return coef;
 }
 
+/**
+ * Возвращает указатель на массив коэффициентов многочлена
+ * \return указатель на массив коэффициентов многочлена
+ */ 
 vector<int>& Polynom::getRefCoef()
 {
     return coef;
 }
 
+/**
+ * Возвращает статус приводимости многочлена
+ * \return статус приводимости многочлена
+ */ 
 PolynomState Polynom::isIrreducible() const
 {
     return irreducible;
 }
-
+/**
+ * \Устанавливает статус приводимости полинома
+ * \param[in] state новый статус приводимости
+*/ 
 void Polynom::setIrreducible(PolynomState state)
 {
    irreducible = state;
 }
 
+/**
+ * Возвращает степень многочлена
+ * \return степень многочлена
+ */ 
 unsigned Polynom::getDegree() const
 {
     return coef.size() ? coef.size() - 1 : 0;
@@ -341,6 +374,10 @@ int& Polynom::operator[](size_t id)
     return coef[id]; 
 }
 
+/**
+ * \brief Перегрузка оператора[]
+ * \return коэффициент при i-ой степени многочлена
+ */ 
 const int& Polynom::operator[](size_t id) const 
 {
     return coef[id]; 

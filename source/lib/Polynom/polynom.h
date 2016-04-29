@@ -1,3 +1,11 @@
+/**
+* \file
+* \brief Заголовочный файл класса Polynom
+*
+* Данный файл содержит в себе определение класса обеспечивающего хранение полиномов
+* над конечным полем, а так же функционал по работе с ними
+*/
+
 #ifndef _POLYNOM_H
 #define _POLYNOM_H
 
@@ -8,6 +16,11 @@
 #include <math.h>
 using namespace std;
 
+/** Перечесление описывающее приводимость полинома
+ * NEED_CHECK - требует проверки полинома(состояние по умолчанию)
+ * REDUCIBLE - полином является приводимым
+ * IRREDUCIBLE - полином не прифодим
+*/
 enum PolynomState
 {
     NEED_CHECK  = -1,
@@ -15,11 +28,14 @@ enum PolynomState
     IRREDUCIBLE = 1
 };
 
+/**
+ * \brief Описывает многочлен над конечным полем и основные операции над ним
+ */ 
 class Polynom
 {
-    int dimGF;
-    vector<int> coef;
-    PolynomState irreducible;
+    int dimGF;///< Размерность поля
+    vector<int> coef;///< Массив коэфициентов многочлена
+    PolynomState irreducible;///< Статус приводимости многочлена
     
 public:
     Polynom(int dimGF, vector<int> coef);
