@@ -1,3 +1,10 @@
+/**
+\file
+\brief Файл с реализацием методов класса LibraryInterface
+
+*/
+
+
 #include "LibraryInterface.h"
 
 #include <dlfcn.h>
@@ -7,6 +14,13 @@
 
 using std::string;
 
+/**
+\brief Конструктор класса.
+
+Загружает динамическую библиотеку, и сопоставляет методам класса LibraryInterface
+соответсвующие методы библиотеки libirredpoly.so.
+\param[in] libraryName название библиотеки
+*/
 LibraryInterface::LibraryInterface(string libraryName)
 {
     if (!getcwd(cCurrentPath, sizeof(cCurrentPath)))
@@ -44,6 +58,10 @@ LibraryInterface::operator bool() const
     }
 }
 
+/**
+Возвращает строку с возникшими в процессе подключения ошибками
+\return строка, содержащая сообщения об ошибках
+*/
 string LibraryInterface::GetErrorMessage()
 {
     return errorMessage;    

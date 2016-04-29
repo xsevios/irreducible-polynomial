@@ -1,3 +1,10 @@
+/**
+\file
+\brief Файл с реализацием методов класса Driver
+
+*/
+
+
 #include <fstream>
 #include <cstdlib>
 #include "LibraryInterface/LibraryInterface.h"
@@ -5,7 +12,10 @@
 #include "driver.h"
 
 using namespace std;
-
+/**
+ * Перегрузка оператора << для вывода полинома в формате
+ * "ПРИЗНАК_ПРИВОДИМОСТИ РАЗМЕРНОСТЬ_ПОЛЯ КОЭФФИЦИЕНТ КОЭФФИЦИЕНТ ... КОЭФФИЦИЕНТ"
+ */
 ostream& operator<<(ostream& out, const Polynom& p)
 {
     out << p.isIrreducible() << " " << p.getDim();
@@ -16,9 +26,16 @@ ostream& operator<<(ostream& out, const Polynom& p)
 
     return out;
 }
-
+/**
+ * \brief Конструктор класса
+ * \param[in] libPath путь к библиотеки
+ * \param[in] confPath путь к конфигурационному файлу
+*/
 Driver::Driver(string libPath, string confPath) : libPath(libPath), confPath(confPath) {}
-
+/**
+ * \brief Диструктор класса
+ * Освобождает память контейнера list<Polinom>
+ */ 
 Driver::~Driver()
 {
         lib->destroyScheduler(scheduler);
@@ -30,6 +47,9 @@ Driver::~Driver()
         }
 }
 
+/**
+ * \brief Загружает библиотеку по средствам класса LibraryInterface
+ */
 void Driver::loadLibrary()
 {
     lib = new LibraryInterface(libPath);
@@ -41,6 +61,9 @@ void Driver::loadLibrary()
     }
 }
 
+/**
+ * \brief Считывает параметры конфигурационного файла
+ */
 void Driver::readConfig()
 {
     conf = new Config(confPath);
@@ -52,6 +75,9 @@ void Driver::readConfig()
     }
 }
 
+/**
+ * \brief Считывает параметры конфигурационного файла
+ */
 void Driver::readPolynoms()
 {
     ifstream file(conf->getInFileName().c_str());
@@ -73,6 +99,12 @@ void Driver::readPolynoms()
     }
 }
 
+/**
+ * \brief Создает объект библиотечного класса Scheduler
+ * Вызывает конструктор класса Scheduler, передавая ему необходимые параметры,
+ * (список полиномов для проверки; количесво доступных ядер; флаг, маскирующий 
+ *  используемый для проверки метод) по средствам механизмам класса LibraryInterface
+ */
 void Driver::initScheduler()
 {
     scheduler = lib->createScheduler(polynoms, conf->getNumThread(), conf->getMethod());
@@ -83,6 +115,11 @@ void Driver::startScheduler()
     scheduler->start();
 }
 
+/**
+ * Пишет полиномы в текстовый файл(путь к которому задается в конфигурационном
+ * файле)в формате
+ * "ПРИЗНАК_ПРИВОДИМОСТИ РАЗМЕРНОСТЬ_ПОЛЯ КОЭФФИЦИЕНТ КОЭФФИЦИЕНТ ... КОЭФФИЦИЕНТ"
+ */
 void Driver::writePolynoms()
 {
     ofstream fout(conf->getOutFileName().c_str());

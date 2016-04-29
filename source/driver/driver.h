@@ -1,3 +1,11 @@
+/**
+\file
+\brief Заголовочный файл класса Driver
+
+Данный файл содержит в себе определение основного класса оболочки библиотеки
+*/
+
+
 #ifndef _DRIVER_H
 #define _DRIVER_H
 
@@ -5,7 +13,7 @@
 #include "Config/config.h"
 
 using namespace std;
-
+ 
 enum ErrorCode
 {
     ERROR_LIB = 1,
@@ -15,15 +23,17 @@ enum ErrorCode
 };
 
 ostream& operator<<(ostream& out, const Polynom& p);
-
+/**
+ * Основной класс оболочки библиотеки
+ */ 
 class Driver
 {
     LibraryInterface* lib;
     Config* conf;
     Scheduler* scheduler;
-    list<Polynom*> polynoms;
-    string libPath;
-    string confPath;
+    list<Polynom*> polynoms;///<список обробатываемых полиномов
+    string libPath;///<Путь к библиотеки, требующей подключения
+    string confPath;///<Путь к конфигурационному файлу с основными настройками приложения
     
 public:
     Driver(string libPath, string confPath);
