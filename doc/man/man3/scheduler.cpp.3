@@ -1,0 +1,45 @@
+.TH "C:/Users/user/Desktop/irreducible-polynomial-doc/irreducible-polynomial-doc/source/lib/Scheduler/scheduler.cpp" 3 "Fri Apr 29 2016" "Irreducible Polynomial" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/user/Desktop/irreducible-polynomial-doc/irreducible-polynomial-doc/source/lib/Scheduler/scheduler.cpp \- Файл содержащий описание методов класса 'планировщик'\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'scheduler\&.h'\fP
+.br
+\fC#include <pthread\&.h>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <assert\&.h>\fP
+.br
+\fC#include '\&.\&./Polynom/checkIrreducible\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBScheduler\fP * \fBcreate_scheduler\fP (list< \fBPolynom\fP * > polynoms, int numThread, \fBMethod\fP method)"
+.br
+.ti -1c
+.RI "void \fBdestroy_scheduler\fP (\fBScheduler\fP *object)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBPolynomChecker\fP \fBpolynomChecker\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Файл содержащий описание методов класса 'планировщик'\&. 
+
+Данный файл содержит определние конструктора класса 'планировщик', метода подсчёта занятых потоков и метода распараллеливания алгоритма проверки многочлена на неприводимость 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Irreducible Polynomial from the source code\&.

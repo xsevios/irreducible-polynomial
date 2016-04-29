@@ -33,7 +33,7 @@ ostream& operator<<(ostream& out, const Polynom& p)
 */
 Driver::Driver(string libPath, string confPath) : libPath(libPath), confPath(confPath) {}
 /**
- * \brief Диструктор класса
+ * \brief Деструктор класса
  * Освобождает память контейнера list<Polinom>
  */ 
 Driver::~Driver()
@@ -76,7 +76,7 @@ void Driver::readConfig()
 }
 
 /**
- * \brief Считывает параметры конфигурационного файла
+ * \brief Считывает список полиномов из текстового файла для обработки
  */
 void Driver::readPolynoms()
 {

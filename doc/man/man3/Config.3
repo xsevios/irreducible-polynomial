@@ -1,0 +1,99 @@
+.TH "Config" 3 "Fri Apr 29 2016" "Irreducible Polynomial" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Config \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBConfig\fP (string path)"
+.br
+.ti -1c
+.RI "\fB~Config\fP ()"
+.br
+.RI "\fIДеструктор класса \fBConfig\fP\&. \fP"
+.ti -1c
+.RI "\fBoperator bool\fP () const "
+.br
+.ti -1c
+.RI "string \fBGetErrorMessage\fP ()"
+.br
+.ti -1c
+.RI "int \fBgetNumThread\fP ()"
+.br
+.ti -1c
+.RI "\fBMethod\fP \fBgetMethod\fP ()"
+.br
+.ti -1c
+.RI "string \fBgetInFileName\fP ()"
+.br
+.ti -1c
+.RI "string \fBgetOutFileName\fP ()"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Config::Config (string path)"
+Произдится считывание данных из файла, который лежит по пути path, и приравнивает их переменным 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpath\fP Путь к файлу 
+.RE
+.PP
+< в случае ошибок устанавливаем стандартные значения 
+.SH "Member Function Documentation"
+.PP 
+.SS "string Config::GetErrorMessage ()"
+Возвращает сообщение об ошибке 
+.PP
+\fBReturns:\fP
+.RS 4
+Сообщение об ошибке 
+.RE
+.PP
+
+.SS "string Config::getInFileName ()"
+Возвращает значение пути входного файла 
+.PP
+\fBReturns:\fP
+.RS 4
+Входной файл 
+.RE
+.PP
+
+.SS "\fBMethod\fP Config::getMethod ()"
+Возвращает значение метода 
+.PP
+\fBReturns:\fP
+.RS 4
+Значение метода 
+.RE
+.PP
+
+.SS "int Config::getNumThread ()"
+Возвращает значение количества ядер процессора 
+.PP
+\fBReturns:\fP
+.RS 4
+Количество ядер процессора 
+.RE
+.PP
+
+.SS "string Config::getOutFileName ()"
+Возвращает значение пути выходного файла 
+.PP
+\fBReturns:\fP
+.RS 4
+Выходной файл 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Irreducible Polynomial from the source code\&.

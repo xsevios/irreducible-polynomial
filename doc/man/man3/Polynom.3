@@ -1,0 +1,124 @@
+.TH "Polynom" 3 "Fri Apr 29 2016" "Irreducible Polynomial" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Polynom \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPolynom\fP (int dimGF, vector< int > coef)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP (string strPolynom)"
+.br
+.ti -1c
+.RI "void \fBsetIrreducible\fP (PolynomState)"
+.br
+.ti -1c
+.RI "virtual vector< int > \fBgetCoef\fP () const "
+.br
+.ti -1c
+.RI "vector< int > & \fBgetRefCoef\fP ()"
+.br
+.ti -1c
+.RI "virtual int \fBgetDim\fP () const "
+.br
+.ti -1c
+.RI "virtual PolynomState \fBisIrreducible\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBgetDegree\fP () const "
+.br
+.ti -1c
+.RI "\fBPolynom\fP & \fBoperator=\fP (const \fBPolynom\fP &p)"
+.br
+.ti -1c
+.RI "int & \fBoperator[]\fP (size_t id)"
+.br
+.ti -1c
+.RI "const int & \fBoperator[]\fP (size_t id) const "
+.br
+.ti -1c
+.RI "void \fBprint\fP (ostream &out=cout) const "
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBderivative\fP ()"
+.br
+.RI "\fIНаходит производную многочлена \fP"
+.ti -1c
+.RI "bool \fBisZero\fP ()"
+.br
+.RI "\fIПроверяет, является ли многочлен нулём \fP"
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator\-\fP ()"
+.br
+.ti -1c
+.RI "\fBPolynom\fP & \fBoperator+=\fP (const \fBPolynom\fP &p)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP & \fBoperator\-=\fP (const \fBPolynom\fP &p)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP & \fBoperator*=\fP (const \fBPolynom\fP &p)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP & \fBoperator/=\fP (const \fBPolynom\fP &p)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP & \fBoperator%=\fP (const \fBPolynom\fP &p)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP & \fBoperator*=\fP (const int number)"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator\-\fP (const \fBPolynom\fP &p)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator+\fP (\fBPolynom\fP lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator\-\fP (\fBPolynom\fP lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator*\fP (\fBPolynom\fP lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator/\fP (\fBPolynom\fP lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator%\fP (\fBPolynom\fP lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator*\fP (const int number, const \fBPolynom\fP &p)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator*\fP (const \fBPolynom\fP &p, const int number)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator/\fP (const \fBPolynom\fP &p, const int number)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBPolynom\fP &lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBPolynom\fP &lp, const \fBPolynom\fP &rp)"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBPolynom\fP Polynom::derivative ()"
+
+.PP
+Находит производную многочлена i-й коэффициент производной равен (i + 1)-му коэффициенту многочлена, умноженному на (i + 1); i = 0, 1, \&.\&.\&., (n-1), где n -- степень многочлена\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Irreducible Polynomial from the source code\&.

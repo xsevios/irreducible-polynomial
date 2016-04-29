@@ -1,0 +1,55 @@
+.TH "C:/Users/user/Desktop/irreducible-polynomial-doc/irreducible-polynomial-doc/source/lib/Scheduler/scheduler.h" 3 "Fri Apr 29 2016" "Irreducible Polynomial" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/user/Desktop/irreducible-polynomial-doc/irreducible-polynomial-doc/source/lib/Scheduler/scheduler.h \- Заголовчный файл с описанием класса 'планировщик'\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <list>\fP
+.br
+\fC#include <pthread\&.h>\fP
+.br
+\fC#include '\&.\&./Polynom/polynom\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBScheduler\fP"
+.br
+.RI "\fIКласс 'планировщик' организует проверку многочленов на неприводимость в заданное число потоков \fP"
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBMethod\fP { \fBMatlab\fP = 1, \fBBerlekamp\fP = 2 }
+.RI "\fIНабор возможных методов проверки многочленов на неприводимость \fP""
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Заголовчный файл с описанием класса 'планировщик'\&. 
+
+Данный файл содержит в себе определение класса 'планировщик', его полей и методов\&. Класс планировщик отвечает за распараллеливание алгорнитма проверки многочлена на неприводимость 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBMethod\fP"
+
+.PP
+Набор возможных методов проверки многочленов на неприводимость 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIMatlab \fP\fP
+Метод 'Матлаб'\&. 
+.TP
+\fB\fIBerlekamp \fP\fP
+Метода Берлекэмпа 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Irreducible Polynomial from the source code\&.

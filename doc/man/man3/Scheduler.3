@@ -1,0 +1,72 @@
+.TH "Scheduler" 3 "Fri Apr 29 2016" "Irreducible Polynomial" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Scheduler \- Класс 'планировщик' организует проверку многочленов на неприводимость в заданное число потоков  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <scheduler\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBScheduler\fP (list< \fBPolynom\fP * >, unsigned, \fBMethod\fP)"
+.br
+.RI "\fIКонструктор класса 'планировщик'\&. \fP"
+.ti -1c
+.RI "unsigned \fBcountBusy\fP (\fBPolynomChecker\fP *pCheck)"
+.br
+.ti -1c
+.RI "virtual \fB~Scheduler\fP ()"
+.br
+.RI "\fIДеструктор класса 'планировщик'\&. \fP"
+.ti -1c
+.RI "virtual void \fBstart\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Класс 'планировщик' организует проверку многочленов на неприводимость в заданное число потоков 
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned Scheduler::countBusy (\fBPolynomChecker\fP * pCheck)"
+Возвращает количество обрабатываемых в данный момент многочленов 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpCheck\fP многочлены подлежащие проверке 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+количество проверяемых в данный момент многочленов 
+.RE
+.PP
+
+.SS "void Scheduler::start ()\fC [virtual]\fP"
+Распараллеливает проверку многочленов на неприводимость на указанное число потоков < Потоки
+.PP
+< Класс проверки многочленов на неприводимость
+.PP
+Проверяем, есть ли свободные потоки
+.PP
+ждём изменения числа занятых потоков
+.PP
+Проходим по всем потокам
+.PP
+находим первый не занятый поток
+.PP
+Определяем элемент класса для проверки многочлена
+.PP
+Создаём поток для проверки многочлена
+.PP
+Отсоединеняем поток
+.PP
+Ждём завершения всех созданных потоков 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Irreducible Polynomial from the source code\&.

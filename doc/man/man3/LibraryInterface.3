@@ -1,0 +1,99 @@
+.TH "LibraryInterface" 3 "Fri Apr 29 2016" "Irreducible Polynomial" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+LibraryInterface \- Класс, предназначенный для подключения динамической бибилиотеки к приложению  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <LibraryInterface\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLibraryInterface\fP (string libraryName)"
+.br
+.RI "\fIКонструктор класса\&. \fP"
+.ti -1c
+.RI "\fBoperator bool\fP () const "
+.br
+.ti -1c
+.RI "string \fBGetErrorMessage\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBPolynom\fP *(* \fBcreatePolynom\fP )(string strPolynom)"
+.br
+.ti -1c
+.RI "void(* \fBdestroyPolynom\fP )(\fBPolynom\fP *)"
+.br
+.ti -1c
+.RI "\fBScheduler\fP *(* \fBcreateScheduler\fP )(list< \fBPolynom\fP * >, int, \fBMethod\fP)"
+.br
+.ti -1c
+.RI "void(* \fBdestroyScheduler\fP )(\fBScheduler\fP *)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Класс, предназначенный для подключения динамической бибилиотеки к приложению 
+
+вызов функций динамической библиотеки по срествам dlfcn\&.h 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "LibraryInterface::LibraryInterface (string libraryName)"
+
+.PP
+Конструктор класса\&. Загружает динамическую библиотеку, и сопоставляет методам класса \fBLibraryInterface\fP соответсвующие методы библиотеки libirredpoly\&.so\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIlibraryName\fP название библиотеки 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "string LibraryInterface::GetErrorMessage ()"
+Возвращает строку с возникшими в процессе подключения ошибками 
+.PP
+\fBReturns:\fP
+.RS 4
+строка, содержащая сообщения об ошибках 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPolynom\fP*(* LibraryInterface::createPolynom) (string strPolynom)"
+Создает объект библиотечного класса \fBPolynom\fP, вызвая функцию библиотеки create_polynom 
+.PP
+\fBReturns:\fP
+.RS 4
+Указатель на созданный объект 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstrPolynom\fP строка, содержащая информацию о полиноме 
+.RE
+.PP
+
+.SS "\fBScheduler\fP*(* LibraryInterface::createScheduler) (list< \fBPolynom\fP * >, int, \fBMethod\fP)"
+Создает объект библиотечного класса \fBScheduler\fP, вызвая функцию библиотеки create_scheduler 
+.PP
+\fBReturns:\fP
+.RS 4
+Указатель на созданный объект 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Irreducible Polynomial from the source code\&.

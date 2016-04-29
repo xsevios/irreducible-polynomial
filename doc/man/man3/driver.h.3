@@ -1,0 +1,48 @@
+.TH "C:/Users/user/Desktop/irreducible-polynomial-doc/irreducible-polynomial-doc/source/driver/driver.h" 3 "Fri Apr 29 2016" "Irreducible Polynomial" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/user/Desktop/irreducible-polynomial-doc/irreducible-polynomial-doc/source/driver/driver.h \- Заголовочный файл класса \fBDriver\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'LibraryInterface/LibraryInterface\&.h'\fP
+.br
+\fC#include 'Config/config\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBDriver\fP"
+.br
+.RI "\fIОсновной класс оболочки библиотеки \fP"
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBErrorCode\fP { \fBERROR_LIB\fP = 1, \fBERROR_READ_CONF\fP, \fBERROR_READ_POLY\fP, \fBERROR_WRITE_POLY\fP }"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "ostream & \fBoperator<<\fP (ostream &out, const \fBPolynom\fP &p)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Заголовочный файл класса \fBDriver\fP\&. 
+
+Данный файл содержит в себе определение основного класса оболочки библиотеки 
+.SH "Function Documentation"
+.PP 
+.SS "ostream& operator<< (ostream & out, const \fBPolynom\fP & p)"
+Перегрузка оператора << для вывода полинома в формате 'ПРИЗНАК_ПРИВОДИМОСТИ РАЗМЕРНОСТЬ_ПОЛЯ КОЭФФИЦИЕНТ КОЭФФИЦИЕНТ \&.\&.\&. КОЭФФИЦИЕНТ' 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Irreducible Polynomial from the source code\&.

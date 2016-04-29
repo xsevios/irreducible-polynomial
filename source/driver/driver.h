@@ -24,7 +24,7 @@ enum ErrorCode
 
 ostream& operator<<(ostream& out, const Polynom& p);
 /**
- * Основной класс оболочки библиотеки
+ * \brief Основной класс оболочки библиотеки
  */ 
 class Driver
 {

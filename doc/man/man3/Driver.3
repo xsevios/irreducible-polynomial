@@ -1,0 +1,68 @@
+.TH "Driver" 3 "Fri Apr 29 2016" "Irreducible Polynomial" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Driver \- Основной класс оболочки библиотеки  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <driver\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDriver\fP (string libPath, string confPath)"
+.br
+.RI "\fIКонструктор класса \fP"
+.ti -1c
+.RI "\fB~Driver\fP ()"
+.br
+.RI "\fIДеструктор класса Освобождает память контейнера list<Polinom> \fP"
+.ti -1c
+.RI "void \fBloadLibrary\fP ()"
+.br
+.RI "\fIЗагружает библиотеку по средствам класса \fBLibraryInterface\fP\&. \fP"
+.ti -1c
+.RI "void \fBreadConfig\fP ()"
+.br
+.RI "\fIСчитывает параметры конфигурационного файла \fP"
+.ti -1c
+.RI "void \fBinitScheduler\fP ()"
+.br
+.RI "\fIСоздает объект библиотечного класса \fBScheduler\fP Вызывает конструктор класса \fBScheduler\fP, передавая ему необходимые параметры, (список полиномов для проверки; количесво доступных ядер; флаг, маскирующий используемый для проверки метод) по средствам механизмам класса \fBLibraryInterface\fP\&. \fP"
+.ti -1c
+.RI "void \fBstartScheduler\fP ()"
+.br
+.ti -1c
+.RI "void \fBreadPolynoms\fP ()"
+.br
+.RI "\fIСчитывает список полиномов из текстового файла для обработки \fP"
+.ti -1c
+.RI "void \fBwritePolynoms\fP ()"
+.br
+.RI "\fIЗапись списка полиномов в файл Пишет полиномы в текстовый файл(путь к которому задается в конфигурационном файле)в формате 'ПРИЗНАК_ПРИВОДИМОСТИ РАЗМЕРНОСТЬ_ПОЛЯ КОЭФФИЦИЕНТ КОЭФФИЦИЕНТ \&.\&.\&. КОЭФФИЦИЕНТ'\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Основной класс оболочки библиотеки 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Driver::Driver (string libPath, string confPath)"
+
+.PP
+Конструктор класса 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIlibPath\fP путь к библиотеки 
+.br
+\fIconfPath\fP путь к конфигурационному файлу 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Irreducible Polynomial from the source code\&.
