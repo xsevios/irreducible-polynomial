@@ -54,7 +54,7 @@ Config::Config(string path)
         numThread = 1;
         fileIn = "in";
         fileOut = "out";
-        method = 2;
+        method = Berlekamp;
     }
 }
 
