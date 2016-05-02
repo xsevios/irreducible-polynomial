@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['readconfig',['readConfig',['../class_driver.html#ab18390549c3d3c596e6c7f819a13114d',1,'Driver']]],
-  ['readpolynoms',['readPolynoms',['../class_driver.html#ad54e08d5004e7f758117ea285e5dba17',1,'Driver']]]
+  ['polynom',['Polynom',['../class_polynom.html#afb48393747367428f52a48216a27d1eb',1,'Polynom::Polynom(int dimGF, vector&lt; int &gt; coef)'],['../class_polynom.html#a230e920a1ba56d3b00190bf723920e6b',1,'Polynom::Polynom(string strPolynom)']]]
 ];

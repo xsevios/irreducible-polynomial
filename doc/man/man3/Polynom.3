@@ -1,22 +1,27 @@
-.TH "Polynom" 3 "Fri Apr 29 2016" "Irreducible Polynomial" \" -*- nroff -*-
+.TH "Polynom" 3 "Fri Apr 29 2016" "Irreducible Polynom" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-Polynom \- 
+Polynom \- Описывает многочлен над конечным полем и основные операции над ним  
+
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <polynom\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBPolynom\fP (int dimGF, vector< int > coef)"
 .br
+.RI "\fIКонструктор класса, инициализирующий поля \fP"
 .ti -1c
 .RI "\fBPolynom\fP (string strPolynom)"
 .br
+.RI "\fIКонструктор класса, разбирающий строку сожержащую полином \fP"
 .ti -1c
-.RI "void \fBsetIrreducible\fP (PolynomState)"
+.RI "void \fBsetIrreducible\fP (\fBPolynomState\fP)"
 .br
 .ti -1c
 .RI "virtual vector< int > \fBgetCoef\fP () const "
@@ -28,7 +33,7 @@ Polynom \-
 .RI "virtual int \fBgetDim\fP () const "
 .br
 .ti -1c
-.RI "virtual PolynomState \fBisIrreducible\fP () const "
+.RI "virtual \fBPolynomState\fP \fBisIrreducible\fP () const "
 .br
 .ti -1c
 .RI "unsigned \fBgetDegree\fP () const "
@@ -42,6 +47,7 @@ Polynom \-
 .ti -1c
 .RI "const int & \fBoperator[]\fP (size_t id) const "
 .br
+.RI "\fIПерегрузка оператора[]\&. \fP"
 .ti -1c
 .RI "void \fBprint\fP (ostream &out=cout) const "
 .br
@@ -112,13 +118,98 @@ Polynom \-
 .RI "bool \fBoperator!=\fP (const \fBPolynom\fP &lp, const \fBPolynom\fP &rp)"
 .br
 .in -1c
+.SH "Detailed Description"
+.PP 
+Описывает многочлен над конечным полем и основные операции над ним 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Polynom::Polynom (int dim, vector< int > coef)"
+
+.PP
+Конструктор класса, инициализирующий поля 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdim\fP размерность поля 
+.br
+\fIcoef\fP вектор коеффициентов многочлена 
+.RE
+.PP
+
+.SS "Polynom::Polynom (string strPolynom)"
+
+.PP
+Конструктор класса, разбирающий строку сожержащую полином 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstrPolynom\fP строка содержащая полином в формате 'ПРИЗНАК_ПРИВОДИМОСТИ РАЗМЕРНОСТЬ_ПОЛЯ КОЭФФИЦИЕНТ КОЭФФИЦИЕНТ \&.\&.\&. КОЭФФИЦИЕНТ' 
+.RE
+.PP
+
 .SH "Member Function Documentation"
 .PP 
 .SS "\fBPolynom\fP Polynom::derivative ()"
 
 .PP
 Находит производную многочлена i-й коэффициент производной равен (i + 1)-му коэффициенту многочлена, умноженному на (i + 1); i = 0, 1, \&.\&.\&., (n-1), где n -- степень многочлена\&. 
+.SS "vector< int > Polynom::getCoef () const\fC [virtual]\fP"
+Возвращает коэффициенты многочлена 
+.PP
+\fBReturns:\fP
+.RS 4
+коэффициенты многочлена 
+.RE
+.PP
+
+.SS "unsigned Polynom::getDegree () const"
+Возвращает степень многочлена 
+.PP
+\fBReturns:\fP
+.RS 4
+степень многочлена 
+.RE
+.PP
+
+.SS "vector< int > & Polynom::getRefCoef ()"
+Возвращает указатель на массив коэффициентов многочлена 
+.PP
+\fBReturns:\fP
+.RS 4
+указатель на массив коэффициентов многочлена 
+.RE
+.PP
+
+.SS "\fBPolynomState\fP Polynom::isIrreducible () const\fC [virtual]\fP"
+Возвращает статус приводимости многочлена 
+.PP
+\fBReturns:\fP
+.RS 4
+статус приводимости многочлена 
+.RE
+.PP
+
+.SS "const int & Polynom::operator[] (size_t id) const"
+
+.PP
+Перегрузка оператора[]\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+коэффициент при i-ой степени многочлена 
+.RE
+.PP
+
+.SS "void Polynom::setIrreducible (\fBPolynomState\fP state)"
+\\Устанавливает статус приводимости полинома 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstate\fP новый статус приводимости 
+.RE
+.PP
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for Irreducible Polynomial from the source code\&.
+Generated automatically by Doxygen for Irreducible Polynom from the source code\&.

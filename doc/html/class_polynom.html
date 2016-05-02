@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>Irreducible Polynomial: Polynom Class Reference</title>
+<title>Irreducible Polynom: Polynom Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,7 +23,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Irreducible Polynomial
+   <div id="projectname">Irreducible Polynom
    </div>
   </td>
  </tr>
@@ -89,32 +89,32 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Polynom Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Описывает многочлен над конечным полем и основные операции над ним  
+ <a href="class_polynom.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="polynom_8h_source.html">polynom.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:afb48393747367428f52a48216a27d1eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afb48393747367428f52a48216a27d1eb"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Polynom</b> (int dimGF, vector&lt; int &gt; coef)</td></tr>
+<tr class="memitem:afb48393747367428f52a48216a27d1eb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom.html#afb48393747367428f52a48216a27d1eb">Polynom</a> (int dimGF, vector&lt; int &gt; coef)</td></tr>
+<tr class="memdesc:afb48393747367428f52a48216a27d1eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор класса, инициализирующий поля  <a href="#afb48393747367428f52a48216a27d1eb">More...</a><br /></td></tr>
 <tr class="separator:afb48393747367428f52a48216a27d1eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a230e920a1ba56d3b00190bf723920e6b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a230e920a1ba56d3b00190bf723920e6b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Polynom</b> (string strPolynom)</td></tr>
+<tr class="memitem:a230e920a1ba56d3b00190bf723920e6b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom.html#a230e920a1ba56d3b00190bf723920e6b">Polynom</a> (string strPolynom)</td></tr>
+<tr class="memdesc:a230e920a1ba56d3b00190bf723920e6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Конструктор класса, разбирающий строку сожержащую полином  <a href="#a230e920a1ba56d3b00190bf723920e6b">More...</a><br /></td></tr>
 <tr class="separator:a230e920a1ba56d3b00190bf723920e6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ab7cce1642892c2be2a159d822c411e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0ab7cce1642892c2be2a159d822c411e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setIrreducible</b> (PolynomState)</td></tr>
+<tr class="memitem:a0ab7cce1642892c2be2a159d822c411e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom.html#a0ab7cce1642892c2be2a159d822c411e">setIrreducible</a> (<a class="el" href="polynom_8h.html#a4d7c2a5f1668f02cc044c285545b8cc5">PolynomState</a>)</td></tr>
 <tr class="separator:a0ab7cce1642892c2be2a159d822c411e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae8863d1b67cca04b5b4e839df18dee1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aae8863d1b67cca04b5b4e839df18dee1"></a>
-virtual vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getCoef</b> () const </td></tr>
+<tr class="memitem:aae8863d1b67cca04b5b4e839df18dee1"><td class="memItemLeft" align="right" valign="top">virtual vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom.html#aae8863d1b67cca04b5b4e839df18dee1">getCoef</a> () const </td></tr>
 <tr class="separator:aae8863d1b67cca04b5b4e839df18dee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a862b01875f671b61f07d711b2e096fc2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a862b01875f671b61f07d711b2e096fc2"></a>
-vector&lt; int &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getRefCoef</b> ()</td></tr>
+<tr class="memitem:a862b01875f671b61f07d711b2e096fc2"><td class="memItemLeft" align="right" valign="top">vector&lt; int &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom.html#a862b01875f671b61f07d711b2e096fc2">getRefCoef</a> ()</td></tr>
 <tr class="separator:a862b01875f671b61f07d711b2e096fc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e22d839c9c87224244167aac7ed282f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1e22d839c9c87224244167aac7ed282f"></a>
 virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getDim</b> () const </td></tr>
 <tr class="separator:a1e22d839c9c87224244167aac7ed282f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77cd9ed041d852a146bbac0bff9f7be9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77cd9ed041d852a146bbac0bff9f7be9"></a>
-virtual PolynomState&#160;</td><td class="memItemRight" valign="bottom"><b>isIrreducible</b> () const </td></tr>
+<tr class="memitem:a77cd9ed041d852a146bbac0bff9f7be9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="polynom_8h.html#a4d7c2a5f1668f02cc044c285545b8cc5">PolynomState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom.html#a77cd9ed041d852a146bbac0bff9f7be9">isIrreducible</a> () const </td></tr>
 <tr class="separator:a77cd9ed041d852a146bbac0bff9f7be9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4ba7ae1e6e53bbab1326b0bd703286b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad4ba7ae1e6e53bbab1326b0bd703286b"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>getDegree</b> () const </td></tr>
+<tr class="memitem:ad4ba7ae1e6e53bbab1326b0bd703286b"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom.html#ad4ba7ae1e6e53bbab1326b0bd703286b">getDegree</a> () const </td></tr>
 <tr class="separator:ad4ba7ae1e6e53bbab1326b0bd703286b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aead6eebddc3ea3d62b4023ef1f0ddcd9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aead6eebddc3ea3d62b4023ef1f0ddcd9"></a>
 <a class="el" href="class_polynom.html">Polynom</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_polynom.html">Polynom</a> &amp;p)</td></tr>
@@ -122,8 +122,8 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>getDegree</b> () 
 <tr class="memitem:aba35bc6ba50d29da899bbec77d82a818"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba35bc6ba50d29da899bbec77d82a818"></a>
 int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator[]</b> (size_t id)</td></tr>
 <tr class="separator:aba35bc6ba50d29da899bbec77d82a818"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b2e68549559017790be10669123c544"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b2e68549559017790be10669123c544"></a>
-const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator[]</b> (size_t id) const </td></tr>
+<tr class="memitem:a4b2e68549559017790be10669123c544"><td class="memItemLeft" align="right" valign="top">const int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom.html#a4b2e68549559017790be10669123c544">operator[]</a> (size_t id) const </td></tr>
+<tr class="memdesc:a4b2e68549559017790be10669123c544"><td class="mdescLeft">&#160;</td><td class="mdescRight">Перегрузка оператора[].  <a href="#a4b2e68549559017790be10669123c544">More...</a><br /></td></tr>
 <tr class="separator:a4b2e68549559017790be10669123c544"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51909da175e7a454dbb40bc81cb41eeb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a51909da175e7a454dbb40bc81cb41eeb"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>print</b> (ostream &amp;out=cout) const </td></tr>
@@ -193,6 +193,68 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="class_polynom.html">Polynom</a> &amp;lp, const <a class="el" href="class_polynom.html">Polynom</a> &amp;rp)</td></tr>
 <tr class="separator:ae9a16919740c479a323e64fc439ac90e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Описывает многочлен над конечным полем и основные операции над ним </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="afb48393747367428f52a48216a27d1eb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Polynom::Polynom </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dim</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; int &gt;&#160;</td>
+          <td class="paramname"><em>coef</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Конструктор класса, инициализирующий поля </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">dim</td><td>размерность поля </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">coef</td><td>вектор коеффициентов многочлена </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a230e920a1ba56d3b00190bf723920e6b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Polynom::Polynom </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>strPolynom</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Конструктор класса, разбирающий строку сожержащую полином </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">strPolynom</td><td>строка содержащая полином в формате "ПРИЗНАК_ПРИВОДИМОСТИ РАЗМЕРНОСТЬ_ПОЛЯ КОЭФФИЦИЕНТ КОЭФФИЦИЕНТ ... КОЭФФИЦИЕНТ" </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="ae1474eafae558c7f6df39f5c50832134"></a>
 <div class="memitem">
@@ -212,9 +274,130 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const
 
 </div>
 </div>
+<a class="anchor" id="aae8863d1b67cca04b5b4e839df18dee1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; int &gt; Polynom::getCoef </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Возвращает коэффициенты многочлена </p><dl class="section return"><dt>Returns</dt><dd>коэффициенты многочлена </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ad4ba7ae1e6e53bbab1326b0bd703286b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned Polynom::getDegree </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Возвращает степень многочлена </p><dl class="section return"><dt>Returns</dt><dd>степень многочлена </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a862b01875f671b61f07d711b2e096fc2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; int &gt; &amp; Polynom::getRefCoef </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Возвращает указатель на массив коэффициентов многочлена </p><dl class="section return"><dt>Returns</dt><dd>указатель на массив коэффициентов многочлена </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a77cd9ed041d852a146bbac0bff9f7be9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="polynom_8h.html#a4d7c2a5f1668f02cc044c285545b8cc5">PolynomState</a> Polynom::isIrreducible </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Возвращает статус приводимости многочлена </p><dl class="section return"><dt>Returns</dt><dd>статус приводимости многочлена </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a4b2e68549559017790be10669123c544"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int &amp; Polynom::operator[] </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Перегрузка оператора[]. </p>
+<dl class="section return"><dt>Returns</dt><dd>коэффициент при i-ой степени многочлена </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a0ab7cce1642892c2be2a159d822c411e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Polynom::setIrreducible </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="polynom_8h.html#a4d7c2a5f1668f02cc044c285545b8cc5">PolynomState</a>&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>\Устанавливает статус приводимости полинома </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">state</td><td>новый статус приводимости </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>C:/Users/user/Desktop/irreducible-polynomial-doc/irreducible-polynomial-doc/source/lib/Polynom/<a class="el" href="polynom_8h_source.html">polynom.h</a></li>
-<li>C:/Users/user/Desktop/irreducible-polynomial-doc/irreducible-polynomial-doc/source/lib/Polynom/polynom.cpp</li>
+<li>C:/Users/user/Desktop/irreducible-polynomial-doc/source/lib/Polynom/<a class="el" href="polynom_8h_source.html">polynom.h</a></li>
+<li>C:/Users/user/Desktop/irreducible-polynomial-doc/source/lib/Polynom/<a class="el" href="polynom_8cpp.html">polynom.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

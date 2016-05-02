@@ -1,0 +1,85 @@
+.TH "C:/Users/user/Desktop/irreducible-polynomial-doc/source/lib/Polynom/polynom.cpp" 3 "Fri Apr 29 2016" "Irreducible Polynom" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+C:/Users/user/Desktop/irreducible-polynomial-doc/source/lib/Polynom/polynom.cpp \- Файл с реализацией методов класса \fBPolynom\fP и перегрузкой операторов  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'polynom\&.h'\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include <sstream>\fP
+.br
+\fC#include <iterator>\fP
+.br
+\fC#include <algorithm>\fP
+.br
+\fC#include <assert\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPolynom\fP * \fBcreate_polynom\fP (std::string strPolynom)"
+.br
+.ti -1c
+.RI "void \fBdestroy_polynom\fP (\fBPolynom\fP *object)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator+\fP (\fBPolynom\fP lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator\-\fP (\fBPolynom\fP lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator*\fP (\fBPolynom\fP lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator*\fP (const int number, const \fBPolynom\fP &p)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator*\fP (const \fBPolynom\fP &p, const int number)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator\-\fP (const \fBPolynom\fP &p)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator/\fP (\fBPolynom\fP lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator%\fP (\fBPolynom\fP lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "int \fBgcdex\fP (int a, int b, int &x, int &y)"
+.br
+.RI "\fIРасширенный алгоритм Евклида \fP"
+.ti -1c
+.RI "\fBPolynom\fP \fBoperator/\fP (const \fBPolynom\fP &p, const int number)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBPolynom\fP &lp, const \fBPolynom\fP &rp)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBPolynom\fP &lp, const \fBPolynom\fP &rp)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Файл с реализацией методов класса \fBPolynom\fP и перегрузкой операторов 
+
+
+.SH "Function Documentation"
+.PP 
+.SS "int gcdex (int a, int b, int & x, int & y)"
+
+.PP
+Расширенный алгоритм Евклида Расширенный алгоритм Евклида для чисел 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Irreducible Polynom from the source code\&.
