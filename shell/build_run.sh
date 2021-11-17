@@ -1,8 +1,8 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 set -e
-./Build $1
+./build.sh $1
 echo ;
 echo --- RUN ---;
-./Run
+./run.sh
 echo --- RUN SUCCESS ---;
