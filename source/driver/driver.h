@@ -28,12 +28,12 @@ ostream& operator<<(ostream& out, const Polynom& p);
  */ 
 class Driver
 {
-    LibraryInterface* lib;
-    Config* conf;
-    Scheduler* scheduler;
-    list<Polynom*> polynoms;///<список обробатываемых полиномов
-    string libPath;///<Путь к библиотеки, требующей подключения
-    string confPath;///<Путь к конфигурационному файлу с основными настройками приложения
+    LibraryInterface  * lib         = nullptr;
+    Config            * conf        = nullptr;
+    Scheduler         * scheduler   = nullptr;
+    list<Polynom *>     polynoms;               ///<список обробатываемых полиномов
+    string              libPath;                ///<Путь к библиотеки, требующей подключения
+    string              confPath;               ///<Путь к конфигурационному файлу с основными настройками приложения
     
 public:
     Driver(string libPath, string confPath);

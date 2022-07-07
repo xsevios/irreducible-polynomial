@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <cstdlib>
+#include <cassert>
 #include "LibraryInterface/LibraryInterface.h"
 #include "Config/config.h"
 #include "driver.h"
@@ -37,13 +38,17 @@ Driver::Driver(string libPath, string confPath) : libPath(libPath), confPath(con
  */ 
 Driver::~Driver()
 {
+    if (scheduler != nullptr)
         lib->destroyScheduler(scheduler);
+
+    if (conf != nullptr)
         delete conf;
-        for (list<Polynom*>::iterator cur = polynoms.begin(); cur != polynoms.end(); cur = polynoms.begin())
-        {
-            lib->destroyPolynom(*cur);
-            polynoms.erase(cur);
-        }
+
+    for (list<Polynom*>::iterator cur = polynoms.begin(); cur != polynoms.end(); cur = polynoms.begin())
+    {
+        lib->destroyPolynom(*cur);
+        polynoms.erase(cur);
+    }
 }
 
 /**

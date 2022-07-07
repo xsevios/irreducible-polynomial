@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include <string>
-#include <stdio.h>
+#include <cstdio>
 #include "../../lib/lib.h"
 
 using namespace std;

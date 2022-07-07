@@ -1,5 +1,7 @@
 #include "checkIrreducible.h"
-#include <assert.h>
+
+#include <cassert>
+#include <random>
 
 //#define DEBUG
 
@@ -120,24 +122,30 @@ int gcdex(int a, int b, int& x, int& y);
 */
 void PolynomChecker::berlekamp()
 {
-    Polynom* test_poly = new Polynom(polynom->getDim(), polynom->getCoef());
-    vector<int> tmp = test_poly->getCoef();
-    *test_poly = *test_poly / tmp[test_poly->getDegree()]; ///< Нормировка многочлена
-	Polynom polyDer = test_poly->derivative(); ///< polyDer --  производная проверяемого многочлена
-	if (!polyDer.isZero())
-	{
-		Polynom firstCheck = gcd(*test_poly, polyDer); ///< firstCheck -- НОД(f(x), f'(x))
-		if (!firstCheck.getDegree())
-		{
-			PolynomState answer = checkMatrix(*test_poly); ///< checkMatrix составляет матрицу и проверяет её ранг для данного многочлена
-			polynom->setIrreducible(answer);
-		}
-		else
-			polynom->setIrreducible(REDUCIBLE);
-	}
-	else
-		polynom->setIrreducible(REDUCIBLE);
-	delete test_poly;
+    BerlekampTest(*polynom);
+}
+
+PolynomState PolynomChecker::BerlekampTest(const Polynom& p)
+{
+    vector<int> tmp = p.getCoef();
+    Polynom pTmp = p;
+    pTmp = pTmp / pTmp.GetLeadingCoef();               ///< Нормировка многочлена
+    Polynom polyDer = pTmp.Derivative();               ///< polyDer --  производная проверяемого многочлена
+    if (!polyDer.IsZero())
+    {
+        Polynom firstCheck = gcd(pTmp, polyDer);       ///< firstCheck -- НОД(f(x), f'(x))
+        if (!firstCheck.getDegree())
+        {
+            PolynomState answer = checkMatrix(pTmp);   ///< checkMatrix составляет матрицу и проверяет её ранг для данного многочлена
+            p.setIrreducible(answer);
+        }
+        else
+            p.setIrreducible(REDUCIBLE);
+    }
+    else
+        p.setIrreducible(REDUCIBLE);
+
+    return p.isIrreducible();
 }
 
 /// Cоставляет матрицу для данного многочлена
@@ -229,9 +237,19 @@ vector<vector<int>> gauss(vector<vector<int>> matrix, int dimGF)
 	for (unsigned i = 0; i < matrix.size(); ++i)
 	{
 		unsigned k = i;
+        bool stop = false;
+
 		while (matrix[k++][i] == 0)
-			if (k == matrix.size())
-				goto end_loop;
+        {
+            if (k == matrix.size())
+            {
+                stop = true;
+                break;
+            }
+        }
+
+        if (stop)
+            continue;
 
 		if (--k != i)
 			matrix[k].swap(matrix[i]);
@@ -253,7 +271,6 @@ vector<vector<int>> gauss(vector<vector<int>> matrix, int dimGF)
 					matrix[j][k] += dimGF;
 			}
 		}
-	end_loop:;
 	}
 
 	return matrix;
@@ -288,15 +305,26 @@ PolynomState PolynomChecker::checkMatrix(const Polynom& p)
 	return p.getDegree() - rank == 1 ? IRREDUCIBLE : REDUCIBLE;
 }
 
+/// General Irreducibility Test Algorithm based in Cantor-Zassenhaus Factorization Method
+void PolynomChecker::cantorzassenhaus()
+{
+    CantorZassenhausTest(*polynom);
+}
+
 void* PolynomChecker::check(void *arg)
 {
-    switch(((PolynomChecker *)arg)->method)
+    auto polyChecker = static_cast<PolynomChecker *>(arg);
+
+    switch(polyChecker->method)
     {
         case Matlab:
-            ((PolynomChecker *)arg)->matlab();
+            polyChecker->matlab();
             break;
         case Berlekamp:
-            ((PolynomChecker *)arg)->berlekamp();
+            polyChecker->berlekamp();
+            break;
+        case CantorZassenhaus:
+            polyChecker->cantorzassenhaus();
             break;
     }
     
@@ -322,5 +350,230 @@ void PolynomChecker::free()
 PolynomChecker::PolynomChecker()
 {
     busy = false;
+}
+
+///  Проверяет, имеет ли полином кратные множители
+bool PolynomChecker::isSquareFree(const Polynom &f)
+{
+    Polynom c = gcd(f, f.Derivative());
+    return c.getDegree() == 0 && c[0] == 1;
+}
+
+PolynomState PolynomChecker::CantorZassenhausTest(const Polynom& f)
+{
+    Polynom x(f.getDim(), {0, 1});
+    int q = f.getDim();
+    int n = f.getDegree();
+
+    for (int r = (n / 4) + 1; r <= n / 2; r++)
+    {
+        Polynom h = (x.BinExp(powl(q, r), f) - x) % f;
+        Polynom g = gcd(f, h);
+
+        if (g != 1)
+        {
+            f.setIrreducible(REDUCIBLE);
+            return REDUCIBLE;
+        }
+    }
+
+    f.setIrreducible(IRREDUCIBLE);
+    return IRREDUCIBLE;
+}
+
+Factors PolynomChecker::CantorZassenhausFactorization(const Polynom& f)
+{
+    Factors factors;
+
+    // Factors and the number (g, s) in which this factors should be powered in order to get f(x)
+    // i.e. f(x) = Product of g_i(x) ^ s_i
+    factors = SquareFreeFactorization(f);
+    if (!factors.empty())
+    {
+        return factors;
+    }
+
+    // Each pair (g, r) represents a polynomial g(x) which is the product of deg(g)/r distinct irreducibles of degree r
+    factors = DistinctDegreeFactorization(f);
+    if (factors.empty())
+    {
+        factors.insert({f.getDegree(), f});
+        return factors;
+    }
+
+    factors = EqualDegreeFactorization(factors);
+    return factors;
+}
+
+///  Square free factorization - разложение на кратные множители
+/**
+\param[in] p Полином
+\return std::vector<Polynom> Кратные множители
+*/
+Factors PolynomChecker::SquareFreeFactorization(const Polynom &p)
+{
+    Factors R;
+
+    Polynom c = gcd(p, p.Derivative());
+    Polynom w = p / c;
+
+    for (int degree = 1; w != 1; degree++)
+    {
+        Polynom y = gcd(w, c);
+        Polynom fac = w / y;
+
+        if (fac != 1)
+            R.insert({degree, fac});
+
+        w = y;
+        c = c / y;
+    }
+
+    if (c != 1)
+    {
+        Polynom cTmp = c;
+        int p = cTmp.getDim();
+        for (int i = cTmp.getDegree(); i > 1; i--)
+        {
+            if (cTmp[i] != 0)
+            {
+                c[i] = 0;
+                c[i / p] = cTmp[i];
+            }
+        }
+        c.RemoveLeadingZeros();
+
+        Factors RTmp = SquareFreeFactorization(c);
+
+        for (auto it = RTmp.begin(); it != RTmp.end(); it++)
+        {
+            R.insert({it->first * p, it->second});
+        }
+    }
+
+    return R;
+}
+
+/// Distinct degree factorization - факторизация различными степенями
+/**
+\param[in] f Исходный полином
+\return std::vector<Polynom> Множители каждой степени от 1 до deg(f)
+*/
+Factors PolynomChecker::DistinctDegreeFactorization(const Polynom &p)
+{
+    Factors factors;
+    Polynom f   = p;
+    auto q      = f.getDim();
+    auto degree = f.getDegree();
+
+    for (int r = 1; r < degree; r++)
+    {
+        Polynom x(f.getDim(), { 0, 1 });
+        Polynom sqr =  x.BinExp(powl(q, r), f);
+        Polynom h = (sqr - x) % f;
+        Polynom g = gcd(h, f);
+
+        while (g != 1)
+        {
+            factors.insert({r, g});
+            f /= g;
+            g = gcd(h, f);
+        }
+    }
+
+    return factors;
+}
+
+Factors PolynomChecker::EqualDegreeFactorization(Factors factors)
+{
+    while (true)
+    {
+        for (auto it = factors.begin(); it != factors.end(); it++)
+        {
+            if (it->second.getDegree() > it->first)
+            {
+                Factors edfFactors = EqualDegreeFactorization(it->second, it->first);
+
+                if (!edfFactors.empty())
+                {
+                    factors.erase(it);
+                    factors.merge(edfFactors);
+                    it = factors.begin();
+                }
+            }
+        }
+
+        bool complete = true;
+        for (auto & factor : factors)
+        {
+            if (factor.first != factor.second.getDegree())
+            {
+                complete = false;
+                break;
+            }
+        }
+
+        if (complete)
+            break;
+    }
+
+    return factors;
+}
+
+
+Factors PolynomChecker::EqualDegreeFactorization(const Polynom &p, int d)
+{
+    Factors factors;
+
+    int c = (powl(p.getDim(), d) - 1) / 2;
+    int v = p.getPrimeDeg();
+
+    Polynom h = GenRandPolynom(p);
+    Polynom g(p.getDim(), {});
+
+    if (p.getPrime() == 2)
+    {
+        for (int j = 0; j < v * d - 1; j++)
+            g += h.BinExp(powl(2, j), p);
+    }
+    else
+    {
+        g = gcd(p, h);
+    }
+
+    if (p.getPrime() != 2 && g == 1)
+    {
+        g = (h.Exp(c) - Polynom(p.getDim(), {1})) % p;
+    }
+
+    Polynom pgGcd = gcd(p, g);
+    if (pgGcd != 1 && pgGcd != p)
+    {
+        factors.insert({d, pgGcd});
+        factors.insert({d, p / pgGcd});
+    }
+
+    return factors;
+}
+
+Polynom PolynomChecker::GenRandPolynom(const Polynom& p)
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_int_distribution<> distrib(0, p.getPrime() - 1);
+
+    Polynom pRes(p.getDim(), {});
+
+    while (pRes.getDegree() == 0)
+    {
+        for (int i = 0; i < p.getCoef().size(); i++)
+        {
+            pRes.getRefCoef().push_back(distrib(gen) % p.getPrime());
+        }
+
+        pRes.RemoveLeadingZeros();
+    }
+
+    return pRes;
 }
 
