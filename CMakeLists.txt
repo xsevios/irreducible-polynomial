@@ -3,4 +3,5 @@ project(irreducible_polynomial)
 
 add_subdirectory(source/lib)
 add_subdirectory(source/test)
+add_subdirectory(source/benchmark)
 add_subdirectory(source/driver)
