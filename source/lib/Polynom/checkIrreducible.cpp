@@ -94,9 +94,12 @@ void PolynomChecker::matlab()
 /// Алгоритм Евклида для многочленов
 Polynom gcd(Polynom a, Polynom b)
 {
-	if (a.isZero())
-		return b;
-	Polynom d = gcd(b%a, a);
+	if (b.IsZero())
+    {
+        return a * getMultInverse(a.GetLeadingCoef(), a.getDim());
+    }
+
+	Polynom d = gcd(b, a % b);
 	return d;
 }
 

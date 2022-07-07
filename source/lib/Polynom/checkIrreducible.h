@@ -4,6 +4,8 @@
 #include "polynom.h"
 #include "../Scheduler/scheduler.h"
 
+Polynom gcd(Polynom a, Polynom b);
+
 class PolynomChecker
 {
     Polynom* polynom;
