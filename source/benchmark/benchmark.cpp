@@ -101,6 +101,7 @@ void Benchmark::runBenchmark(const int maxDim, const int maxDegree, const int po
 
     std::vector<PolynomState> berlekampRes;
     std::vector<PolynomState> cantorzassenhausRes;
+    std::vector<PolynomState> rabinsRes;
     int i = 0;
     std::chrono::steady_clock::time_point begin;
     std::chrono::steady_clock::time_point end;
@@ -128,6 +129,19 @@ void Benchmark::runBenchmark(const int maxDim, const int maxDegree, const int po
     }
     end = std::chrono::steady_clock::now();
     std::cout << "--- Cantor-Cassenhausen benchmark completed ---" << std::endl;
+    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
+    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+
+    i = 0;
+    std::cout << "--- Rabins test benchmark started ---" << std::endl;
+    begin = std::chrono::steady_clock::now();
+    for (auto& polynom : polynoms)
+    {
+        rabinsRes.push_back(PolynomChecker::RabinsTest(polynom));
+        std::cout << "    " << ++i << "/" << polynoms.size();
+    }
+    end = std::chrono::steady_clock::now();
+    std::cout << "--- Rabins test benchmark completed ---" << std::endl;
     std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
     std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
 

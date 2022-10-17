@@ -84,6 +84,8 @@ void Polynom::init()
             break;
         }
     }
+
+    RemoveLeadingZeros();
 }
 
 Polynom::~Polynom(){} // don't change
@@ -415,7 +417,7 @@ bool operator==(const Polynom& lp, const Polynom& rp)
     
     unsigned size = lp.coef.size();
 
-    if (size != rp.coef.size())
+    if (lp.coef.size() != rp.coef.size())
         return false;
     else
         for (unsigned i = 0; i < size; i++)

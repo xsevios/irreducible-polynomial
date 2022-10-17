@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <random>
+#include <algorithm>
 
 //#define DEBUG
 
@@ -367,7 +368,8 @@ PolynomState PolynomChecker::CantorZassenhausTest(const Polynom& f)
 
     for (int r = (n / 4) + 1; r <= n / 2; r++)
     {
-        Polynom h = (x.BinExp(powl(q, r), f) - x) % f;
+        Polynom sqr = x.BinExp(powl(q, r), f);
+        Polynom h = (sqr - x) % f;
         Polynom g = gcd(f, h);
 
         if (g != 1)
@@ -387,11 +389,13 @@ Factors PolynomChecker::CantorZassenhausFactorization(const Polynom& f)
 
     // Factors and the number (g, s) in which this factors should be powered in order to get f(x)
     // i.e. f(x) = Product of g_i(x) ^ s_i
-    factors = SquareFreeFactorization(f);
-    if (!factors.empty())
-    {
-        return factors;
-    }
+
+// TODO: /source/test/tester.cpp:282: void Tester::runTest(): Assertion `PolynomChecker::CantorZassenhausFactorization(p).size() == 2' failed.
+//    factors = SquareFreeFactorization(f);
+//    if (!factors.empty())
+//    {
+//        return factors;
+//    }
 
     // Each pair (g, r) represents a polynomial g(x) which is the product of deg(g)/r distinct irreducibles of degree r
     factors = DistinctDegreeFactorization(f);
@@ -575,5 +579,70 @@ Polynom PolynomChecker::GenRandPolynom(const Polynom& p)
     }
 
     return pRes;
+}
+
+PolynomState PolynomChecker::RabinsTest(const Polynom &f)
+{
+    int n = f.getDegree();
+
+    auto primeDivisors = GetPrimeDivisors(f.getDegree(), true);
+    std::reverse(primeDivisors.begin(), primeDivisors.end());
+
+    std::vector<int> divisors;
+    std::transform(primeDivisors.begin(), primeDivisors.end(),
+                   std::back_inserter(divisors),
+                   [n](const int& elem) { return n / elem; });
+
+    Polynom x(f.getDim(), { 0, 1 });
+    for (const auto& divisor : divisors)
+    {
+        Polynom sqr = x.BinExp(powl(f.getDim(), divisor), f);
+        Polynom h = (sqr - x) % f;
+        Polynom g = gcd(f, h);
+        if (g != 1)
+        {
+            f.setIrreducible(REDUCIBLE);
+            return REDUCIBLE;
+        }
+    }
+    
+    Polynom sqr = x.BinExp(powl(f.getDim(), f.getDegree()), f);
+    Polynom g = (sqr - x) % f;
+
+    if (g != 0)
+    {
+        f.setIrreducible(REDUCIBLE);
+        return REDUCIBLE;
+    }
+
+    f.setIrreducible(IRREDUCIBLE);
+    return IRREDUCIBLE;
+}
+
+std::vector<int> PolynomChecker::GetPrimeDivisors(int n, bool distinct)
+{
+    std::vector<int> divisors;
+
+    int k = 2;
+    while (k <= n)
+    {
+        if (n % k != 0)
+        {
+            k++;
+        }
+        else
+        {
+            divisors.push_back(k);
+            n /= k;
+        }
+    }
+
+    if (distinct)
+    {
+        auto last = std::unique(divisors.begin(), divisors.end());
+        divisors.erase(last, divisors.end());
+    }
+
+    return divisors;
 }
 

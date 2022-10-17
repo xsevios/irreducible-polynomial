@@ -17,7 +17,7 @@ using namespace std;
  */
 ostream& operator<<(ostream& out, const Polynom& p)
 {
-    out << p.isIrreducible() << " " << p.getDim();
+    out << "isirreducible=" << p.isIrreducible() << " dim=" << p.getDim();
     
     vector<int> coef = p.getCoef();
     for(unsigned i = 0; i < coef.size(); i++)
@@ -63,6 +63,20 @@ void Tester::runTest()
 
     assert(getMultInverse(1, 7) == 1);
     assert(getMultInverse(2, 7) == 4);
+
+    auto divisors = PolynomChecker::GetPrimeDivisors(2);
+    assert(PolynomChecker::GetPrimeDivisors(2)          == (std::vector<int>{2}));
+    assert(PolynomChecker::GetPrimeDivisors(3)          == (std::vector<int>{3}));
+    assert(PolynomChecker::GetPrimeDivisors(9)          == (std::vector<int>{3, 3}));
+    assert(PolynomChecker::GetPrimeDivisors(18)         == (std::vector<int>{2, 3, 3}));
+    assert(PolynomChecker::GetPrimeDivisors(36)         == (std::vector<int>{2, 2, 3, 3}));
+    assert(PolynomChecker::GetPrimeDivisors(4)          == (std::vector<int>{2, 2}));
+    assert(PolynomChecker::GetPrimeDivisors(4, true)    == (std::vector<int>{2}));
+    assert(PolynomChecker::GetPrimeDivisors(8)          == (std::vector<int>{2, 2, 2}));
+    assert(PolynomChecker::GetPrimeDivisors(8, true)    == (std::vector<int>{2}));
+    assert(PolynomChecker::GetPrimeDivisors(1024)       == (std::vector<int>{2, 2, 2, 2, 2, 2, 2, 2, 2, 2}));
+    assert(PolynomChecker::GetPrimeDivisors(1024, true) == (std::vector<int>{2}));
+    assert(PolynomChecker::GetPrimeDivisors(3072, true) == (std::vector<int>{2, 3}));
 
     {
         Polynom p1(7, {6, 4, 5});
@@ -174,6 +188,24 @@ void Tester::runTest()
         assert(factors == SffFactors);
     }
 
+    {
+        Polynom p(2, {1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
+        Factors SffFactors = PolynomChecker::SquareFreeFactorization(p);
+
+        Factors factors;
+        factors.insert({1, Polynom(2, {1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1})});
+        assert(factors == SffFactors);
+    }
+
+    {
+        Polynom p(2, {0, 1, 0, 1, 1});
+        Factors SffFactors = PolynomChecker::SquareFreeFactorization(p);
+
+        Factors factors;
+        factors.insert({1, Polynom(2, {0, 1, 0, 1, 1})});
+        assert(factors == SffFactors);
+    }
+
     // -----------------------------------
 
     {
@@ -241,8 +273,35 @@ void Tester::runTest()
     }
 
     {
-        Polynom p(2, {0, 1, 0, 1, 1});
-        assert(PolynomChecker::CantorZassenhausFactorization(p).size() == 1);
+        Polynom p(2, {1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
         assert(PolynomChecker::CantorZassenhausTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        Polynom p(2, {0, 1, 0, 1, 1});
+        assert(PolynomChecker::CantorZassenhausFactorization(p).size() == 2);
+        assert(PolynomChecker::CantorZassenhausTest(p) == REDUCIBLE);
+    }
+
+    // -----------------------------------
+
+    {
+        Polynom p(3, {2, 1, 1, 1, 0, 0, 2, 1});
+        assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        Polynom p(2, {0, 1, 1});
+        assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
+    }
+
+    {
+        Polynom p(2, {1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
+        assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        Polynom p(2, {0, 1, 0, 1, 1});
+        assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
     }
 }

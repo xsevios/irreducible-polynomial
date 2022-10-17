@@ -22,6 +22,9 @@ public:
     void                            setPoly                         (Polynom* polynom, pthread_mutex_t* mutex, pthread_cond_t* cond);
     static void*                    check                           (void *arg);
 
+    // Tools
+    static std::vector<int>         GetPrimeDivisors                (int n, bool distinct = false);
+
     // General irreducibility methods
     void                            matlab();
     void                            berlekamp();
@@ -42,6 +45,9 @@ public:
     static Polynom                  GenRandPolynom                  (const Polynom& p);
     static Factors                  EqualDegreeFactorization        (const Polynom& p, int d);
     static Factors                  EqualDegreeFactorization        (Factors factors);
+
+    // Rabin's Irreducibility Test
+    static PolynomState             RabinsTest                      (const Polynom& f);
 
 private:
     Polynom*                        polynom;
