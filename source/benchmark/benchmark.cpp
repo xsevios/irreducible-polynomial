@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <chrono>
+#include <functional>
 
 #include "LibraryInterface/LibraryInterface.h"
 #include "benchmark.h"
@@ -19,10 +20,8 @@ using namespace std;
  */
 ostream& operator<<(ostream& out, const Polynom& p)
 {
-    out << p.isIrreducible() << " " << p.getDim();
-    
     vector<int> coef = p.getCoef();
-    for(unsigned i = 0; i < coef.size(); i++)
+    for(int i = coef.size() - 1; i >= 0; i--)
         out << " " << coef[i];
 
     return out;
@@ -76,17 +75,16 @@ bool isPrime(T n)
     return true;
 }
 
-void Benchmark::runBenchmark(const int maxDim, const int maxDegree, const int polyCountForEach)
+std::vector<Polynom> Benchmark::generatePolynoms(const int minDim, const int maxDim, const int minDegree, const int maxDegree, const int polyCountForEach)
 {
     std::vector<Polynom> polynoms;
-    for (auto dim = 2; dim <= maxDim; dim++)
+
+    for (auto dim = minDim; dim <= maxDim; dim++)
     {
         if (!isPrime(dim))
             continue;
 
-        std::cout << "Polynom dim=" << dim << std::endl;
-
-        for (auto degree = 1; degree < maxDegree; degree++)
+        for (auto degree = minDegree; degree <= maxDegree; degree++)
         {
             Polynom base(dim, std::vector<int>(degree, 1));
 
@@ -94,61 +92,74 @@ void Benchmark::runBenchmark(const int maxDim, const int maxDegree, const int po
             {
                 Polynom p = GenRandPolynom(base);
                 polynoms.push_back(p);
-                std::cout << p << std::endl;
             }
         }
     }
 
-    std::vector<PolynomState> berlekampRes;
-    std::vector<PolynomState> cantorzassenhausRes;
-    std::vector<PolynomState> rabinsRes;
-    int i = 0;
+    return polynoms;
+}
+
+std::chrono::nanoseconds Benchmark::runBenchmark(std::vector<Polynom> &polynoms, std::function<PolynomState(const Polynom&)> method, std::vector<PolynomState> &checkRes)
+{
     std::chrono::steady_clock::time_point begin;
     std::chrono::steady_clock::time_point end;
 
-    i = 0;
-    std::cout << "--- Berlekamp benchmark started ---" << std::endl;
     begin = std::chrono::steady_clock::now();
     for (auto& polynom : polynoms)
     {
-        berlekampRes.push_back(PolynomChecker::BerlekampTest(polynom));
-        std::cout << "    " << ++i << "/" << polynoms.size();
+        checkRes.push_back(method(polynom));
     }
     end = std::chrono::steady_clock::now();
-    std::cout << "--- Berlekamp benchmark completed ---" << std::endl;
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
 
-    i = 0;
-    std::cout << "--- Cantor-Cassenhausen benchmark started ---" << std::endl;
-    begin = std::chrono::steady_clock::now();
-    for (auto& polynom : polynoms)
-    {
-        cantorzassenhausRes.push_back(PolynomChecker::CantorZassenhausTest(polynom));
-        std::cout << "    " << ++i << "/" << polynoms.size();
-    }
-    end = std::chrono::steady_clock::now();
-    std::cout << "--- Cantor-Cassenhausen benchmark completed ---" << std::endl;
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+}
 
-    i = 0;
-    std::cout << "--- Rabins test benchmark started ---" << std::endl;
-    begin = std::chrono::steady_clock::now();
-    for (auto& polynom : polynoms)
+void Benchmark::runBenchmark(const int minDim, const int maxDim, const int minDegree, const int maxDegree, const int polyCountForEach)
+{
+    std::cout << "--- Generation polynoms started ---" << std::endl;
+    std::cout << "Min dim: " << minDim << std::endl;
+    std::cout << "Max dim: " << maxDim << std::endl;
+    std::cout << "Min degree: " << minDegree << std::endl;
+    std::cout << "Max degree: " << maxDegree << std::endl;
+    std::cout << "Number of polynoms for each dim and degree: " << polyCountForEach << std::endl;
+    std::vector<Polynom> polynoms = generatePolynoms(minDim, maxDim, minDegree, maxDegree, polyCountForEach);
+    std::cout << "--- Generation polynoms completed ---" << std::endl;
+    std::cout << "Number of generated polynoms: " << polynoms.size() << std::endl;
+
+    std::cout << std::endl;
+
+    using benchmarkData = std::tuple<std::string, std::function<PolynomState(const Polynom& f)>, std::vector<PolynomState>, std::chrono::nanoseconds>;
+
+    std::chrono::nanoseconds berlekampElapsed;
+    std::chrono::nanoseconds cantorzassenhausElapsed;
+    std::chrono::nanoseconds rabinsElapsed;
+
+    std::vector<PolynomState> berlekampRes;
+    std::vector<PolynomState> cantorzassenhausRes;
+    std::vector<PolynomState> rabinsRes;
+
+    std::vector<benchmarkData> toRun = {
+            {"Berlekamp",           PolynomChecker::BerlekampTest,          berlekampRes,           berlekampElapsed},
+            {"Cantor-Zassenhaus",   PolynomChecker::CantorZassenhausTest,   cantorzassenhausRes,    cantorzassenhausElapsed},
+            {"Rabin",               PolynomChecker::RabinsTest,             rabinsRes,              rabinsElapsed},
+    };
+
+    for (auto run : toRun)
     {
-        rabinsRes.push_back(PolynomChecker::RabinsTest(polynom));
-        std::cout << "    " << ++i << "/" << polynoms.size();
+        std::cout << "--- " << std::get<0>(run) << " benchmark started ---" << std::endl;
+        std::get<3>(run) = runBenchmark(polynoms, std::get<1>(run), std::get<2>(run));
+        std::cout << "--- " << std::get<0>(run) << " benchmark completed ---" << std::endl;
+        std::cout << "Elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(run)).count() << "[ms]" << std::endl;
+        std::cout << std::endl;
     }
-    end = std::chrono::steady_clock::now();
-    std::cout << "--- Rabins test benchmark completed ---" << std::endl;
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
 
     for (int i = 0; i < berlekampRes.size(); i++)
     {
-        if (berlekampRes[i] != cantorzassenhausRes[i])
-            std::cout << "Test results mismatch (" << berlekampRes[i] << "/" << cantorzassenhausRes[i] << ") for polynom №" << i + 1 << " " << polynoms[i] << std::endl;
+        if (berlekampRes[i]  != cantorzassenhausRes[i] || cantorzassenhausRes[i]  != rabinsRes[i])
+        {
+            std::cout << "Test results mismatch (" << berlekampRes[i] << "/" << cantorzassenhausRes[i] << "/" << rabinsRes[i] << ") for polynom №" << i + 1 << " " << polynoms[i]  << std::endl;
+            assert(0);
+        }
     }
 }
 

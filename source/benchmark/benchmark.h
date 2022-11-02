@@ -10,6 +10,8 @@
 #define _BENCHMARK_H
 
 #include "LibraryInterface/LibraryInterface.h"
+#include <chrono>
+#include <functional>
 
 using namespace std;
  
@@ -35,10 +37,14 @@ public:
     ~Benchmark();
     
     void loadLibrary();
-    void runBenchmark(const int maxDim, const int maxDegree, const int polyCountForEach);
+    void runBenchmark(const int minDim, const int maxDim, const int minDegree, const int maxDegree, const int polyCountForEach);
 
 
     static Polynom GenRandPolynom(const Polynom& p);
+
+    vector<Polynom> generatePolynoms(const int minDim, const int maxDim, const int minDegree, const int maxDegree, const int polyCountForEach);
+
+    chrono::nanoseconds runBenchmark(vector<Polynom> &polynoms, std::function<PolynomState(const Polynom&)> method, vector<PolynomState> &checkRes);
 };
 
 #endif

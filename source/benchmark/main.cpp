@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     Benchmark benchmark(lib_path);
 
     benchmark.loadLibrary();
-    benchmark.runBenchmark(10, 10, 100);
+    benchmark.runBenchmark(1, 7, 1, 10, 1000);
     
     return 0;
 }
