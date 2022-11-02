@@ -110,6 +110,100 @@ void Tester::runTest()
         assert(p[1] == 6);
     }
 
+    // ----------------- Gauss ------------------
+
+    {
+        std::vector<vector<int>> matrix ={
+            {0, 0, 0, 0},
+            {0, 1, 1, 0},
+            {1, 0, 1, 1},
+            {1, 1, 1, 0},
+        };
+
+        std::vector<vector<int>> gaussMatrix;
+
+        gaussMatrix = gauss(matrix, 2);
+        int gaussRank = PolynomChecker::getRank(gaussMatrix, 2);
+        assert(gaussRank == 3);
+    }
+
+
+    {
+        std::vector<vector<int>> matrix ={
+            {0, 0, 0, 1},
+            {0, 0, 0, 1},
+            {0, 0, 0, 1},
+            {0, 0, 0, 1},
+        };
+
+        std::vector<vector<int>> gaussMatrix;
+
+        gaussMatrix = gauss(matrix, 2);
+        int gaussRank = PolynomChecker::getRank(gaussMatrix, 2);
+        assert(gaussRank == 1);
+    }
+
+    {
+        std::vector<vector<int>> matrix ={
+            {0, 0, 0, 0},
+            {0, 1, 1, 0},
+            {0, 1, 1, 1},
+            {0, 1, 1, 1},
+        };
+
+        std::vector<vector<int>> gaussMatrix;
+
+        gaussMatrix = gauss(matrix, 2);
+        int gaussRank = PolynomChecker::getRank(gaussMatrix, 2);
+        assert(gaussRank == 2);
+    }
+
+    {
+        std::vector<vector<int>> matrix ={
+            {0, 0, 1, 0},
+            {0, 0, 3, 0},
+            {0, 0, 0, 2},
+            {0, 0, 0, 1},
+        };
+
+        std::vector<vector<int>> gaussMatrix;
+
+        gaussMatrix = gauss(matrix, 5);
+        int gaussRank = PolynomChecker::getRank(gaussMatrix, 5);
+        assert(gaussRank == 2);
+    }
+
+    {
+        std::vector<vector<int>> matrix = {
+            {3, 1, 0, 0},
+            {1, 1, 3, 0},
+            {0, 1, 2, 0},
+            {0, 0, 1, 1},
+        };
+
+        std::vector<vector<int>> gaussMatrix;
+
+        gaussMatrix = gauss(matrix, 5);
+        int gaussRank = PolynomChecker::getRank(gaussMatrix, 5);
+        assert(gaussRank == 3);
+    }
+
+    {
+        std::vector<vector<int>> matrix ={
+            {0, 0, 0, 0, 0},
+            {0, 2, 0, 1, 0},
+            {0, 2, 1, 1, 0},
+            {1, 0, 1, 0, 2},
+            {2, 1, 1, 0, 1},
+        };
+
+        std::vector<vector<int>> gaussMatrix;
+
+        gaussMatrix = gauss(matrix, 3);
+        int gaussRank = PolynomChecker::getRank(gaussMatrix, 3);
+        assert(gaussRank == 4);
+    }
+
     // -----------------------------------
 
     {
@@ -303,5 +397,32 @@ void Tester::runTest()
     {
         Polynom p(2, {0, 1, 0, 1, 1});
         assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
+    }
+
+    // ----------------- BerlekampTest ------------------
+
+    {
+        Polynom p(2, {1, 0, 0, 1, 1});
+        assert(PolynomChecker::BerlekampTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        Polynom p(3, {1, 2, 2, 2, 1, 0, 0, 1, 2, 1});
+        assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
+    }
+
+    {
+        Polynom p(2, {1, 1, 1, 1});
+        assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
+    }
+
+    {
+        Polynom p(2, {0, 1, 0, 1, 1});
+        assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
+    }
+
+    {
+        Polynom p(3, {1, 1, 2, 0, 0, 1});
+        assert(PolynomChecker::BerlekampTest(p) == IRREDUCIBLE);
     }
 }
