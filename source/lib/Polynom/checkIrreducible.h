@@ -10,6 +10,7 @@
 using Factors = std::unordered_multimap<int, Polynom>;
 
 Polynom gcd(Polynom a, Polynom b);
+vector<vector<int>> gauss(vector<vector<int>> matrix, int dimGF);
 
 class PolynomChecker
 {

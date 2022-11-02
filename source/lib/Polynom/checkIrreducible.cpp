@@ -126,10 +126,10 @@ void PolynomChecker::berlekamp()
     BerlekampTest(*polynom);
 }
 
-PolynomState PolynomChecker::BerlekampTest(const Polynom& p)
+PolynomState PolynomChecker::BerlekampTest(const Polynom& f)
 {
-    vector<int> tmp = p.getCoef();
-    Polynom pTmp = p;
+    vector<int> tmp = f.getCoef();
+    Polynom pTmp = f;
     pTmp = pTmp / pTmp.GetLeadingCoef();               ///< Нормировка многочлена
     Polynom polyDer = pTmp.Derivative();               ///< polyDer --  производная проверяемого многочлена
     if (!polyDer.IsZero())
@@ -138,15 +138,15 @@ PolynomState PolynomChecker::BerlekampTest(const Polynom& p)
         if (!firstCheck.getDegree())
         {
             PolynomState answer = checkMatrix(pTmp);   ///< checkMatrix составляет матрицу и проверяет её ранг для данного многочлена
-            p.setIrreducible(answer);
+            f.setIrreducible(answer);
         }
         else
-            p.setIrreducible(REDUCIBLE);
+            f.setIrreducible(REDUCIBLE);
     }
     else
-        p.setIrreducible(REDUCIBLE);
+        f.setIrreducible(REDUCIBLE);
 
-    return p.isIrreducible();
+    return f.isIrreducible();
 }
 
 /// Cоставляет матрицу для данного многочлена
@@ -235,39 +235,46 @@ vector<vector<int>> gauss(vector<vector<int>> matrix, int dimGF)
 {
 	int coef;
 
+    unsigned eliminated = 0;
 	for (unsigned i = 0; i < matrix.size(); ++i)
 	{
-		unsigned k = i;
+        unsigned eliminateFrom = i - eliminated;
+        unsigned k = eliminateFrom;
         bool stop = false;
 
-		while (matrix[k++][i] == 0)
+		while (matrix[k][i] == 0)
         {
-            if (k == matrix.size())
+            if (k + 1 == matrix.size())
             {
+                eliminated++;
                 stop = true;
                 break;
             }
+
+            k++;
         }
 
         if (stop)
             continue;
 
-		if (--k != i)
-			matrix[k].swap(matrix[i]);
-		
-		for (unsigned j = i + 1; j < matrix.size(); ++j)
+		if (k != eliminateFrom)
+			matrix[k].swap(matrix[eliminateFrom]);
+
+        int inverse = 0;
+        int y = 0;
+        int tmp = matrix[eliminateFrom][i];
+
+        gcdex(tmp, dimGF, inverse, y);
+        inverse = (inverse % dimGF + dimGF) % dimGF;
+        for (unsigned k = i; k < matrix.size(); ++k)
+            matrix[eliminateFrom][k] = matrix[eliminateFrom][k] * inverse % dimGF;
+
+        for (unsigned j = eliminateFrom + 1; j < matrix.size(); ++j)
 		{
-		    int inverse = 0;
-			int y = 0;
-			int tmp = matrix[i][i];
-			gcdex(tmp, dimGF, inverse, y);
-			inverse = (inverse % dimGF + dimGF) % dimGF;
-			for (unsigned k = i; k < matrix.size(); ++k)
-			    matrix[i][k] = matrix[i][k] * inverse % dimGF;
-			coef = matrix[j][i] * inverse % dimGF;
-			for (unsigned k = i; k < matrix.size(); ++k)
+			coef = matrix[j][i];
+			for (unsigned k = i; k < matrix[j].size(); ++k)
 			{
-				matrix[j][k] = (matrix[j][k] - matrix[i][k] * coef) % dimGF;
+				matrix[j][k] = (matrix[j][k] - matrix[eliminateFrom][k] * coef) % dimGF;
 				if (matrix[j][k] < 0)
 					matrix[j][k] += dimGF;
 			}
@@ -289,13 +296,17 @@ int PolynomChecker::getRank(vector<vector<int>> m, int dimGF)
     int rank = 0;
     m = gauss(m, dimGF);
     for (unsigned i = 0; i < m.size(); i++)
+    {
         for (unsigned j = 0; j < m.size(); j++)
+        {
             if (m[i][j] != 0)
             {
                 rank++;
                 break;
             }
-    
+        }
+    }
+
     return rank;
 }
 
