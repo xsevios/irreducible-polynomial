@@ -16,6 +16,8 @@ void usage(const char *prog)
 
 int main(int argc, char **argv)
 {
+    setbuf(stdout, 0);
+
     char const* conf_path = _CONFIG;
     char const* lib_path = _LIB;
     
@@ -73,7 +75,7 @@ int main(int argc, char **argv)
     int minDim              = 5;
     int maxDim              = 6;
     int minDegree           = 3;
-    int maxDegree           = 100;
+    int maxDegree           = 30;
     int polyCountForEach    = 1000;
     int totalBenchmarks     = (maxDim - minDim) * (maxDegree - minDegree);
     int currentBenchmark    = 0;

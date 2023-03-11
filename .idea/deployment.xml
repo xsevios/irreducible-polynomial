@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="ARM (6e0a4fa1-46c5-494a-ba09-e5e3e47a4e16)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Remote Host (583baeea-7888-4a87-a953-d333294305fb)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.s0vCH9xlNf" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-remote-host" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-wsl" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release-remote-host" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-remote-host" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-remote-host-coverage" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release-wsl" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release-remote-host" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-release-wsl" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-wsl" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-remote-host-coverage" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="x86 (e1a2595f-a525-4d9f-8b3d-153de2bce8ac)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

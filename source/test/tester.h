@@ -36,6 +36,8 @@ public:
     
     void loadLibrary();
     void runTest();
+
+    void testBigint();
 };
 
 #endif

@@ -16,6 +16,10 @@ add_library(irredpoly SHARED
         Polynom/polynom.h
         Scheduler/scheduler.cpp
         Scheduler/scheduler.h
-        lib.h)
+        BigInt/bigint.cpp
+        BigInt/bigint.h
+        BigInt/fft.cpp
+        BigInt/fft.h
+        lib.h Polynom/Field.cpp)
 
 target_link_libraries(irredpoly Threads::Threads)

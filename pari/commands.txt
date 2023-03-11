@@ -1,0 +1,41 @@
+polynom_reader(str) = {
+	str = strsplit(str, " ");
+	str = strjoin(str, ",");
+	str = concat("[", str);
+	str = concat(str, "]");
+	str_coefs = eval(str);
+	return(Pol(str_coefs));
+}
+
+number_reader(str) = eval(str);
+
+read_file(file_name, ~list, reader) =
+{
+	listkill(list);
+	file = fileopen(file_name);
+	while(l = filereadstr(file), listput(list, reader(l)));
+	fileclose(file);
+}
+
+run_benchmark(polynom, dim, ~factored, factor_method) =
+{
+	factored = List();
+	T = getwalltime();
+	for (i = 1, length(dim), listput(factored,  factorcantor(polynom[i], dim[i])));
+	elapsed = getwalltime() - T;
+	print(elapsed);
+}
+
+polynoms_file_name = "C:\\Users\\nikit\\OneDrive\\Документы\\Учеба\\Аспирантура\\Диссертация\\polynoms\\test_poly.txt"
+
+dims_file_name = "C:\\Users\\nikit\\OneDrive\\Документы\\Учеба\\Аспирантура\\Диссертация\\polynoms\\test_dim.txt"
+
+polynom = List()
+dim = List()
+factored = List()
+
+read_file(polynoms_file_name, ~polynom, polynom_reader);
+read_file(dims_file_name, ~dim, number_reader);
+
+run_benchmark(polynom, dim, factored, factorcantor);
+run_benchmark(polynom, dim, factored, factormod);
