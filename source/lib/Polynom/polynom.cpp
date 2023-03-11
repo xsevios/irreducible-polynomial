@@ -6,10 +6,13 @@
 #include "polynom.h"
 #include <iostream>
 #include <string>
+#include <map>
+#include <cmath>
 #include <sstream>
 #include <iterator>
 #include <algorithm>
 #include <cassert>
+#include <utility>
 
 //#define DEBUG
 
@@ -28,6 +31,7 @@ extern "C" void destroy_polynom(Polynom* object)
 {
     delete object;
 }
+
 /**
  * \brief Конструктор класса, инициализирующий поля
  * \param[in] dim размерность поля
@@ -35,12 +39,9 @@ extern "C" void destroy_polynom(Polynom* object)
  */ 
 Polynom::Polynom(int dim, vector<int> coef)
 {
-    this->dimGF         = dim;
-    this->coef          = coef;
-
-    init();
+    m_coef      = coef;
+    init(dim);
 }
-
 
 /**
  * \brief Конструктор класса, разбирающий строку сожержащую полином 
@@ -52,38 +53,40 @@ Polynom::Polynom(string strPolynom)
     
     string sub;
     iss >> sub;
-    dimGF = stoi(sub);
+    int dimGF = stoi(sub);
     
     while(iss >> sub)
     {
-        coef.push_back(stoi(sub));
+        m_coef.push_back(stoi(sub));
     }
 
-    init();
+    init(dimGF);
 }
 
-void Polynom::init()
+void Polynom::init(int dim)
 {
+    m_pField    = Field::GetInstance(dim);
+
     this->irreducible   = NEED_CHECK;
 
-    for (int i = 2; i <= dimGF; i++)
-    {
-        int degree     = 1;
-        int primePower = i;
-
-        while (primePower < dimGF)
-        {
-            primePower *= i;
-            degree++;
-        }
-
-        if (primePower == dimGF)
-        {
-            prime       = i;
-            primeDeg    = degree;
-            break;
-        }
-    }
+//    for (int i = 2; i <= m_dimGF; i++)
+//    {
+//        int degree     = 1;
+//        int primePower = i;
+//
+//        while (primePower < m_dimGF)
+//        {
+//            primePower *= i;
+//            degree++;
+//        }
+//
+//        if (primePower == m_dimGF)
+//        {
+//            prime       = i;
+//            primeDeg    = degree;
+//            break;
+//        }
+//    }
 
     RemoveLeadingZeros();
 }
@@ -92,7 +95,7 @@ Polynom::~Polynom(){} // don't change
 
 int Polynom::getDim() const
 {
-    return dimGF;
+    return m_pField->GetDim();
 }
 /**
  * Возвращает коэффициенты многочлена
@@ -100,12 +103,12 @@ int Polynom::getDim() const
  */ 
 vector<int> Polynom::getCoef() const
 {
-    return coef;
+    return m_coef;
 }
 
 int Polynom::GetLeadingCoef() const
 {
-    return !coef.empty() ? coef[coef.size() - 1] : 0;
+    return !m_coef.empty() ? m_coef[m_coef.size() - 1] : 0;
 }
 
 /**
@@ -114,7 +117,7 @@ int Polynom::GetLeadingCoef() const
  */ 
 vector<int>& Polynom::getRefCoef()
 {
-    return coef;
+    return m_coef;
 }
 
 /**
@@ -140,48 +143,48 @@ void Polynom::setIrreducible(PolynomState state) const
  */ 
 unsigned Polynom::getDegree() const
 {
-    return coef.size() ? coef.size() - 1 : 0;
+    return m_coef.size() ? m_coef.size() - 1 : 0;
 }
 
 unsigned Polynom::getPrime() const
 {
-    return prime;
+    return m_pField->GetPrime();
 }
 
 unsigned Polynom::getPrimeDeg() const
 {
-    return primeDeg;
+    return m_pField->GetPrimeDegree();
 }
 
 Polynom& Polynom::operator=(const Polynom& p)
 {
     if(this == &p)
         return *this;
-    
-    dimGF       = p.dimGF;
+
     irreducible = p.irreducible;
-    coef        = p.coef;
-    prime       = p.prime;
-    primeDeg    = p.primeDeg;
+    m_coef      = p.m_coef;
+    m_pField    = p.m_pField;
     
     return *this;
 }
 
 Polynom& Polynom::operator+=(const Polynom& p)
 {
-    assert(dimGF == p.dimGF);
+    assert(m_pField == p.m_pField);
+
+    int fieldPrime = m_pField->GetPrime();
+
+    if (m_coef.size() < p.m_coef.size())
+        m_coef.resize(p.m_coef.size());
     
-    if (coef.size() < p.coef.size())
-        coef.resize(p.coef.size());
-    
-    for(unsigned i = 0; i < coef.size(); i++)
+    for(unsigned i = 0; i < m_coef.size(); i++)
     {
-        if (i == p.coef.size())
+        if (i == p.m_coef.size())
             break;
-        
-        coef[i] += p.coef[i];
-        if (coef[i] >= prime)
-            coef[i] -= prime;
+
+        m_coef[i] += p.m_coef[i];
+        if (m_coef[i] >= fieldPrime)
+            m_coef[i] -= fieldPrime;
     }
     
     RemoveLeadingZeros();
@@ -197,7 +200,25 @@ Polynom operator+(Polynom lp, const Polynom& rp)
 
 Polynom& Polynom::operator-=(const Polynom& p)
 {
-    *this += -p;
+    assert(m_pField == p.m_pField);
+
+    int fieldPrime = m_pField->GetPrime();
+
+    if (m_coef.size() < p.m_coef.size())
+        m_coef.resize(p.m_coef.size());
+
+    for(unsigned i = 0; i < m_coef.size(); i++)
+    {
+        if (i == p.m_coef.size())
+            break;
+
+        m_coef[i] -= p.m_coef[i];
+        if (m_coef[i] < 0)
+            m_coef[i] += fieldPrime;
+    }
+
+    RemoveLeadingZeros();
+
     return *this;
 }
 
@@ -209,14 +230,14 @@ Polynom operator-(Polynom lp, const Polynom& rp)
 
 Polynom& Polynom::operator*=(const Polynom& p)
 {
-    assert(dimGF == p.dimGF);
+    assert(m_pField == p.m_pField);
     
     vector<int> resCoef(getDegree() + p.getDegree() + 1, 0);
     
     const Polynom* large;
     const Polynom* small;
     
-    if (coef.size() > p.coef.size())
+    if (m_coef.size() > p.m_coef.size())
     {
         large = this;
         small = &p;
@@ -227,18 +248,18 @@ Polynom& Polynom::operator*=(const Polynom& p)
         small = this;
     }
     
-    for (unsigned i = 0; i < large->coef.size(); i++)
+    for (unsigned i = 0; i < large->m_coef.size(); i++)
     {
-        if (!large->coef[i])
+        if (!large->m_coef[i])
             continue;
         
-        for (unsigned j = 0; j < small->coef.size(); j++)
+        for (unsigned j = 0; j < small->m_coef.size(); j++)
         {
-            resCoef[i + j] = (resCoef[i + j] + (large->coef[i] * small->coef[j])) % prime;
+            resCoef[i + j] = (resCoef[i + j] + (large->m_coef[i] * small->m_coef[j])) % m_pField->GetPrime();
         }
     }
-    
-    coef = resCoef;
+
+    m_coef = resCoef;
     RemoveLeadingZeros();
     
     return *this;
@@ -258,20 +279,24 @@ Polynom operator*(Polynom lp, const Polynom& rp)
 
 Polynom operator*(const int number, const Polynom& p)
 {
-    int modNum = number % p.prime;
+    auto pField = p.GetField();
+    auto fieldPrime = pField->GetPrime();
+    auto fieldDim = pField->GetDim();
+
+    int modNum = number % pField->GetPrime();
     
     if (modNum < 0)
-        modNum += p.prime;
+        modNum += fieldPrime;
     
     if(!modNum)
-        return Polynom(p.dimGF, vector<int>());
+        return Polynom(fieldDim, vector<int>());
     else if(modNum == 1)
         return p;
     
     Polynom res = p;
     
-    for(vector<int>::iterator i = res.coef.begin(); i < res.coef.end(); i++)
-        *i = (*i * modNum) % p.prime;
+    for(vector<int>::iterator i = res.m_coef.begin(); i < res.m_coef.end(); i++)
+        *i = (*i * modNum) % fieldPrime;
         
     return res;
 }
@@ -286,21 +311,16 @@ Polynom operator-(const Polynom& p)
     return -1 * p;
 }
 
-Polynom Polynom::operator-()
-{
-    return -1*(*this);
-}
-
 Polynom Polynom::operator>>(const int number) const
 {
     Polynom res(getDim(), getCoef());
-    res.coef.resize(coef.size() + number);
+    res.m_coef.resize(m_coef.size() + number);
 
     if (number != 0)
     {
-        for (int i = res.coef.size() - 1; i >= 0; i--)
+        for (int i = res.m_coef.size() - 1; i >= 0; i--)
         {
-            res.coef[i] = i >= number ? res.coef[i - number] : 0;
+            res.m_coef[i] = i >= number ? res.m_coef[i - number] : 0;
         }
     }
 
@@ -309,29 +329,29 @@ Polynom Polynom::operator>>(const int number) const
 
 Polynom& Polynom::operator/=(const Polynom& p)
 {
-    assert(dimGF == p.dimGF);
+    assert(m_pField == p.m_pField);
 
-    if (coef.size() < p.getCoef().size())
+    if (m_coef.size() < p.getCoef().size())
     {
-        this->coef = vector<int>();
+        this->m_coef = vector<int>();
         return *this;
     }
 
-    Polynom divider(dimGF, p.coef);
+    Polynom divider(m_pField->GetDim(), p.m_coef);
     int degreeDiff = 0;
-    vector<int> resCoef(coef.size());
+    vector<int> resCoef(m_coef.size());
 
-    while ((degreeDiff = coef.size() - p.coef.size()) >= 0)
+    while ((degreeDiff = m_coef.size() - p.m_coef.size()) >= 0)
     {
-        int leadingCoef = (*this)[coef.size() - 1];
-        int multNumber = (getMultInverse(p[p.coef.size() - 1], this->prime) * leadingCoef) % getDim();
+        int leadingCoef = (*this)[m_coef.size() - 1];
+        int multNumber = (m_pField->GetMultInverse(p[p.m_coef.size() - 1]) * leadingCoef) % getDim();
         divider = p >> degreeDiff;
         Polynom product = divider * multNumber;
         resCoef[degreeDiff] = multNumber;
         *this -= product;
     }
 
-    this->coef = resCoef;
+    m_coef = resCoef;
     RemoveLeadingZeros();
 
     return *this;
@@ -345,20 +365,20 @@ Polynom operator/(Polynom lp, const Polynom& rp)
 
 Polynom& Polynom::operator%=(const Polynom& p)
 {
-    assert(dimGF == p.dimGF);
+    assert(m_pField == p.m_pField);
 
-    if (coef.size() < p.getCoef().size())
+    if (m_coef.size() < p.getCoef().size())
     {
         return *this;
     }
 
-    Polynom divider(dimGF, p.coef);
+    Polynom divider(m_pField->GetDim(), p.m_coef);
     int degreeDiff = 0;
 
-    while ((degreeDiff = coef.size() - p.coef.size()) >= 0)
+    while ((degreeDiff = m_coef.size() - p.m_coef.size()) >= 0)
     {
-        int leadingCoef     = (*this)[coef.size() - 1];
-        int multNumber      = (getMultInverse(p[p.coef.size() - 1], this->prime) * leadingCoef) % this->prime;
+        int leadingCoef     = (*this)[m_coef.size() - 1];
+        int multNumber      = (m_pField->GetMultInverse(p[p.m_coef.size() - 1]) * leadingCoef) % m_pField->GetPrime();
         divider             = p >> degreeDiff;
         Polynom product     = divider * multNumber;
         *this -= product;
@@ -373,51 +393,20 @@ Polynom operator%(Polynom lp, const Polynom& rp)
     return lp;
 }
 
-/// Расширенный алгоритм Евклида
-int gcdex(int a, int b, int& x, int& y) {
-	if (a == 0)
-	{
-		x = 0; y = 1;
-		return b;
-	}
-	int x1, y1;
-	int d = gcdex(b%a, a, x1, y1);
-	x = y1 - (b / a) * x1;
-	y = x1;
-	return d;
-}
-
-/// Обратный по умножению элемент к num над полем размерности dim
-int getMultInverse(int num, int dim)
-{
-    int inverse = 0;
-    int y = 0;
-
-    int modNum = num % dim;
-
-    if (modNum < 0)
-        modNum += dim;
-
-    gcdex(modNum, dim, inverse, y);
-    inverse = (inverse % dim + dim) % dim;
-
-    return inverse;
-}
-
 Polynom operator/(const Polynom& p, const int number)
 {
     assert(number != 0);
-    int inverse = getMultInverse(number, p.prime);
+    int inverse = p.m_pField->GetMultInverse(number);
     return inverse * p;
 }
 
 bool operator==(const Polynom& lp, const Polynom& rp)
 {
-    assert(lp.dimGF == rp.dimGF);
+    assert(lp.m_pField == rp.m_pField);
     
-    unsigned size = lp.coef.size();
+    unsigned size = lp.m_coef.size();
 
-    if (lp.coef.size() != rp.coef.size())
+    if (lp.m_coef.size() != rp.m_coef.size())
         return false;
     else
         for (unsigned i = 0; i < size; i++)
@@ -429,7 +418,7 @@ bool operator==(const Polynom& lp, const Polynom& rp)
 
 bool operator!=(const Polynom& lp, const Polynom& rp)
 {
-    assert(lp.dimGF == rp.dimGF);
+    assert(lp.m_pField == rp.m_pField);
     
     return !(lp == rp);
 }
@@ -448,7 +437,7 @@ bool operator!=(const Polynom &lp, int i)
 
 int& Polynom::operator[](size_t id)
 {
-    return coef[id]; 
+    return m_coef[id];
 }
 
 /**
@@ -457,7 +446,7 @@ int& Polynom::operator[](size_t id)
  */ 
 const int& Polynom::operator[](size_t id) const 
 {
-    return coef[id]; 
+    return m_coef[id];
 }
 
 /// Находит производную многочлена
@@ -469,8 +458,8 @@ Polynom Polynom::Derivative() const
     vector<int> derCoef;
     int derDim = getDim();
 	
-    for (size_t i = 1; i < coef.size(); i++)
-        derCoef.push_back((i * coef[i]) % derDim);
+    for (size_t i = 1; i < m_coef.size(); i++)
+        derCoef.push_back((i * m_coef[i]) % derDim);
 
     Polynom der(derDim, derCoef);
     der.RemoveLeadingZeros();
@@ -484,7 +473,7 @@ Polynom Polynom::Exp(int p) const
 {
     const Polynom& x = *this;
 
-    Polynom res(dimGF, coef);
+    Polynom res(this->getDim(), m_coef);
     while (p > 1)
     {
         res = res * x;
@@ -494,60 +483,62 @@ Polynom Polynom::Exp(int p) const
     return res;
 }
 
-#define CHECK_BIT(var, pos) ((var) & (1 << (pos)))
-
-int msb(int x)
-{
-    int num = 0;
-
-    while (x >>= 1)
-    {
-        num++;
-    }
-
-    return num;
-}
-
-/// Binary Exponentiation Algorithm for Computing x^M mod f (Reapeted squaring)
-Polynom Polynom::BinExp(long long M, const Polynom &f) const
-{
-    const Polynom& x    = *this;
-    Polynom g           = *this;
-
-    for (int j = msb(M) - 1; j >= 0; j--)
-    {
-        g = (g * g) % f;
-
-        if (CHECK_BIT(M, j))
-        {
-            g = (g * x) % f;
-        }
-    }
-
-    return g;
-}
-
 /// Проверяет, является ли многочлен нулём
 bool Polynom::IsZero() const
 {
-    return coef.empty();
+    return m_coef.empty();
 }
 
 /// Убирает нули при старших коэффициентах
 void Polynom::RemoveLeadingZeros()
 {
-    while(!coef.empty() && !coef[coef.size() - 1])
-        coef.pop_back();
+    while(!m_coef.empty() && !m_coef[m_coef.size() - 1])
+        m_coef.pop_back();
 }
 
 void Polynom::print(ostream& out) const
 {
 #ifdef DEBUG
-    out << this->dimGF << " ";
-    for(unsigned i = 0; i < this->coef.size(); ++i)
+    out << this->m_dimGF << " ";
+    for(unsigned i = 0; i < this->m_coef.size(); ++i)
     {
-        out << this->coef[i] << " ";  
+        out << this->m_coef[i] << " ";
     }
     out << endl;
 #endif
+}
+
+constexpr long long int MAX_SAFE_DOUBLE = 9007199254740992; // 2^53
+
+constexpr int maxExp(int n)
+{
+    int exp = 1;
+    while (std::pow((long double)n, (long double)exp) < MAX_SAFE_DOUBLE)
+    {
+        exp++;
+    }
+
+    return exp - 1;
+}
+
+Polynom Polynom::BinExp(int n, int exp, const Polynom &f) const
+{
+    static std::map<int, int> limits;
+
+    if (limits[n] == 0)
+    {
+        limits[n] = maxExp(n);
+    }
+
+    if (limits[n] < exp)
+        return this->BinExp((long long) std::pow((long double)n, (long double)exp), f);
+
+    bigint bigq = n;
+    bigint bigr = exp;
+    return this->BinExp(bigq ^ bigr, f);
+}
+
+const Field *Polynom::GetField() const
+{
+    return m_pField;
 }

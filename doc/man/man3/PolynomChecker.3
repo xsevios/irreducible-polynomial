@@ -36,7 +36,7 @@ PolynomChecker \-
 .br
 .RI "\fICоставляет матрицу для данного многочлена \fP"
 .ti -1c
-.RI "int \fBgetRank\fP (vector< vector< int >> m, int dimGF)"
+.RI "int \fBgetRank\fP (vector< vector< int >> m, int m_dimGF)"
 .br
 .RI "\fIУзнаёт ранг матрицы над полем GF(p) \fP"
 .ti -1c
@@ -91,7 +91,7 @@ Cоставляет матрицу для данного многочлена Д
 Добавление в матрицу строк для многочленов, у которых ip > n\&.
 .PP
 Вычитает из полученной матрицы единичную 
-.SS "int PolynomChecker::getRank (vector< vector< int >> m, int dimGF)"
+.SS "int PolynomChecker::getRank (vector< vector< int >> m, int m_dimGF)"
 
 .PP
 Узнаёт ранг матрицы над полем GF(p) Ранг равен количеству ненулевых строк в матрице после прямого хода метода Гаусса\&. 

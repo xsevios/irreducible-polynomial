@@ -54,6 +54,8 @@ void Tester::loadLibrary()
 
 void Tester::runTest()
 {
+    testBigint();
+
     assert(msb(0) == 0);
     assert(msb(1) == 0);
     assert(msb(2) == 1);
@@ -61,8 +63,10 @@ void Tester::runTest()
     assert(msb(4) == 2);
     assert(msb(9) == 3);
 
-    assert(getMultInverse(1, 7) == 1);
-    assert(getMultInverse(2, 7) == 4);
+    auto pField = Field::GetInstance(7);
+
+    assert(pField->GetMultInverse(1) == 1);
+    assert(pField->GetMultInverse(2) == 4);
 
     auto divisors = PolynomChecker::GetPrimeDivisors(2);
     assert(PolynomChecker::GetPrimeDivisors(2)          == (std::vector<int>{2}));
@@ -399,6 +403,16 @@ void Tester::runTest()
         assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
     }
 
+    {
+        Polynom p(7, {6, 2, 0, 1, 2, 0, 6, 5, 0, 6, 0, 0, 0, 3});
+        assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        Polynom p(7, {5, 4, 0, 0, 4, 3, 1, 0, 0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 6});
+        assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
+    }
+
     // ----------------- BerlekampTest ------------------
 
     {
@@ -424,5 +438,27 @@ void Tester::runTest()
     {
         Polynom p(3, {1, 1, 2, 0, 0, 1});
         assert(PolynomChecker::BerlekampTest(p) == IRREDUCIBLE);
+    }
+}
+
+void Tester::testBigint()
+{
+    {
+        bigint n("3");
+        bigint exp("3");
+        bigint expected("27");
+        bigint res = n ^ exp;
+        assert(res == expected);
+    }
+
+    {
+        int n = 11;
+        bigint bign("11");
+
+        assert(msb(n) == msb(bign));
+        for (int i = 0; i < 15; i++)
+        {
+            assert(checkBit(n, i) == checkBit(bign, i));
+        }
     }
 }

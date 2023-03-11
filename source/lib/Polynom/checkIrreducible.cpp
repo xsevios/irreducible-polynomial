@@ -99,7 +99,7 @@ Polynom gcd(Polynom a, Polynom b)
 {
 	if (b.IsZero())
     {
-        return a * getMultInverse(a.GetLeadingCoef(), a.getDim());
+        return a * a.GetField()->GetMultInverse(a.GetLeadingCoef());
     }
 
 	Polynom d = gcd(b, a % b);
@@ -379,7 +379,7 @@ PolynomState PolynomChecker::CantorZassenhausTest(const Polynom& f)
 
     for (int r = (n / 4) + 1; r <= n / 2; r++)
     {
-        Polynom sqr = x.BinExp(powl(q, r), f);
+        Polynom sqr = x.BinExp(q, r, f);
         Polynom h = (sqr - x) % f;
         Polynom g = gcd(f, h);
 
@@ -484,7 +484,7 @@ Factors PolynomChecker::DistinctDegreeFactorization(const Polynom &p)
     for (int r = 1; r < degree; r++)
     {
         Polynom x(f.getDim(), { 0, 1 });
-        Polynom sqr =  x.BinExp(powl(q, r), f);
+        Polynom sqr = x.BinExp(q, r, f);
         Polynom h = (sqr - x) % f;
         Polynom g = gcd(h, f);
 
@@ -549,7 +549,9 @@ Factors PolynomChecker::EqualDegreeFactorization(const Polynom &p, int d)
     if (p.getPrime() == 2)
     {
         for (int j = 0; j < v * d - 1; j++)
-            g += h.BinExp(powl(2, j), p);
+        {
+            g += h.BinExp(2, j, p);
+        }
     }
     else
     {
@@ -607,7 +609,7 @@ PolynomState PolynomChecker::RabinsTest(const Polynom &f)
     Polynom x(f.getDim(), { 0, 1 });
     for (const auto& divisor : divisors)
     {
-        Polynom sqr = x.BinExp(powl(f.getDim(), divisor), f);
+        Polynom sqr = x.BinExp(f.getDim(), divisor, f);
         Polynom h = (sqr - x) % f;
         Polynom g = gcd(f, h);
         if (g != 1)
@@ -616,8 +618,8 @@ PolynomState PolynomChecker::RabinsTest(const Polynom &f)
             return REDUCIBLE;
         }
     }
-    
-    Polynom sqr = x.BinExp(powl(f.getDim(), f.getDegree()), f);
+
+    Polynom sqr = x.BinExp(f.getDim(), f.getDegree(), f);
     Polynom g = (sqr - x) % f;
 
     if (g != 0)

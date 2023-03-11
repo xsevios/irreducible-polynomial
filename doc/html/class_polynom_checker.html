@@ -115,7 +115,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setPoly</b> (<a class
 <tr class="memitem:aef5d2cb29431e5216ad613377761d03d"><td class="memItemLeft" align="right" valign="top">vector&lt; vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom_checker.html#aef5d2cb29431e5216ad613377761d03d">generateMatrix</a> (const <a class="el" href="class_polynom.html">Polynom</a> &amp;p)</td></tr>
 <tr class="memdesc:aef5d2cb29431e5216ad613377761d03d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cоставляет матрицу для данного многочлена  <a href="#aef5d2cb29431e5216ad613377761d03d">More...</a><br /></td></tr>
 <tr class="separator:aef5d2cb29431e5216ad613377761d03d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58233c9b49350e3078f6bfa62dd21768"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom_checker.html#a58233c9b49350e3078f6bfa62dd21768">getRank</a> (vector&lt; vector&lt; int &gt;&gt; m, int dimGF)</td></tr>
+<tr class="memitem:a58233c9b49350e3078f6bfa62dd21768"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_polynom_checker.html#a58233c9b49350e3078f6bfa62dd21768">getRank</a> (vector&lt; vector&lt; int &gt;&gt; m, int m_dimGF)</td></tr>
 <tr class="memdesc:a58233c9b49350e3078f6bfa62dd21768"><td class="mdescLeft">&#160;</td><td class="mdescRight">Узнаёт ранг матрицы над полем GF(p)  <a href="#a58233c9b49350e3078f6bfa62dd21768">More...</a><br /></td></tr>
 <tr class="separator:a58233c9b49350e3078f6bfa62dd21768"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49f51524ef5073892c419d740d0482e9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a49f51524ef5073892c419d740d0482e9"></a>
@@ -198,7 +198,7 @@ static void *&#160;</td><td class="memItemRight" valign="bottom"><b>check</b> (v
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>dimGF</em>&#160;</td>
+          <td class="paramname"><em>m_dimGF</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -212,7 +212,7 @@ static void *&#160;</td><td class="memItemRight" valign="bottom"><b>check</b> (v
 <p>Ранг равен количеству ненулевых строк в матрице после прямого хода метода Гаусса. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">m</td><td>Матрица, ранг которой надо узнать </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">dimGF</td><td>Характеристика поля GF(p) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">m_dimGF</td><td>Характеристика поля GF(p) </td></tr>
   </table>
   </dd>
 </dl>
