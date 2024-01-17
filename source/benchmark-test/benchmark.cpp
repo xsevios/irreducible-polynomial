@@ -143,7 +143,7 @@ Polynom BenchmarkRunner::GenRandPolynom(const Polynom &p)
     std::uniform_int_distribution<> distrib1(0, p.getPrime() - 1);
     std::uniform_int_distribution<> distrib2(0, 1);
 
-    Polynom pRes(p.getDim(), {});
+    Polynom pRes(p.getDim(), std::vector<int>{});
 
     while (pRes.getDegree() == 0)
     {

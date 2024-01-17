@@ -86,7 +86,7 @@ void Tester::runTest()
         Polynom p1(7, {6, 4, 5});
         Polynom p2(7, {1, 2});
 
-        Polynom p(7, {});
+        Polynom p(7, std::vector<int>{});
 
         p = p1 + p2;
         assert(p[0] == 0);
@@ -211,31 +211,31 @@ void Tester::runTest()
     // -----------------------------------
 
     {
-        Polynom p1(16, {1, 1, 0, 0, 1});
-        Polynom p2(16, {1, 1, 0, 0, 1});
+        Polynom p1(16, std::vector<int>{1, 1, 0, 0, 1});
+        Polynom p2(16, std::vector<int>{1, 1, 0, 0, 1});
 
         Polynom p = p1 % p2;
-        Polynom pExp(16, {});
+        Polynom pExp(16, std::vector<int>{});
 
         assert(p == pExp);
     }
 
     {
-        Polynom p1(16, {0, 0, 0, 0, 1});
-        Polynom p2(16, {1, 1, 0, 0, 1});
+        Polynom p1(16, std::vector<int>{0, 0, 0, 0, 1});
+        Polynom p2(16, std::vector<int>{1, 1, 0, 0, 1});
 
         Polynom p = p1 % p2;
-        Polynom pExp(16, {1, 1});
+        Polynom pExp(16, std::vector<int>{1, 1});
 
         assert(p == pExp);
     }
 
     {
-        Polynom p1(16, {1, 1, 0, 0, 0, 1});
-        Polynom p2(16, {1, 1, 0, 0, 1});
+        Polynom p1(16, std::vector<int>{1, 1, 0, 0, 0, 1});
+        Polynom p2(16, std::vector<int>{1, 1, 0, 0, 1});
 
         Polynom p = p1 % p2;
-        Polynom pExp(16, {1, 0, 1});
+        Polynom pExp(16, std::vector<int>{1, 0, 1});
 
         assert(p == pExp);
     }
@@ -243,95 +243,95 @@ void Tester::runTest()
     // -----------------------------------
 
     {
-        Polynom f(5, {3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
-        Polynom g(5, {2, 0, 1, 0, 0, 2, 0, 4, 0, 0, 0, 0, 3});
+        Polynom f(5, std::vector<int>{3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
+        Polynom g(5, std::vector<int>{2, 0, 1, 0, 0, 2, 0, 4, 0, 0, 0, 0, 3});
 
         Polynom pGcd = gcd(f, g);
 
-        assert(pGcd == Polynom(5, {1, 0, 4, 1, 0, 1, 0, 4, 1}));
+        assert(pGcd == Polynom(5, std::vector<int>{1, 0, 4, 1, 0, 1, 0, 4, 1}));
     }
 
     {
-        Polynom f(5, {3, 0, 3, 4, 0, 1, 1, 3, 1});
-        Polynom g(5, {2, 4, 0, 3, 1, 1});
+        Polynom f(5, std::vector<int>{3, 0, 3, 4, 0, 1, 1, 3, 1});
+        Polynom g(5, std::vector<int>{2, 4, 0, 3, 1, 1});
 
         Polynom pGcd = gcd(f, g);
 
-        assert(pGcd == Polynom(5, {3, 0, 3, 1}));
+        assert(pGcd == Polynom(5, std::vector<int>{3, 0, 3, 1}));
     }
 
     // -----------------------------------
 
     {
-        Polynom p1(3, {1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1});
+        Polynom p1(3, std::vector<int>{1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1});
         Factors SffFactors = PolynomChecker::SquareFreeFactorization(p1);
 
         Factors factors;
-        factors.insert({1, Polynom(3, {1, 1})});
-        factors.insert({3, Polynom(3, {1, 0, 1})});
-        factors.insert({4, Polynom(3, {2, 1})});
+        factors.insert({1, Polynom(3, std::vector<int>{1, 1})});
+        factors.insert({3, Polynom(3, std::vector<int>{1, 0, 1})});
+        factors.insert({4, Polynom(3, std::vector<int>{2, 1})});
 
         assert(factors == SffFactors);
     }
 
     {
-        Polynom p2(5, {3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
+        Polynom p2(5, std::vector<int>{3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
         Factors SffFactors = PolynomChecker::SquareFreeFactorization(p2);
 
         Factors factors;
-        factors.insert({1, Polynom(5, {3, 2, 1})});
-        factors.insert({2, Polynom(5, {1, 0, 4, 1})});
-        factors.insert({5, Polynom(5, {1, 1})});
+        factors.insert({1, Polynom(5, std::vector<int>{3, 2, 1})});
+        factors.insert({2, Polynom(5, std::vector<int>{1, 0, 4, 1})});
+        factors.insert({5, Polynom(5, std::vector<int>{1, 1})});
 
         assert(factors == SffFactors);
     }
 
     {
-        Polynom p(2, {1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
+        Polynom p(2, std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
         Factors SffFactors = PolynomChecker::SquareFreeFactorization(p);
 
         Factors factors;
-        factors.insert({1, Polynom(2, {1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1})});
+        factors.insert({1, Polynom(2, std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1})});
         assert(factors == SffFactors);
     }
 
     {
-        Polynom p(2, {0, 1, 0, 1, 1});
+        Polynom p(2, std::vector<int>{0, 1, 0, 1, 1});
         Factors SffFactors = PolynomChecker::SquareFreeFactorization(p);
 
         Factors factors;
-        factors.insert({1, Polynom(2, {0, 1, 0, 1, 1})});
+        factors.insert({1, Polynom(2, std::vector<int>{0, 1, 0, 1, 1})});
         assert(factors == SffFactors);
     }
 
     // -----------------------------------
 
     {
-        Polynom p(3, {1, 1, 2, 1, 1, 1, 1});
-        Polynom x(3, {0, 1});
+        Polynom p(3, std::vector<int>{1, 1, 2, 1, 1, 1, 1});
+        Polynom x(3, std::vector<int>{0, 1});
 
         assert(x.BinExp(27, p) == x);
     }
 
     {
-        Polynom f(5, {1, 2, 3, 4, 0, 0, 1});
-        Polynom p(5, {2, 0, 0, 1});
-        Polynom expected(5, {4, 0, 3, 4, 0, 3});
+        Polynom f(5, std::vector<int>{1, 2, 3, 4, 0, 0, 1});
+        Polynom p(5, std::vector<int>{2, 0, 0, 1});
+        Polynom expected(5, std::vector<int>{4, 0, 3, 4, 0, 3});
 
-        assert(((p.BinExp(12, f) - Polynom(5, {1})) % f) == expected);
+        assert(((p.BinExp(12, f) - Polynom(5, std::vector<int>{1})) % f) == expected);
     }
 
     // -----------------------------------
 
     {
-        Polynom p1(3, {1, 0, 1, 2, 2, 0, 2, 0, 0, 0, 0, 1});
+        Polynom p1(3, std::vector<int>{1, 0, 1, 2, 2, 0, 2, 0, 0, 0, 0, 1});
         Factors DdfFactors = PolynomChecker::DistinctDegreeFactorization(p1);
 
         Factors factors;
-        factors.insert({1, Polynom(3, {2, 0, 1})});
-        factors.insert({1, Polynom(3, {2, 1})});
-        factors.insert({2, Polynom(3, {1, 0, 1})});
-        factors.insert({3, Polynom(3, {1, 1, 2, 1, 1, 1, 1})});
+        factors.insert({1, Polynom(3, std::vector<int>{2, 0, 1})});
+        factors.insert({1, Polynom(3, std::vector<int>{2, 1})});
+        factors.insert({2, Polynom(3, std::vector<int>{1, 0, 1})});
+        factors.insert({3, Polynom(3, std::vector<int>{1, 1, 2, 1, 1, 1, 1})});
 
         assert(factors == DdfFactors);
     }
@@ -339,25 +339,25 @@ void Tester::runTest()
     // -----------------------------------
 
     {
-        Factors factors = {{2, Polynom(5, {1, 2, 3, 4, 0, 0, 1})} };
+        Factors factors = {{2, Polynom(5, std::vector<int>{1, 2, 3, 4, 0, 0, 1})} };
         Factors edfFactors = PolynomChecker::EqualDegreeFactorization(factors);
 
         Factors irreducibles = {
-                {2, Polynom(5, {3, 0, 1})},
-                {2, Polynom(5, {1, 4, 1})},
-                {2, Polynom(5, {2, 1, 1})}
+                {2, Polynom(5, std::vector<int>{3, 0, 1})},
+                {2, Polynom(5, std::vector<int>{1, 4, 1})},
+                {2, Polynom(5, std::vector<int>{2, 1, 1})}
         };
 
         assert(irreducibles == edfFactors);
     }
 
     {
-        Factors factors = {{4, Polynom(2, {1, 1, 0, 1, 1, 1, 0, 1, 1})} };
+        Factors factors = {{4, Polynom(2, std::vector<int>{1, 1, 0, 1, 1, 1, 0, 1, 1})} };
         Factors edfFactors = PolynomChecker::EqualDegreeFactorization(factors);
 
         Factors irreducibles = {
-                {4, Polynom(2, {1, 0, 0, 1, 1})},
-                {4, Polynom(2, {1, 1, 0, 0, 1})}
+                {4, Polynom(2, std::vector<int>{1, 0, 0, 1, 1})},
+                {4, Polynom(2, std::vector<int>{1, 1, 0, 0, 1})}
         };
 
         assert(irreducibles == edfFactors);
@@ -366,17 +366,17 @@ void Tester::runTest()
     // -----------------------------------
 
     {
-        Polynom p(3, {2, 1, 1, 1, 0, 0, 2, 1});
+        Polynom p(3, std::vector<int>{2, 1, 1, 1, 0, 0, 2, 1});
         assert(PolynomChecker::CantorZassenhausTest(p) == IRREDUCIBLE);
     }
 
     {
-        Polynom p(2, {1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
+        Polynom p(2, std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
         assert(PolynomChecker::CantorZassenhausTest(p) == IRREDUCIBLE);
     }
 
     {
-        Polynom p(2, {0, 1, 0, 1, 1});
+        Polynom p(2, std::vector<int>{0, 1, 0, 1, 1});
         assert(PolynomChecker::CantorZassenhausFactorization(p).size() == 2);
         assert(PolynomChecker::CantorZassenhausTest(p) == REDUCIBLE);
     }
@@ -384,59 +384,59 @@ void Tester::runTest()
     // -----------------------------------
 
     {
-        Polynom p(3, {2, 1, 1, 1, 0, 0, 2, 1});
+        Polynom p(3, std::vector<int>{2, 1, 1, 1, 0, 0, 2, 1});
         assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
     }
 
     {
-        Polynom p(2, {0, 1, 1});
+        Polynom p(2, std::vector<int>{0, 1, 1});
         assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
     }
 
     {
-        Polynom p(2, {1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
+        Polynom p(2, std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
         assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
     }
 
     {
-        Polynom p(2, {0, 1, 0, 1, 1});
+        Polynom p(2, std::vector<int>{0, 1, 0, 1, 1});
         assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
     }
 
     {
-        Polynom p(7, {6, 2, 0, 1, 2, 0, 6, 5, 0, 6, 0, 0, 0, 3});
+        Polynom p(7, std::vector<int>{6, 2, 0, 1, 2, 0, 6, 5, 0, 6, 0, 0, 0, 3});
         assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
     }
 
     {
-        Polynom p(7, {5, 4, 0, 0, 4, 3, 1, 0, 0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 6});
+        Polynom p(7, std::vector<int>{5, 4, 0, 0, 4, 3, 1, 0, 0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 6});
         assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
     }
 
     // ----------------- BerlekampTest ------------------
 
     {
-        Polynom p(2, {1, 0, 0, 1, 1});
+        Polynom p(2, std::vector<int>{1, 0, 0, 1, 1});
         assert(PolynomChecker::BerlekampTest(p) == IRREDUCIBLE);
     }
 
     {
-        Polynom p(3, {1, 2, 2, 2, 1, 0, 0, 1, 2, 1});
+        Polynom p(3, std::vector<int>{1, 2, 2, 2, 1, 0, 0, 1, 2, 1});
         assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
     }
 
     {
-        Polynom p(2, {1, 1, 1, 1});
+        Polynom p(2, std::vector<int>{1, 1, 1, 1});
         assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
     }
 
     {
-        Polynom p(2, {0, 1, 0, 1, 1});
+        Polynom p(2, std::vector<int>{0, 1, 0, 1, 1});
         assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
     }
 
     {
-        Polynom p(3, {1, 1, 2, 0, 0, 1});
+        Polynom p(3, std::vector<int>{1, 1, 2, 0, 0, 1});
         assert(PolynomChecker::BerlekampTest(p) == IRREDUCIBLE);
     }
 }

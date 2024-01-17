@@ -43,6 +43,13 @@ Polynom::Polynom(int dim, vector<int> coef)
     init(dim);
 }
 
+Polynom::Polynom(int dim, uint64_t coefCount)
+{
+    m_pField    = Field::GetInstance(dim);
+    this->irreducible   = NEED_CHECK;
+    m_coef.resize(coefCount);
+}
+
 /**
  * \brief Конструктор класса, разбирающий строку сожержащую полином 
  * \param[in] strPolynom строка содержащая полином в формате "ПРИЗНАК_ПРИВОДИМОСТИ РАЗМЕРНОСТЬ_ПОЛЯ КОЭФФИЦИЕНТ КОЭФФИЦИЕНТ ... КОЭФФИЦИЕНТ"
@@ -267,7 +274,7 @@ Polynom& Polynom::operator*=(const Polynom& p)
 
 Polynom &Polynom::operator*=(const int number)
 {
-    *this *= Polynom(this->getDim(), { number });
+    *this *= Polynom(this->getDim(), std::vector<int>{number});
     return *this;
 }
 
@@ -313,17 +320,11 @@ Polynom operator-(const Polynom& p)
 
 Polynom Polynom::operator>>(const int number) const
 {
-    Polynom res(getDim(), getCoef());
-    res.m_coef.resize(m_coef.size() + number);
+    if (number == 0)
+        return Polynom(getDim(), getCoef());
 
-    if (number != 0)
-    {
-        for (int i = res.m_coef.size() - 1; i >= 0; i--)
-        {
-            res.m_coef[i] = i >= number ? res.m_coef[i - number] : 0;
-        }
-    }
-
+    Polynom res(getDim(), m_coef.size() + number);
+    memmove(res.m_coef.data() + number, m_coef.data(), (m_coef.size()) * sizeof(int));
     return res;
 }
 
@@ -425,13 +426,13 @@ bool operator!=(const Polynom& lp, const Polynom& rp)
 
 bool operator==(const Polynom &lp, int i)
 {
-    Polynom p(lp.getDim(), { i });
+    Polynom p(lp.getDim(), std::vector<int>{i});
     return operator==(lp, p);
 }
 
 bool operator!=(const Polynom &lp, int i)
 {
-    Polynom p(lp.getDim(), { i });
+    Polynom p(lp.getDim(), std::vector<int>{i});
     return operator!=(lp, p);
 }
 
