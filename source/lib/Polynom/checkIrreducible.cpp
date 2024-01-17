@@ -544,7 +544,7 @@ Factors PolynomChecker::EqualDegreeFactorization(const Polynom &p, int d)
     int v = p.getPrimeDeg();
 
     Polynom h = GenRandPolynom(p);
-    Polynom g(p.getDim(), {});
+    Polynom g(p.getDim(), std::vector<int>{});
 
     if (p.getPrime() == 2)
     {
@@ -560,7 +560,7 @@ Factors PolynomChecker::EqualDegreeFactorization(const Polynom &p, int d)
 
     if (p.getPrime() != 2 && g == 1)
     {
-        g = (h.Exp(c) - Polynom(p.getDim(), {1})) % p;
+        g = (h.Exp(c) - Polynom(p.getDim(), std::vector<int>{1})) % p;
     }
 
     Polynom pgGcd = gcd(p, g);
@@ -579,7 +579,7 @@ Polynom PolynomChecker::GenRandPolynom(const Polynom& p)
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> distrib(0, p.getPrime() - 1);
 
-    Polynom pRes(p.getDim(), {});
+    Polynom pRes(p.getDim(), std::vector<int>{});
 
     while (pRes.getDegree() == 0)
     {

@@ -21,9 +21,9 @@
 using namespace std;
 
 template<class T>
-inline bool checkBit(T var, int pos)
+inline bool checkBit(T num, int pos)
 {
-    return ((var) & (1 << (pos)));
+    return ((num) & (1 << (pos)));
 }
 
 template<class T>
@@ -40,14 +40,14 @@ inline int msb(T x)
 }
 
 template<>
-inline bool checkBit<bigint>(bigint x, int pos)
+inline bool checkBit<bigint>(bigint num, int pos)
 {
     for (int i = 0; i < pos; i++)
     {
-        x /= 2;
+        num /= 2;
     }
 
-    return x.z[0] % 2;
+    return num.z[0] % 2;
 }
 
 template<>
@@ -88,6 +88,7 @@ class Polynom
     
 public:
                             Polynom             (int dimGF, vector<int> coef);
+                            Polynom             (int dimGF, uint64_t coefCount);
                             Polynom             (string strPolynom);
     virtual                ~Polynom             ();
 
