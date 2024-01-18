@@ -211,12 +211,14 @@ Polynom& Polynom::operator-=(const Polynom& p)
 
     int fieldPrime = m_pField->GetPrime();
 
-    if (m_coef.size() < p.m_coef.size())
-        m_coef.resize(p.m_coef.size());
+    auto nSubCoefSize = p.m_coef.size();
+
+    if (m_coef.size() < nSubCoefSize)
+        m_coef.resize(nSubCoefSize);
 
     for(unsigned i = 0; i < m_coef.size(); i++)
     {
-        if (i == p.m_coef.size())
+        if (i == nSubCoefSize)
             break;
 
         m_coef[i] -= p.m_coef[i];
@@ -238,8 +240,9 @@ Polynom operator-(Polynom lp, const Polynom& rp)
 Polynom& Polynom::operator*=(const Polynom& p)
 {
     assert(m_pField == p.m_pField);
-    
-    vector<int> resCoef(getDegree() + p.getDegree() + 1, 0);
+
+    coefBuf.resize(getDegree() + p.getDegree() + 1);
+    memset(coefBuf.data(), 0, sizeof(int) * coefBuf.size());
     
     const Polynom* large;
     const Polynom* small;
@@ -262,11 +265,11 @@ Polynom& Polynom::operator*=(const Polynom& p)
         
         for (unsigned j = 0; j < small->m_coef.size(); j++)
         {
-            resCoef[i + j] = (resCoef[i + j] + (large->m_coef[i] * small->m_coef[j])) % m_pField->GetPrime();
+            coefBuf[i + j] = (coefBuf[i + j] + (large->m_coef[i] * small->m_coef[j])) % m_pField->GetPrime();
         }
     }
 
-    m_coef = resCoef;
+    m_coef = coefBuf;
     RemoveLeadingZeros();
     
     return *this;
