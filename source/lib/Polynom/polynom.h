@@ -168,6 +168,7 @@ public:
 
 private:
     void                    init                (int dim);
+    std::vector<int>        coefBuf;
 };
 
 template<>
