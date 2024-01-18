@@ -70,10 +70,10 @@ int main(int argc, char **argv)
 
     benchmark.loadLibrary();
 
-    int minDim              = 5;
-    int maxDim              = 6;
-    int minDegree           = 3;
-    int maxDegree           = 100;
+    int minDim              = 1;
+    int maxDim              = 400;
+    int minDegree           = 1;
+    int maxDegree           = 50;
     int polyCountForEach    = 1000;
     int totalBenchmarks     = (maxDim - minDim) * (maxDegree - minDegree);
     int currentBenchmark    = 0;
@@ -84,6 +84,10 @@ int main(int argc, char **argv)
     ofstream berlekampFile("berlekamp.txt", ios::trunc);
     ofstream cantorzassenhaus("cantorzassenhaus.txt", ios::trunc);
     ofstream rabin("rabin.txt", ios::trunc);
+
+    int berlekampTotalTimeMs        = 0;
+    int cantorzassenhausTotalTimeMs = 0;
+    int rabinTotalTimeMs            = 0;
 
     for (int dim = minDim; dim < maxDim; dim++)
     {
@@ -100,13 +104,25 @@ int main(int argc, char **argv)
                     duration.count();
                 }
 
-                berlekampFile << deg << " " << (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(results[0])).count() << " ";
-                cantorzassenhaus << deg << " " << (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(results[1])).count() << " ";
-                rabin << deg << " " << (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(results[2])).count() << " ";
+                auto berlekampMs        = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(results[0])).count();
+                auto cantorzassenhausMs = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(results[1])).count();
+                auto rabinMs            = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(results[2])).count();
 
-                berlekampFile << std::endl;
-                cantorzassenhaus << std::endl;
-                rabin << std::endl;
+                berlekampTotalTimeMs        += berlekampMs;
+                cantorzassenhausTotalTimeMs += cantorzassenhausMs;
+                rabinTotalTimeMs            += rabinMs;
+
+//                berlekampFile       << deg << " " << berlekampMs << " ";
+//                cantorzassenhaus    << deg << " " << cantorzassenhausMs << " ";
+//                rabin               << deg << " " << rabinMs << " ";
+//
+//                berlekampFile << std::endl;
+//                cantorzassenhaus << std::endl;
+//                rabin << std::endl;
+
+                berlekampFile       << berlekampMs << " ";
+                cantorzassenhaus    << cantorzassenhausMs << " ";
+                rabin               << rabinMs << " ";
 
                 currentBenchmark++;
                 progress = (float)currentBenchmark / totalBenchmarks;
@@ -122,6 +138,10 @@ int main(int argc, char **argv)
                 std::cout << "] " << int(progress * 100.0) << " %\r";
                 std::cout.flush();
             }
+
+            berlekampFile << std::endl;
+            cantorzassenhaus << std::endl;
+            rabin << std::endl;
         }
         else
         {
@@ -140,6 +160,12 @@ int main(int argc, char **argv)
             std::cout.flush();
         }
     }
+    std::cout << std::endl;
+
+    std::cout << "Berlakamp total ms: "         << berlekampTotalTimeMs         << std::endl;
+    std::cout << "Cantor-Zassenhaus total ms: " << cantorzassenhausTotalTimeMs  << std::endl;
+    std::cout << "Rabin total ms: "             << rabinTotalTimeMs             << std::endl;
+
     std::cout << std::endl;
 
     berlekampFile.close();
