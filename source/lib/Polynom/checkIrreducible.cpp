@@ -373,15 +373,16 @@ bool PolynomChecker::isSquareFree(const Polynom &f)
 
 PolynomState PolynomChecker::CantorZassenhausTest(const Polynom& f)
 {
-    Polynom x(f.getDim(), {0, 1});
+    Polynom x(f.getDim(), std::vector<int>{0, 1});
     int q = f.getDim();
     int n = f.getDegree();
 
     for (int r = (n / 4) + 1; r <= n / 2; r++)
     {
         Polynom sqr = x.BinExp(q, r, f);
-        Polynom h = (sqr - x) % f;
-        Polynom g = gcd(f, h);
+        sqr -= x;
+        sqr %= f;
+        Polynom g = gcd(f, sqr);
 
         if (g != 1)
         {
