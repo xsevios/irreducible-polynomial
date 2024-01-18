@@ -380,7 +380,8 @@ Polynom& Polynom::operator%=(const Polynom& p)
     {
         int leadingCoef     = (*this)[m_coef.size() - 1];
         int multNumber      = (m_pField->GetMultInverse(p[p.m_coef.size() - 1]) * leadingCoef) % m_pField->GetPrime();
-        divider             = p >> degreeDiff;
+        divider             = p;
+        divider             >>= degreeDiff;
         Polynom product     = divider * multNumber;
         *this -= product;
     }
@@ -542,4 +543,19 @@ Polynom Polynom::BinExp(int n, int exp, const Polynom &f) const
 const Field *Polynom::GetField() const
 {
     return m_pField;
+}
+
+Polynom &Polynom::operator>>=(const int number)
+{
+    if (number == 0)
+        return *this;
+
+    this->m_coef.resize(this->m_coef.size() + number);
+
+    memmove(m_coef.data() + number, m_coef.data(), (m_coef.size() - number) * sizeof(int));
+
+    for (int i = 0; i < number; i++)
+        m_coef[i] = 0;
+
+    return *this;
 }

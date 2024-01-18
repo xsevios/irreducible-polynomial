@@ -144,6 +144,7 @@ public:
     Polynom&                operator/=          (const Polynom& p);
     Polynom&                operator%=          (const Polynom& p);
     Polynom&                operator*=          (const int number);
+    Polynom&                operator>>=         (const int number);
 
     Polynom                 operator>>          (const int number) const;
 
