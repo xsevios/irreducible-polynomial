@@ -117,11 +117,13 @@ public:
 
         for (int j = msb(M) - 1; j >= 0; j--)
         {
-            g = (g * g) % f;
+            g *= g;
+            g %= f;
 
             if (checkBit(M, j))
             {
-                g = (g * x) % f;
+                g *= x;
+                g %= f;
             }
         }
 
@@ -176,11 +178,13 @@ inline Polynom Polynom::BinExp<bigint>(bigint M, const Polynom &f) const
 
     for (int j = msb(M) - 1; j >= 0; j--)
     {
-        g = (g * g) % f;
+        g *= g;
+        g %= f;
 
         if (checkBit(M, j))
         {
-            g = (g * x) % f;
+            g *= x;
+            g %= f;
         }
     }
 
