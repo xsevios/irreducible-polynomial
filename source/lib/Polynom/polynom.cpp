@@ -274,7 +274,27 @@ Polynom& Polynom::operator*=(const Polynom& p)
 
 Polynom &Polynom::operator*=(const int number)
 {
-    *this *= Polynom(this->getDim(), std::vector<int>{number});
+    auto pField = GetField();
+    auto fieldPrime = pField->GetPrime();
+
+    int modNum = number % pField->GetPrime();
+
+    if (modNum < 0)
+        modNum += fieldPrime;
+
+    if(!modNum)
+    {
+        m_coef.resize(0);
+        return *this;
+    }
+    else if(modNum == 1)
+    {
+        return *this;
+    }
+
+    for(auto i = m_coef.begin(); i < m_coef.end(); i++)
+        *i = (*i * modNum) % fieldPrime;
+
     return *this;
 }
 
@@ -382,8 +402,8 @@ Polynom& Polynom::operator%=(const Polynom& p)
         int multNumber      = (m_pField->GetMultInverse(p[p.m_coef.size() - 1]) * leadingCoef) % m_pField->GetPrime();
         divider             = p;
         divider             >>= degreeDiff;
-        Polynom product     = divider * multNumber;
-        *this -= product;
+        divider             *= multNumber;
+        *this -= divider;
     }
 
     return *this;
