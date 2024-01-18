@@ -552,7 +552,7 @@ Polynom Polynom::BinExp(int n, int exp, const Polynom &f) const
         limits[n] = maxExp(n);
     }
 
-    if (limits[n] < exp)
+    if (exp < limits[n])
         return this->BinExp((long long) std::pow((long double)n, (long double)exp), f);
 
     bigint bigq = n;
