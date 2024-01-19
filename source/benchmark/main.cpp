@@ -70,10 +70,10 @@ int main(int argc, char **argv)
 
     benchmark.loadLibrary();
 
-    int minDim              = 1;
-    int maxDim              = 400;
-    int minDegree           = 1;
-    int maxDegree           = 50;
+    int minDim              = 11;
+    int maxDim              = 19;
+    int minDegree           = 10;
+    int maxDegree           = 15;
     int polyCountForEach    = 1000;
     int totalBenchmarks     = (maxDim - minDim) * (maxDegree - minDegree);
     int currentBenchmark    = 0;
