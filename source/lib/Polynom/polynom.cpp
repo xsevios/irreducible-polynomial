@@ -396,17 +396,25 @@ Polynom& Polynom::operator%=(const Polynom& p)
         return *this;
     }
 
+    auto degP = p.m_coef.size();
+
     Polynom divider(m_pField->GetDim(), p.m_coef);
     int degreeDiff = 0;
+    int nPrime = this->getPrime();
 
     while ((degreeDiff = m_coef.size() - p.m_coef.size()) >= 0)
     {
         int leadingCoef     = (*this)[m_coef.size() - 1];
         int multNumber      = (m_pField->GetMultInverse(p[p.m_coef.size() - 1]) * leadingCoef) % m_pField->GetPrime();
-        divider             = p;
-        divider             >>= degreeDiff;
-        divider             *= multNumber;
-        *this -= divider;
+
+        for (int i = 0; i < degP; i++)
+        {
+            this->m_coef[i + degreeDiff] -= (p.m_coef[i] * multNumber) % nPrime;
+            if (this->m_coef[i + degreeDiff] < 0)
+                this->m_coef[i + degreeDiff] += nPrime;
+        }
+
+        this->RemoveLeadingZeros();
     }
 
     return *this;
