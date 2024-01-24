@@ -21,9 +21,9 @@
 using namespace std;
 
 template<class T>
-inline bool checkBit(T num, int pos)
+inline bool checkBit(T num, uint64_t pos)
 {
-    return ((num) & (1 << (pos)));
+    return ((num) & ((uint64_t)1 << (pos)));
 }
 
 template<class T>
@@ -40,7 +40,7 @@ inline int msb(T x)
 }
 
 template<>
-inline bool checkBit<bigint>(bigint num, int pos)
+inline bool checkBit<bigint>(bigint num, uint64_t pos)
 {
     for (int i = 0; i < pos; i++)
     {
@@ -170,26 +170,5 @@ private:
     void                    init                (int dim);
     std::vector<int>        coefBuf;
 };
-
-template<>
-inline Polynom Polynom::BinExp<bigint>(bigint M, const Polynom &f) const
-{
-    const Polynom& x    = *this;
-    Polynom g           = *this;
-
-    for (int j = msb(M) - 1; j >= 0; j--)
-    {
-        g *= g;
-        g %= f;
-
-        if (checkBit(M, j))
-        {
-            g *= x;
-            g %= f;
-        }
-    }
-
-    return g;
-}
 
 #endif
