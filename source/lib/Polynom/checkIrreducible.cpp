@@ -95,7 +95,7 @@ void PolynomChecker::matlab()
 }
 
 /// Алгоритм Евклида для многочленов
-Polynom gcd(Polynom a, Polynom b)
+Polynom gcd(const Polynom& a, const Polynom& b)
 {
 	if (b.IsZero())
     {
@@ -402,12 +402,11 @@ Factors PolynomChecker::CantorZassenhausFactorization(const Polynom& f)
     // Factors and the number (g, s) in which this factors should be powered in order to get f(x)
     // i.e. f(x) = Product of g_i(x) ^ s_i
 
-// TODO: /source/test/tester.cpp:282: void Tester::runTest(): Assertion `PolynomChecker::CantorZassenhausFactorization(p).size() == 2' failed.
-//    factors = SquareFreeFactorization(f);
-//    if (!factors.empty())
-//    {
-//        return factors;
-//    }
+    factors = SquareFreeFactorization(f);
+    if (!factors.empty())
+    {
+        return factors;
+    }
 
     // Each pair (g, r) represents a polynomial g(x) which is the product of deg(g)/r distinct irreducibles of degree r
     factors = DistinctDegreeFactorization(f);
