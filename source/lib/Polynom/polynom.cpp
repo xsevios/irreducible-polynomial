@@ -128,6 +128,15 @@ vector<int>& Polynom::getRefCoef()
 }
 
 /**
+ * Возвращает указатель на массив коэффициентов многочлена
+ * \return указатель на массив коэффициентов многочлена
+ */
+const vector<int>& Polynom::getRefCoef() const
+{
+    return m_coef;
+}
+
+/**
  * Возвращает статус приводимости многочлена
  * \return статус приводимости многочлена
  */ 
@@ -262,7 +271,7 @@ Polynom& Polynom::operator*=(const Polynom& p)
     {
         if (!large->m_coef[i])
             continue;
-        
+
         for (unsigned j = 0; j < small->m_coef.size(); j++)
         {
             coefBuf[i + j] = (coefBuf[i + j] + (large->m_coef[i] * small->m_coef[j])) % m_pField->GetPrime();
@@ -410,6 +419,10 @@ Polynom& Polynom::operator%=(const Polynom& p)
         for (int i = 0; i < degP; i++)
         {
             this->m_coef[i + degreeDiff] -= (p.m_coef[i] * multNumber) % nPrime;
+        }
+
+        for (int i = 0; i < degP; i++)
+        {
             if (this->m_coef[i + degreeDiff] < 0)
                 this->m_coef[i + degreeDiff] += nPrime;
         }

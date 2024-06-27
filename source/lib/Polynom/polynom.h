@@ -96,6 +96,7 @@ public:
 
     virtual vector<int>     getCoef             () const;
     vector<int>&            getRefCoef          ();
+    const vector<int>&      getRefCoef          () const;
     virtual int             getDim              () const;
     virtual int             GetLeadingCoef      () const;
 
