@@ -16,66 +16,12 @@
 #include <math.h>
 
 #include "Field.h"
+#include "../Utils/utils.h"
 #include "../BigInt/bigint.h"
 
 using namespace std;
 
-template<class T>
-inline bool checkBit(T num, uint64_t pos)
-{
-    return ((num) & ((uint64_t)1 << (pos)));
-}
-
-template<class T>
-inline int msb(T x)
-{
-    int num = 0;
-
-    while (x >>= 1)
-    {
-        num++;
-    }
-
-    return num;
-}
-
-template<>
-inline bool checkBit<bigint>(bigint num, uint64_t pos)
-{
-    for (int i = 0; i < pos; i++)
-    {
-        num /= 2;
-    }
-
-    return num.z[0] % 2;
-}
-
-template<>
-inline int msb<bigint>(bigint x)
-{
-    int num = 0;
-
-    while (!(x /= 2).isZero())
-    {
-        num++;
-    }
-
-    return num;
-}
-
 int getMultInverse(int num, int dim);
-
-/** Перечесление описывающее приводимость полинома
- * NEED_CHECK - требует проверки полинома(состояние по умолчанию)
- * REDUCIBLE - полином является приводимым
- * IRREDUCIBLE - полином не прифодим
-*/
-enum PolynomState
-{
-    NEED_CHECK  = -1,
-    REDUCIBLE   = 0,
-    IRREDUCIBLE = 1
-};
 
 /**
  * \brief Описывает многочлен над конечным полем и основные операции над ним

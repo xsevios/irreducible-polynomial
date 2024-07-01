@@ -11,7 +11,7 @@
 
 #include <list>
 #include <pthread.h>
-#include "../Polynom/polynom.h"
+#include "../Polynom/polynom_ext.h"
 
 class PolynomChecker;
 
@@ -27,12 +27,12 @@ enum Method {
 ///Класс "планировщик" организует проверку многочленов на неприводимость в заданное число потоков
 class Scheduler
 {
-    list<Polynom*> polynoms;///< Список многочленов
+    list<PolynomExt*> polynoms;///< Список многочленов
     unsigned numThreads;///< Количество потоков
     Method method;///< Метод проверки многочленов на неприводимость
     
 public:
-    Scheduler(list<Polynom*>, unsigned, Method);
+    Scheduler(list<PolynomExt*>, unsigned, Method);
     unsigned countBusy(PolynomChecker* pCheck);
     virtual ~Scheduler();
     virtual void start();

@@ -14,12 +14,17 @@ add_library(irredpoly SHARED
         Polynom/checkIrreducible.h
         Polynom/polynom.cpp
         Polynom/polynom.h
+        Polynom/polynom_ext.cpp
+        Polynom/polynom_ext.h
+        Polynom/Field.cpp
+        Polynom/FieldExt.cpp
         Scheduler/scheduler.cpp
         Scheduler/scheduler.h
         BigInt/bigint.cpp
         BigInt/bigint.h
         BigInt/fft.cpp
         BigInt/fft.h
-        lib.h Polynom/Field.cpp)
+        lib.h
+        Utils/utils.h)
 
 target_link_libraries(irredpoly Threads::Threads)

@@ -23,28 +23,6 @@ enum ErrorCode
     ERROR_WRITE_POLY
 };
 
-template<class T>
-bool isPrime(T n)
-{
-    T n_sqrt = sqrt(n);
-
-    if (n_sqrt * n_sqrt == n)
-        return false;
-
-    if (n % 2 == 0 && n != 2)
-        return false;
-
-    for (T i = 3; i <= n_sqrt; i += 2)
-    {
-        if (n % i == 0)
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 ostream& operator<<(ostream& out, const Polynom& p);
 /**
  * \brief Основной класс оболочки библиотеки

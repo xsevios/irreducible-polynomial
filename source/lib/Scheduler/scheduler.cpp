@@ -15,7 +15,7 @@
 
 extern PolynomChecker polynomChecker;
 
-extern "C" Scheduler* create_scheduler(list<Polynom*> polynoms, int numThread, Method method)
+extern "C" Scheduler* create_scheduler(list<PolynomExt*> polynoms, int numThread, Method method)
 {
     return new Scheduler(polynoms, numThread, method);
 }
@@ -26,7 +26,7 @@ extern "C" void destroy_scheduler(Scheduler* object)
 }
 
 ///Конструктор класса "планировщик"
-Scheduler::Scheduler(list<Polynom*> p, unsigned numThread, Method method) : polynoms(p), numThreads(numThread), method(method) { }
+Scheduler::Scheduler(list<PolynomExt*> p, unsigned numThread, Method method) : polynoms(p), numThreads(numThread), method(method) { }
 
 ///Деструктор класса "планировщик"
 Scheduler::~Scheduler() { }
@@ -68,7 +68,7 @@ void Scheduler::start()
     pthread_cond_init(&cond, NULL);
     
     pthread_mutex_lock(&mutex);
-    for (list<Polynom*>::iterator i = polynoms.begin(), j = polynoms.end(); i != j; ++i)
+    for (list<PolynomExt*>::iterator i = polynoms.begin(), j = polynoms.end(); i != j; ++i)
     {
         while (countBusy(pCheck) >= numThreads)///Проверяем, есть ли свободные потоки
             pthread_cond_wait(&cond, &mutex);///ждём изменения числа занятых потоков

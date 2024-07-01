@@ -13,7 +13,7 @@
 #include <chrono>
 #include <functional>
 
-using Benchmark = std::tuple<std::string, std::function<PolynomState(const Polynom& f)>, std::vector<PolynomState>, std::chrono::nanoseconds>;
+using Benchmark = std::tuple<std::string, std::function<PolynomState(const PolynomExt& f)>, std::vector<PolynomState>, std::chrono::nanoseconds>;
  
 enum ErrorCode
 {
@@ -23,7 +23,7 @@ enum ErrorCode
     ERROR_WRITE_POLY
 };
 
-ostream& operator<<(ostream& out, const Polynom& p);
+ostream& operator<<(ostream& out, const PolynomExt& p);
 /**
  * \brief Основной класс оболочки библиотеки
  */ 
@@ -38,13 +38,13 @@ public:
     
     void loadLibrary();
 
-    std::vector<Benchmark> runAll(std::vector<Polynom>& polynoms);
+    std::vector<Benchmark> runAll(std::vector<PolynomExt>& polynoms);
 
-    static Polynom GenRandPolynom(const Polynom& p);
+    static PolynomExt GenRandPolynom(const PolynomExt& p);
 
-    static std::vector<Polynom> generatePolynoms(const int minDim, const int maxDim, const int minDegree, const int maxDegree, const int polyCountForEach);
+    static std::vector<PolynomExt> generatePolynoms(const int minDim, const int maxDim, const int minDegree, const int maxDegree, const int polyCountForEach);
 
-    void run(std::vector<Polynom>& polynoms, Benchmark& benchmark);
+    void run(std::vector<PolynomExt>& polynoms, Benchmark& benchmark);
 };
 
 #endif
