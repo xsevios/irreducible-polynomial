@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "LibraryInterface/LibraryInterface.h"
 #include <iostream>
 #include <cstring>
 
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     int maxDegree           = 50;
     int polyCountForEach    = 1000;
 
-    std::vector<Polynom> polynoms = PolyGenerator::generatePolynoms(minDim, maxDim, minDegree, maxDegree, polyCountForEach);
+    std::vector<PolynomExt> polynoms = PolynomGenerator::generatePolynoms(minDim, maxDim, minDegree, maxDegree, polyCountForEach);
 
     ofstream polysFile("polynoms.txt", ios::trunc);
 

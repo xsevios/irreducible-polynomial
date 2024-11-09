@@ -99,7 +99,10 @@ PolynomExt gcd(const PolynomExt& a, const PolynomExt& b)
 {
     if (b.IsZero())
     {
-        return a * a.GetField()->GetMultInverse(a.GetLeadingCoef());
+        if (a.GetField()->IsPrimeField())
+            return a * a.GetField()->GetMultInverse(a.GetLeadingCoef());
+        else
+            return a * a.GetField()->GetMultInverse(a.GetLeadingExtCoef());
     }
 
     PolynomExt d = gcd(b, a % b);
@@ -368,18 +371,26 @@ PolynomChecker::PolynomChecker()
 bool PolynomChecker::isSquareFree(const PolynomExt &f)
 {
     PolynomExt c = gcd(f, f.Derivative());
-    return c.GetDegree() == 0 && c[0] == 1;
+    return c.GetDegree() == 0;
 }
 
 PolynomState PolynomChecker::CantorZassenhausTest(const PolynomExt& f)
 {
+    if (!isSquareFree(f))
+    {
+        f.setIrreducible(REDUCIBLE);
+        return REDUCIBLE;
+    }
+
     PolynomExt x(f.GetField(), std::vector<int>{0, 1});
     int q = f.GetDim();
     int n = f.GetDegree();
 
     for (int r = (n / 4) + 1; r <= n / 2; r++)
     {
+//        std::cout << "f: " << f << std::endl;
         PolynomExt sqr = x.BinExp(q, r, f);
+//        std::cout << "sqr: " << sqr << std::endl;
         sqr -= x;
         sqr %= f;
         PolynomExt g = gcd(f, sqr);
@@ -598,6 +609,12 @@ PolynomExt PolynomChecker::GenRandPolynom(const PolynomExt& p)
 
 PolynomState PolynomChecker::RabinsTest(const PolynomExt &f)
 {
+    if (!isSquareFree(f))
+    {
+        f.setIrreducible(REDUCIBLE);
+        return REDUCIBLE;
+    }
+
     int n = f.GetDegree();
 
     auto primeDivisors = GetPrimeDivisors(f.GetDegree(), true);
@@ -612,7 +629,8 @@ PolynomState PolynomChecker::RabinsTest(const PolynomExt &f)
     for (const auto& divisor : divisors)
     {
         PolynomExt sqr = x.BinExp(f.GetDim(), divisor, f);
-        PolynomExt h = (sqr - x) % f;
+        auto diff = sqr - x;
+        PolynomExt h = diff % f;
         PolynomExt g = gcd(f, h);
         if (g != 1)
         {

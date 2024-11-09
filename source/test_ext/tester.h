@@ -12,14 +12,6 @@
 #include "LibraryInterface/LibraryInterface.h"
 
 using namespace std;
- 
-enum ErrorCode
-{
-    ERROR_LIB = 1,
-    ERROR_READ_CONF,
-    ERROR_READ_POLY,
-    ERROR_WRITE_POLY
-};
 
 ostream& operator<<(ostream& out, const Polynom& p);
 /**
@@ -39,6 +31,7 @@ public:
 
     void testBigint();
     void testFieldExtensions();
+    void testPolynomGenerator();
 };
 
 #endif

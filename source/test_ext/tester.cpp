@@ -54,8 +54,6 @@ void Tester::loadLibrary()
 
 void Tester::runTest()
 {
-    // -----------------------------------
-
     testBigint();
 
     assert(msb(0) == 0);
@@ -411,6 +409,7 @@ void Tester::runTest()
     }
 
     testFieldExtensions();
+    testPolynomGenerator();
 }
 
 void Tester::testBigint()
@@ -502,5 +501,130 @@ void Tester::testFieldExtensions()
 
         assert(p4.GetRefExtCoef().empty());
         assert(p5.GetRefExtCoef().empty());
+    }
+
+    {
+        PolynomExt p1(FieldExt::GetInstance(2), std::vector<int>{1, 1, 0, 1, 1, 0, 0, 0, 1});
+        const auto* pField = FieldExt::GetInstance(&p1);
+
+        PolynomExt k1(FieldExt::GetInstance(2), std::vector<int>{1, 1, 0, 0, 1, 0, 1});
+        PolynomExt expectedInverse(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 0, 0, 1, 1});
+        auto inversePolynom = pField->GetMultInverse(&k1);
+
+        assert(expectedInverse == inversePolynom);
+    }
+}
+
+void Tester::testPolynomGenerator()
+{
+    {
+        PolynomExt p1(FieldExt::GetInstance(3), std::vector<int>{2, 2, 0, 0, 1});
+        const auto* pField = FieldExt::GetInstance(&p1);
+
+        PolynomExt k0(FieldExt::GetInstance(3), std::vector<int>{0, 2, 0, 2});
+        PolynomExt k1(FieldExt::GetInstance(3), std::vector<int>{1, 0, 2});
+        PolynomExt k2(FieldExt::GetInstance(3), std::vector<int>{2});
+        PolynomExt k5(FieldExt::GetInstance(3), std::vector<int>{0, 2, 0, 2});
+
+        ExtCoeffs coeffs;
+        coeffs.emplace(0, k0);
+        coeffs.emplace(1, k1);
+        coeffs.emplace(2, k2);
+        coeffs.emplace(5, k5);
+        PolynomExt poly(pField, coeffs);
+
+        auto cantorState = PolynomChecker::CantorZassenhausTest(poly);
+        auto rabinState = PolynomChecker::RabinsTest(poly);
+
+        assert(cantorState == rabinState);
+    }
+
+    {
+        PolynomExt p1(FieldExt::GetInstance(3), std::vector<int>{2, 2, 0, 0, 1});
+        const auto* pField = FieldExt::GetInstance(&p1);
+
+        PolynomExt a3(FieldExt::GetInstance(3), std::vector<int>{0, 2});
+        PolynomExt a4(FieldExt::GetInstance(3), std::vector<int>{1, 2, 2});
+        PolynomExt a5(FieldExt::GetInstance(3), std::vector<int>{2, 0, 0, 2});
+
+        ExtCoeffs coeffs1;
+        coeffs1.emplace(3, a3);
+        coeffs1.emplace(4, a4);
+        coeffs1.emplace(5, a5);
+        PolynomExt a(pField, coeffs1);
+
+        PolynomExt d3(FieldExt::GetInstance(3), std::vector<int>{1, 2, 2});
+        PolynomExt d4(FieldExt::GetInstance(3), std::vector<int>{1, 0, 0, 1});
+
+        ExtCoeffs coeffs2;
+        coeffs2.emplace(3, d3);
+        coeffs2.emplace(4, d4);
+        PolynomExt d(pField, coeffs2);
+
+        assert(a.Derivative() == d);
+    }
+
+    {
+        PolynomExt p1(FieldExt::GetInstance(3), std::vector<int>{2, 2, 0, 0, 1});
+        const auto* pField = FieldExt::GetInstance(&p1);
+
+        PolynomExt a1(FieldExt::GetInstance(3), std::vector<int>{1});
+        PolynomExt a2(FieldExt::GetInstance(3), std::vector<int>{2});
+
+        ExtCoeffs coeffs1;
+        coeffs1.emplace(5, a1);
+        coeffs1.emplace(4, a2);
+        coeffs1.emplace(0, a1);
+        PolynomExt a(pField, coeffs1);
+
+        auto cantorState = PolynomChecker::CantorZassenhausTest(a);
+        auto rabinState = PolynomChecker::RabinsTest(a);
+
+        assert(cantorState == rabinState);
+    }
+
+    {
+        PolynomExt p1(FieldExt::GetInstance(3), std::vector<int>{2, 2, 0, 0, 1});
+        const auto* pField = FieldExt::GetInstance(&p1);
+
+        PolynomExt a4(FieldExt::GetInstance(3), std::vector<int>{0, 0, 0, 1});
+        PolynomExt a3(FieldExt::GetInstance(3), std::vector<int>{0, 2});
+        PolynomExt a2(FieldExt::GetInstance(3), std::vector<int>{2, 0, 0, 1});
+        PolynomExt a1(FieldExt::GetInstance(3), std::vector<int>{2});
+        PolynomExt a0(FieldExt::GetInstance(3), std::vector<int>{1, 0, 2, 1});
+
+        ExtCoeffs coeffs1;
+        coeffs1.emplace(4, a4);
+        coeffs1.emplace(3, a3);
+        coeffs1.emplace(2, a2);
+        coeffs1.emplace(1, a1);
+        coeffs1.emplace(0, a0);
+        PolynomExt a(pField, coeffs1);
+
+        auto b = a * a;
+
+        assert(b.CheckConsistensy());
+    }
+
+    {
+        PolynomExt p1(FieldExt::GetInstance(3), std::vector<int>{2, 2, 0, 0, 1});
+        const auto* pField = FieldExt::GetInstance(&p1);
+
+        PolynomExt a5(FieldExt::GetInstance(3), std::vector<int>{2, 2});
+        PolynomExt a4(FieldExt::GetInstance(3), std::vector<int>{0, 0, 2});
+        PolynomExt a3(FieldExt::GetInstance(3), std::vector<int>{0, 0, 0, 2});
+        PolynomExt a0(FieldExt::GetInstance(3), std::vector<int>{1});
+
+        ExtCoeffs coeffs1;
+        coeffs1.emplace(5, a5);
+        coeffs1.emplace(4, a4);
+        coeffs1.emplace(3, a3);
+        coeffs1.emplace(0, a0);
+        PolynomExt a(pField, coeffs1);
+
+        PolynomState cantorState = PolynomChecker::CantorZassenhausTest(a);
+        PolynomState rabinState = PolynomChecker::RabinsTest(a);
+
+        assert(cantorState == rabinState);
     }
 }

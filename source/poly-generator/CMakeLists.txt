@@ -10,7 +10,6 @@ include_directories(source/driver/LibraryInterface)
 add_executable(irreducible_polynomial_poly_generator
         LibraryInterface/LibraryInterface.cpp
         LibraryInterface/LibraryInterface.h
-        utils.cpp
         main.cpp)
 
 target_link_libraries(irreducible_polynomial_poly_generator irredpoly ${CMAKE_DL_LIBS})

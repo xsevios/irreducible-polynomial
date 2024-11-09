@@ -18,6 +18,7 @@ add_library(irredpoly SHARED
         Polynom/polynom_ext.h
         Polynom/Field.cpp
         Polynom/FieldExt.cpp
+        PolynomGenerator/polynom_generator.cpp
         Scheduler/scheduler.cpp
         Scheduler/scheduler.h
         BigInt/bigint.cpp

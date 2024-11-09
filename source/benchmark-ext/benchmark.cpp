@@ -92,6 +92,7 @@ void BenchmarkRunner::run(std::vector<PolynomExt> &polynoms, Benchmark& benchmar
     }
     end = std::chrono::steady_clock::now();
 
+    std::get<2>(benchmark) = checkRes;
     std::get<3>(benchmark) = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
 }
 

@@ -1,5 +1,6 @@
 polynom_reader(str) = {
 	str = strsplit(str, " ");
+	str = str[2..length(str)]
 	str = strjoin(str, ",");
 	str = concat("[", str);
 	str = concat(str, "]");
@@ -7,12 +8,17 @@ polynom_reader(str) = {
 	return(Pol(str_coefs));
 }
 
-number_reader(str) = eval(str);
+dim_reader(str) = {
+	str = strsplit(str, " ");
+	str = str[1]
+	return(eval(str));
+}
 
 read_file(file_name, ~list, reader) =
 {
 	listkill(list);
 	file = fileopen(file_name);
+	filereadstr(file);
 	while(l = filereadstr(file), listput(list, reader(l)));
 	fileclose(file);
 }
@@ -20,22 +26,21 @@ read_file(file_name, ~list, reader) =
 run_benchmark(polynom, dim, ~factored, factor_method) =
 {
 	factored = List();
+	elapsed = List();
 	T = getwalltime();
 	for (i = 1, length(dim), listput(factored,  factorcantor(polynom[i], dim[i])));
 	elapsed = getwalltime() - T;
 	print(elapsed);
 }
 
-polynoms_file_name = "C:\\Users\\nikit\\OneDrive\\Документы\\Учеба\\Аспирантура\\Диссертация\\polynoms\\test_poly.txt"
-
-dims_file_name = "C:\\Users\\nikit\\OneDrive\\Документы\\Учеба\\Аспирантура\\Диссертация\\polynoms\\test_dim.txt"
+polynoms_file_name = "D:\Development\Projects\irreducible-polynomial\cmake-build-release-wsl\source\poly-generator\polynoms.txt"
 
 polynom = List()
 dim = List()
 factored = List()
 
 read_file(polynoms_file_name, ~polynom, polynom_reader);
-read_file(dims_file_name, ~dim, number_reader);
+read_file(polynoms_file_name, ~dim, dim_reader);
 
 run_benchmark(polynom, dim, factored, factorcantor);
 run_benchmark(polynom, dim, factored, factormod);

@@ -4,6 +4,8 @@
 */
 
 #include "polynom_ext.h"
+#include "../PolynomGenerator/polynom_generator.h"
+
 #include <iostream>
 #include <string>
 #include <map>
@@ -99,9 +101,22 @@ PolynomExt::PolynomExt(const string& strPolynomExt)
 
 PolynomExt::PolynomExt(const FieldExt* pField, const vector<int>& coef)
 {
-    assert(pField->IsPrimeField());
     m_pField = pField;
-    m_coef = coef;
+
+    if (pField->IsPrimeField())
+    {
+        m_coef = coef;
+    }
+    else
+    {
+        for (int i = 0; i < coef.size(); i++)
+        {
+            if (coef[i] != 0)
+            {
+                m_extCoef.emplace(i, PolynomExt(pField->GetSubfield(), std::vector<int>(1, coef[i])));
+            }
+        }
+    }
 }
 
 PolynomExt::PolynomExt(const FieldExt* pField, uint64_t coefCount)
@@ -389,6 +404,15 @@ PolynomExt& PolynomExt::operator*=(const PolynomExt& p)
                 }
             }
 
+            for (auto it = extCoeffs.cbegin(), next_it = it; it != extCoeffs.cend(); it = next_it)
+            {
+                ++next_it;
+                if (it->second.IsZero())
+                {
+                    extCoeffs.erase(it);
+                }
+            }
+
             m_extCoef = extCoeffs;
         }
         else if (f_mul_elem || elem_mul_f)
@@ -462,7 +486,7 @@ PolynomExt operator*(PolynomExt lp, const PolynomExt& rp)
 
 PolynomExt operator*(const int number, const PolynomExt& p)
 {
-    auto fieldPrime = p.GetField()->GetPrime();
+    int fieldPrime = p.GetField()->GetPrime();
 
     int modNum = number % fieldPrime;
 
@@ -810,7 +834,9 @@ PolynomExt PolynomExt::Derivative() const
         {
             if (coeff.first > 0)
             {
-                coeffs.emplace(coeff.first - 1, coeff.second * coeff.first);
+                auto result = coeff.second * coeff.first;
+                if (!result.IsZero())
+                    coeffs.emplace(coeff.first - 1, result);
             }
         }
 
@@ -837,7 +863,10 @@ PolynomExt PolynomExt::Exp(int p) const
 /// Проверяет, является ли многочлен нулём
 bool PolynomExt::IsZero() const
 {
-    return m_coef.empty();
+    if (GetField()->IsPrimeField())
+        return m_coef.empty();
+    else
+        return m_extCoef.empty();
 }
 
 /// Убирает нули при старших коэффициентах
@@ -966,4 +995,18 @@ void PolynomExt::eraseEmptyExtCoef(ExtCoeffs::iterator it)
 const PolynomExt* PolynomExt::GetLeadingExtCoef() const
 {
     return !m_extCoef.empty() ? &m_extCoef.rbegin()->second : nullptr;
+}
+
+bool PolynomExt::CheckConsistensy() const
+{
+    if (this->GetField()->IsPrimeField())
+        return true;
+
+    for (const auto& coef : this->GetRefExtCoef())
+    {
+        if (coef.second.IsZero())
+            return false;
+    }
+
+    return true;
 }

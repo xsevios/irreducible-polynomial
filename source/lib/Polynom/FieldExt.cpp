@@ -77,3 +77,8 @@ const FieldExt * FieldExt::GetSubfield() const
 bool FieldExt::IsPrimeField() const {
     return this->GetPolynom() == nullptr;
 }
+
+unsigned int FieldExt::GetDim() const
+{
+    return ipow(GetPrime(), GetDegree());
+}

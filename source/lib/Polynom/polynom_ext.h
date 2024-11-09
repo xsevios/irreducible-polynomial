@@ -24,6 +24,7 @@ using namespace std;
 typedef std::map<int, PolynomExt> ExtCoeffs;
 
 int getMultInverse(int num, int dim);
+ostream& operator<<(ostream& out, const PolynomExt& p);
 
 /**
  * \brief Описывает многочлен над конечным полем и основные операции над ним
@@ -31,7 +32,7 @@ int getMultInverse(int num, int dim);
 class PolynomExt
 {
     vector<int>                 m_coef;                         ///< Массив коэфициентов многочлена
-    std::map<int, PolynomExt>   m_extCoef;                      ///< Массив коэфициентов многочлена расширения поля
+    ExtCoeffs                   m_extCoef;                      ///< Массив коэфициентов многочлена расширения поля
     const FieldExt *            m_pField        = nullptr;      ///< Поле коэфициентов многочлена
     mutable PolynomState        m_eIrreducible  = NEED_CHECK;   ///< Статус приводимости многочлена
 
@@ -55,8 +56,8 @@ public:
     virtual PolynomState    isIrreducible       () const;
     const FieldExt *        GetField            () const;
     std::size_t             GetHash             () const;
-    unsigned                GetDegree() const;
-    unsigned                GetPrime() const;
+    unsigned                GetDegree           () const;
+    unsigned                GetPrime            () const;
     void                    print               (ostream& out = cout) const;
 
     PolynomExt              Exp                 (int p) const;
@@ -68,16 +69,39 @@ public:
         const PolynomExt& x    = *this;
         PolynomExt g           = *this;
 
+//        std::cout << "BinExp start: " << g << std::endl<char, std::char_traits<char>>;
+
         for (int j = msb(M) - 1; j >= 0; j--)
         {
+//            std::cout << "BinExp g: " << g << std::endl<char, std::char_traits<char>>;
             g *= g;
+
+//            std::cout << "BinExp 11: " << g << std::endl<char, std::char_traits<char>>;
+//            if (!g.CheckConsistensy())
+//                exit(0);
+
             g %= f;
+
+//            std::cout << "BinExp 12: " << g << std::endl<char, std::char_traits<char>>;
+//            if (!g.CheckConsistensy())
+//                exit(0);
 
             if (checkBit(M, j))
             {
                 g *= x;
+
+//                std::cout << "BinExp 21: " << g << std::endl<char, std::char_traits<char>>;
+//                if (!g.CheckConsistensy())
+//                    exit(0);
                 g %= f;
+
+//                std::cout << "BinExp 22: " << g << std::endl<char, std::char_traits<char>>;
+//                if (!g.CheckConsistensy())
+//                    exit(0);
             }
+
+//            if (!g.CheckConsistensy())
+//                exit(0);
         }
 
         return g;
@@ -87,6 +111,7 @@ public:
 
     PolynomExt              Derivative          () const;
     bool                    IsZero              () const;
+    bool                    CheckConsistensy    () const;
     void                    RemoveLeadingZeros  ();
 
     int&                    operator[]          (size_t id);
@@ -123,18 +148,5 @@ private:
     void                    eraseEmptyExtCoef(ExtCoeffs::iterator it);
     std::vector<int>        coefBuf;
 };
-
-//struct HashPolynom {
-//    std::size_t operator()(const PolynomExt& p) const {
-//        const auto* pField = p.GetField();
-//        std::size_t hashValue = 0;
-//        std::hash<int> hasher;
-//        hashValue = hasher(pField->GetPrime()) + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
-//        while (const auto *pIrredPoly = pField->GetPolynom())
-//        {
-//            hashValue ^= hasher(pIrredPoly->GetField()->GetDegree()) + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
-//        }
-//    }
-//};
 
 #endif
