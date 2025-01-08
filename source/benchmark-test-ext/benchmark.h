@@ -14,14 +14,6 @@
 #include <functional>
 
 using Benchmark = std::tuple<std::string, std::function<PolynomState(const PolynomExt& f)>, std::vector<PolynomState>, std::chrono::nanoseconds>;
- 
-enum ErrorCode
-{
-    ERROR_LIB = 1,
-    ERROR_READ_CONF,
-    ERROR_READ_POLY,
-    ERROR_WRITE_POLY
-};
 
 ostream& operator<<(ostream& out, const PolynomExt& p);
 /**
