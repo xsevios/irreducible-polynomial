@@ -413,13 +413,18 @@ Factors PolynomChecker::CantorZassenhausFactorization(const PolynomExt& f)
     // Factors and the number (g, s) in which this factors should be powered in order to get f(x)
     // i.e. f(x) = Product of g_i(x) ^ s_i
 
-// TODO: add factorization for each factor after square free factorization
+    Factors sffFactors = SquareFreeFactorization(f);
+    if (sffFactors.size() > 1 || (!sffFactors.empty() && sffFactors.begin()->first != 1))
+    {
+        for (auto it = sffFactors.begin(); it != sffFactors.end(); it++)
+        {
+            auto completeFactors = CantorZassenhausFactorization(it->second);
+            for (auto & factor : completeFactors)
+                factors.insert({it->first, factor.second});
+        }
 
-//    factors = SquareFreeFactorization(f);
-//    if (!factors.empty())
-//    {
-//        return factors;
-//    }
+        return factors;
+    }
 
     // Each pair (g, r) represents a polynomial g(x) which is the product of deg(g)/r distinct irreducibles of degree r
     factors = DistinctDegreeFactorization(f);
