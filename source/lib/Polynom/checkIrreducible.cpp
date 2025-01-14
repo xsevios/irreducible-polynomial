@@ -558,6 +558,7 @@ Factors PolynomChecker::EqualDegreeFactorization(const PolynomExt &p, int d)
 {
     Factors factors;
 
+    auto one = PolynomExt(p.GetField(), std::vector<int>{1});
     int c = (powl(p.GetDim(), d) - 1) / 2;
     int v = p.GetField()->GetDegree();
 
@@ -566,7 +567,7 @@ Factors PolynomChecker::EqualDegreeFactorization(const PolynomExt &p, int d)
 
     if (p.GetPrime() == 2)
     {
-        for (int j = 0; j < v * d - 1; j++)
+        for (int j = 0; j <= v * d - 1; j++)
         {
             g += h.BinExp(2, j, p);
         }
@@ -578,7 +579,7 @@ Factors PolynomChecker::EqualDegreeFactorization(const PolynomExt &p, int d)
 
     if (p.GetPrime() != 2 && g == 1)
     {
-        g = (h.Exp(c) - PolynomExt(p.GetField(), std::vector<int>{1})) % p;
+        g = (h.Exp(c) - one) % p;
     }
 
     PolynomExt pgGcd = gcd(p, g);
