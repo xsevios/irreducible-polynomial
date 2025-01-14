@@ -72,8 +72,8 @@ int main(int argc, char **argv)
 
     benchmark.loadLibrary();
 
-    int minDim              = 11;
-    int maxDim              = 19;
+    int minDim              = 37;
+    int maxDim              = 101;
     int minDegree           = 10;
     int maxDegree           = 15;
     int polyCountForEach    = 1000;
@@ -86,8 +86,9 @@ int main(int argc, char **argv)
     ofstream berlekampFile("berlekamp.txt", ios::trunc);
     ofstream cantorzassenhaus("cantorzassenhaus.txt", ios::trunc);
     ofstream rabin("rabin.txt", ios::trunc);
+    ofstream ks("ks.txt", ios::trunc);
 
-    std::array<int, 3> benchmark_ms = {0, 0, 0};
+    std::array<int, 4> benchmark_ms = {0, 0, 0, 0};
 
     for (int dim = minDim; dim < maxDim; dim++)
     {
@@ -107,18 +108,22 @@ int main(int argc, char **argv)
                 auto berlekampTimeMs = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(results[0])).count();
                 auto cantorzassenhausTimeMs = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(results[1])).count();
                 auto rabinTimeMs = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(results[2])).count();
+                auto ksTimeMs = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::get<3>(results[3])).count();
 
                 benchmark_ms[0] += berlekampTimeMs;
                 benchmark_ms[1] += cantorzassenhausTimeMs;
                 benchmark_ms[2] += rabinTimeMs;
+                benchmark_ms[3] += ksTimeMs;
 
                 berlekampFile << deg << " " << berlekampTimeMs << " ";
                 cantorzassenhaus << deg << " " << cantorzassenhausTimeMs << " ";
                 rabin << deg << " " << rabinTimeMs << " ";
+                ks << deg << " " << ksTimeMs << " ";
 
                 berlekampFile << std::endl;
                 cantorzassenhaus << std::endl;
                 rabin << std::endl;
+                ks << std::endl;
 
                 currentBenchmark++;
                 progress = (float)currentBenchmark / totalBenchmarks;
@@ -161,6 +166,7 @@ int main(int argc, char **argv)
     std::cout << "berlekamp: " << benchmark_ms[0] << std::endl;
     std::cout << "cantorzassenhaus: " << benchmark_ms[1] << std::endl;
     std::cout << "rabin: " << benchmark_ms[2] << std::endl;
+    std::cout << "ks: " << benchmark_ms[3] << std::endl;
 
     return 0;
 }

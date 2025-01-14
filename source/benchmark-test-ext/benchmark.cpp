@@ -100,15 +100,18 @@ std::vector<Benchmark> BenchmarkRunner::runAll(std::vector<PolynomExt>& polynoms
     std::chrono::nanoseconds berlekampElapsed;
     std::chrono::nanoseconds cantorzassenhausElapsed;
     std::chrono::nanoseconds rabinsElapsed;
+    std::chrono::nanoseconds ksElapsed;
 
     std::vector<PolynomState> berlekampRes;
     std::vector<PolynomState> cantorzassenhausRes;
     std::vector<PolynomState> rabinsRes;
+    std::vector<PolynomState> ksRes;
 
     std::vector<Benchmark> benchmarks = {
             {"Berlekamp",           PolynomChecker::BerlekampTest,          berlekampRes,           berlekampElapsed},
             {"Cantor-Zassenhaus",   PolynomChecker::CantorZassenhausTest,   cantorzassenhausRes,    cantorzassenhausElapsed},
             {"Rabin",               PolynomChecker::RabinsTest,             rabinsRes,              rabinsElapsed},
+            {"Kaltofen-Shoup",      PolynomChecker::KaltofenShoupTest,      ksRes,                  ksElapsed},
     };
 
     for (auto& benchmark : benchmarks)
@@ -119,9 +122,9 @@ std::vector<Benchmark> BenchmarkRunner::runAll(std::vector<PolynomExt>& polynoms
 
     for (int i = 0; i < berlekampRes.size(); i++)
     {
-        if (berlekampRes[i]  != cantorzassenhausRes[i] || cantorzassenhausRes[i]  != rabinsRes[i])
+        if (berlekampRes[i]  != cantorzassenhausRes[i] || cantorzassenhausRes[i]  != rabinsRes[i] || cantorzassenhausRes[i]  != ksRes[i])
         {
-            std::cout << "Test results mismatch (" << berlekampRes[i] << "/" << cantorzassenhausRes[i] << "/" << rabinsRes[i] << ") for polynom №" << i + 1 << " " << polynoms[i]  << std::endl;
+            std::cout << "Test results mismatch (" << berlekampRes[i] << "/" << cantorzassenhausRes[i] << "/" << rabinsRes[i] << "/" << ksRes[i] << ") for polynom №" << i + 1 << " " << polynoms[i]  << std::endl;
             assert(0);
         }
     }
