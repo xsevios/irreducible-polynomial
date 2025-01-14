@@ -601,7 +601,7 @@ PolynomExt PolynomChecker::GenRandPolynom(const PolynomExt& p)
 
     while (pRes.GetDegree() == 0)
     {
-        for (int i = 0; i < p.GetCoef().size(); i++)
+        for (int i = 0; i < p.GetCoef().size() - 1; i++)
         {
             pRes.getRefCoef().push_back(distrib(gen) % p.GetPrime());
         }
