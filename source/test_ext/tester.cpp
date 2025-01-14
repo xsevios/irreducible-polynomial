@@ -55,19 +55,52 @@ void Tester::loadLibrary()
 void Tester::runTest()
 {
     testBigint();
+    testPrimeDivisors();
+    testMsb();
+    testGauss();
+    testField();
+    testFieldExtensions();
+    testPolynomGenerator();
 
-    assert(msb(0) == 0);
-    assert(msb(1) == 0);
-    assert(msb(2) == 1);
-    assert(msb(3) == 1);
-    assert(msb(4) == 2);
-    assert(msb(9) == 3);
+    testGcd();
+    testSff();
+    testBinExp();
+    testDdf();
+    testDdfShoup();
+    testEdf();
 
-    auto pFieldExt = FieldExt::GetInstance(7);
+    testCantorZassenhausFactorization();
+    testKaltofenShoupFactorization();
+    testCantorZassenhausTest();
+    testKaltofenShoupTest();
+    testBerlekampTest();
+    testRabinTest();
+}
 
-    assert(pFieldExt->GetMultInverse(1) == 1);
-    assert(pFieldExt->GetMultInverse(2) == 4);
+void Tester::testBigint()
+{
+    {
+        bigint n("3");
+        bigint exp("3");
+        bigint expected("27");
+        bigint res = n ^ exp;
+        assert(res == expected);
+    }
 
+    {
+        int n = 11;
+        bigint bign("11");
+
+        assert(msb(n) == msb(bign));
+        for (int i = 0; i < 15; i++)
+        {
+            assert(checkBit(n, i) == checkBit(bign, i));
+        }
+    }
+}
+
+void Tester::testPrimeDivisors()
+{
     auto divisors = PolynomChecker::GetPrimeDivisors(2);
     assert(PolynomChecker::GetPrimeDivisors(2)          == (std::vector<int>{2}));
     assert(PolynomChecker::GetPrimeDivisors(3)          == (std::vector<int>{3}));
@@ -81,39 +114,20 @@ void Tester::runTest()
     assert(PolynomChecker::GetPrimeDivisors(1024)       == (std::vector<int>{2, 2, 2, 2, 2, 2, 2, 2, 2, 2}));
     assert(PolynomChecker::GetPrimeDivisors(1024, true) == (std::vector<int>{2}));
     assert(PolynomChecker::GetPrimeDivisors(3072, true) == (std::vector<int>{2, 3}));
+}
 
-    {
-        PolynomExt p1(FieldExt::GetInstance(7), {6, 4, 5});
-        PolynomExt p2(FieldExt::GetInstance(7), std::vector<int>{1, 2});
+void Tester::testMsb()
+{
+    assert(msb(0) == 0);
+    assert(msb(1) == 0);
+    assert(msb(2) == 1);
+    assert(msb(3) == 1);
+    assert(msb(4) == 2);
+    assert(msb(9) == 3);
+}
 
-        PolynomExt p(FieldExt::GetInstance(7), std::vector<int>{});
-
-        p = p1 + p2;
-        assert(p[0] == 0);
-        assert(p[1] == 6);
-        assert(p[2] == 5);
-
-        p = p1 - p2;
-        assert(p[0] == 5);
-        assert(p[1] == 2);
-        assert(p[2] == 5);
-
-        p = p1 * p2;
-        assert(p[0] == 6);
-        assert(p[1] == 2);
-        assert(p[2] == 6);
-        assert(p[3] == 3);
-
-        p = p1 / 2;
-        assert(p[0] == 3);
-        assert(p[1] == 2);
-        assert(p[2] == 6);
-
-        p = p1 / p2;
-        assert(p[0] == 6);
-        assert(p[1] == 6);
-    }
-
+void Tester::testGauss()
+{
     // ----------------- Gauss ------------------
 
     {
@@ -207,230 +221,47 @@ void Tester::runTest()
         int gaussRank = PolynomChecker::getRank(gaussMatrix, 3);
         assert(gaussRank == 4);
     }
-
-    // -----------------------------------
-
-    {
-        PolynomExt f(FieldExt::GetInstance(5), std::vector<int>{3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
-        PolynomExt g(FieldExt::GetInstance(5), std::vector<int>{2, 0, 1, 0, 0, 2, 0, 4, 0, 0, 0, 0, 3});
-
-        PolynomExt pGcd = gcd(f, g);
-
-        assert(pGcd == PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 0, 4, 1, 0, 1, 0, 4, 1}));
-    }
-
-    {
-        PolynomExt f(FieldExt::GetInstance(5), std::vector<int>{3, 0, 3, 4, 0, 1, 1, 3, 1});
-        PolynomExt g(FieldExt::GetInstance(5), std::vector<int>{2, 4, 0, 3, 1, 1});
-
-        PolynomExt pGcd = gcd(f, g);
-
-        assert(pGcd == PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 0, 3, 1}));
-    }
-
-    // -----------------------------------
-
-    {
-        PolynomExt p1(FieldExt::GetInstance(3), std::vector<int>{1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1});
-        Factors SffFactors = PolynomChecker::SquareFreeFactorization(p1);
-
-        Factors factors;
-        factors.insert({1, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{1, 1})});
-        factors.insert({3, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{1, 0, 1})});
-        factors.insert({4, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{2, 1})});
-
-        assert(factors == SffFactors);
-    }
-
-    {
-        PolynomExt p2(FieldExt::GetInstance(5), std::vector<int>{3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
-        Factors SffFactors = PolynomChecker::SquareFreeFactorization(p2);
-
-        Factors factors;
-        factors.insert({1, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 2, 1})});
-        factors.insert({2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 0, 4, 1})});
-        factors.insert({5, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 1})});
-
-        assert(factors == SffFactors);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
-        Factors SffFactors = PolynomChecker::SquareFreeFactorization(p);
-
-        Factors factors;
-        factors.insert({1, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1})});
-        assert(factors == SffFactors);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1});
-        Factors SffFactors = PolynomChecker::SquareFreeFactorization(p);
-
-        Factors factors;
-        factors.insert({1, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1})});
-        assert(factors == SffFactors);
-    }
-
-    // -----------------------------------
-
-    {
-        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{1, 1, 2, 1, 1, 1, 1});
-        PolynomExt x(FieldExt::GetInstance(3), std::vector<int>{0, 1});
-
-        assert(x.BinExp(27, p) == x);
-    }
-
-    {
-        PolynomExt f(FieldExt::GetInstance(5), std::vector<int>{1, 2, 3, 4, 0, 0, 1});
-        PolynomExt p(FieldExt::GetInstance(5), std::vector<int>{2, 0, 0, 1});
-        PolynomExt expected(FieldExt::GetInstance(5), std::vector<int>{4, 0, 3, 4, 0, 3});
-
-        assert(((p.BinExp(12, f) - PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1})) % f) == expected);
-    }
-
-    // -----------------------------------
-
-    {
-        PolynomExt p1(FieldExt::GetInstance(3), std::vector<int>{1, 0, 1, 2, 2, 0, 2, 0, 0, 0, 0, 1});
-        Factors DdfFactors = PolynomChecker::DistinctDegreeFactorization(p1);
-
-        Factors factors;
-        factors.insert({1, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{2, 0, 1})});
-        factors.insert({1, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{2, 1})});
-        factors.insert({2, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{1, 0, 1})});
-        factors.insert({3, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{1, 1, 2, 1, 1, 1, 1})});
-
-        assert(factors == DdfFactors);
-    }
-
-    // -----------------------------------
-
-    {
-        Factors factors = {{2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 2, 3, 4, 0, 0, 1})} };
-        Factors edfFactors = PolynomChecker::EqualDegreeFactorization(factors);
-
-        Factors irreducibles = {
-                {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 0, 1})},
-                {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 4, 1})},
-                {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{2, 1, 1})}
-        };
-
-        assert(irreducibles == edfFactors);
-    }
-
-    {
-        Factors factors = {{4, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{1, 1, 0, 1, 1, 1, 0, 1, 1})} };
-        Factors edfFactors = PolynomChecker::EqualDegreeFactorization(factors);
-
-        Factors irreducibles = {
-                {4, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{1, 0, 0, 1, 1})},
-                {4, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{1, 1, 0, 0, 1})}
-        };
-
-        assert(irreducibles == edfFactors);
-    }
-
-    // -----------------------------------
-
-    {
-        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{2, 1, 1, 1, 0, 0, 2, 1});
-        assert(PolynomChecker::CantorZassenhausTest(p) == IRREDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
-        assert(PolynomChecker::CantorZassenhausTest(p) == IRREDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1});
-        assert(PolynomChecker::CantorZassenhausFactorization(p).size() == 2);
-        assert(PolynomChecker::CantorZassenhausTest(p) == REDUCIBLE);
-    }
-
-    // -----------------------------------
-
-    {
-        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{2, 1, 1, 1, 0, 0, 2, 1});
-        assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 1});
-        assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
-        assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1});
-        assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(7), std::vector<int>{6, 2, 0, 1, 2, 0, 6, 5, 0, 6, 0, 0, 0, 3});
-        assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(7), std::vector<int>{5, 4, 0, 0, 4, 3, 1, 0, 0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 6});
-        assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
-    }
-
-    // ----------------- BerlekampTest ------------------
-
-    {
-        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 0, 0, 1, 1});
-        assert(PolynomChecker::BerlekampTest(p) == IRREDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{1, 2, 2, 2, 1, 0, 0, 1, 2, 1});
-        assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 1, 1, 1});
-        assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1});
-        assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
-    }
-
-    {
-        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{1, 1, 2, 0, 0, 1});
-        assert(PolynomChecker::BerlekampTest(p) == IRREDUCIBLE);
-    }
-
-    testFieldExtensions();
-    testPolynomGenerator();
 }
 
-void Tester::testBigint()
+void Tester::testField()
 {
     {
-        bigint n("3");
-        bigint exp("3");
-        bigint expected("27");
-        bigint res = n ^ exp;
-        assert(res == expected);
+        auto pFieldExt = FieldExt::GetInstance(7);
+
+        assert(pFieldExt->GetMultInverse(1) == 1);
+        assert(pFieldExt->GetMultInverse(2) == 4);
     }
 
     {
-        int n = 11;
-        bigint bign("11");
+        PolynomExt p1(FieldExt::GetInstance(7), {6, 4, 5});
+        PolynomExt p2(FieldExt::GetInstance(7), std::vector<int>{1, 2});
 
-        assert(msb(n) == msb(bign));
-        for (int i = 0; i < 15; i++)
-        {
-            assert(checkBit(n, i) == checkBit(bign, i));
-        }
+        PolynomExt p(FieldExt::GetInstance(7), std::vector<int>{});
+
+        p = p1 + p2;
+        assert(p[0] == 0);
+        assert(p[1] == 6);
+        assert(p[2] == 5);
+
+        p = p1 - p2;
+        assert(p[0] == 5);
+        assert(p[1] == 2);
+        assert(p[2] == 5);
+
+        p = p1 * p2;
+        assert(p[0] == 6);
+        assert(p[1] == 2);
+        assert(p[2] == 6);
+        assert(p[3] == 3);
+
+        p = p1 / 2;
+        assert(p[0] == 3);
+        assert(p[1] == 2);
+        assert(p[2] == 6);
+
+        p = p1 / p2;
+        assert(p[0] == 6);
+        assert(p[1] == 6);
     }
 }
 
@@ -626,5 +457,399 @@ void Tester::testPolynomGenerator()
         PolynomState rabinState = PolynomChecker::RabinsTest(a);
 
         assert(cantorState == rabinState);
+    }
+}
+
+void Tester::testGcd()
+{
+    {
+        PolynomExt f(FieldExt::GetInstance(5), std::vector<int>{3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
+        PolynomExt g(FieldExt::GetInstance(5), std::vector<int>{2, 0, 1, 0, 0, 2, 0, 4, 0, 0, 0, 0, 3});
+
+        PolynomExt pGcd = gcd(f, g);
+
+        assert(pGcd == PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 0, 4, 1, 0, 1, 0, 4, 1}));
+    }
+
+    {
+        PolynomExt f(FieldExt::GetInstance(5), std::vector<int>{3, 0, 3, 4, 0, 1, 1, 3, 1});
+        PolynomExt g(FieldExt::GetInstance(5), std::vector<int>{2, 4, 0, 3, 1, 1});
+
+        PolynomExt pGcd = gcd(f, g);
+
+        assert(pGcd == PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 0, 3, 1}));
+    }
+}
+
+void Tester::testSff()
+{
+    {
+        PolynomExt p1(FieldExt::GetInstance(3), std::vector<int>{1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1});
+        Factors SffFactors = PolynomChecker::SquareFreeFactorization(p1);
+
+        Factors factors;
+        factors.insert({1, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{1, 1})});
+        factors.insert({3, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{1, 0, 1})});
+        factors.insert({4, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{2, 1})});
+
+        assert(factors == SffFactors);
+    }
+
+    {
+        PolynomExt p2(FieldExt::GetInstance(5), std::vector<int>{3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
+        Factors SffFactors = PolynomChecker::SquareFreeFactorization(p2);
+
+        Factors factors;
+        factors.insert({1, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 2, 1})});
+        factors.insert({2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 0, 4, 1})});
+        factors.insert({5, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 1})});
+
+        assert(factors == SffFactors);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
+        Factors SffFactors = PolynomChecker::SquareFreeFactorization(p);
+
+        Factors factors;
+        factors.insert({1, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1})});
+        assert(factors == SffFactors);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1});
+        Factors SffFactors = PolynomChecker::SquareFreeFactorization(p);
+
+        Factors factors;
+        factors.insert({1, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1})});
+        assert(factors == SffFactors);
+    }
+}
+
+void Tester::testBinExp()
+{
+    {
+        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{1, 1, 2, 1, 1, 1, 1});
+        PolynomExt x(FieldExt::GetInstance(3), std::vector<int>{0, 1});
+
+        assert(x.BinExp(27, p) == x);
+    }
+
+    {
+        PolynomExt f(FieldExt::GetInstance(5), std::vector<int>{1, 2, 3, 4, 0, 0, 1});
+        PolynomExt p(FieldExt::GetInstance(5), std::vector<int>{2, 0, 0, 1});
+        PolynomExt expected(FieldExt::GetInstance(5), std::vector<int>{4, 0, 3, 4, 0, 3});
+
+        assert(((p.BinExp(12, f) - PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1})) % f) == expected);
+    }
+}
+
+void Tester::testDdf()
+{
+    {
+        PolynomExt p1(FieldExt::GetInstance(3), std::vector<int>{1, 0, 1, 2, 2, 0, 2, 0, 0, 0, 0, 1});
+        Factors DdfFactors = PolynomChecker::DistinctDegreeFactorization(p1);
+
+        Factors factors;
+        factors.insert({1, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{2, 0, 1})});
+        factors.insert({1, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{2, 1})});
+        factors.insert({2, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{1, 0, 1})});
+        factors.insert({3, PolynomExt(FieldExt::GetInstance(3), std::vector<int>{1, 1, 2, 1, 1, 1, 1})});
+
+        assert(factors == DdfFactors);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 1});
+        Factors DdfFactors = PolynomChecker::DistinctDegreeFactorization(p);
+
+        Factors factors;
+        factors.insert({1, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{0, 1, 1})});
+
+        assert(factors == DdfFactors);
+    }
+}
+
+void Tester::testDdfShoup()
+{
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 1});
+        Factors DdfFactors = PolynomChecker::DistinctDegreeShoupFactorization(p);
+
+        Factors factors;
+        factors.insert({1, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{0, 1, 1})});
+
+        assert(factors == DdfFactors);
+    }
+}
+
+void Tester::testEdf()
+{
+    {
+        Factors factors = {{1, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{0, 1, 1})} };
+        Factors edfFactors = PolynomChecker::EqualDegreeFactorization(factors);
+
+        Factors irreducibles = {
+            {1, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{0, 1})},
+            {1, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{1, 1})}
+        };
+
+        assert(irreducibles == edfFactors);
+    }
+
+    {
+        Factors factors = {{2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 2, 3, 4, 0, 0, 1})} };
+        Factors edfFactors = PolynomChecker::EqualDegreeFactorization(factors);
+
+        Factors irreducibles = {
+            {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 0, 1})},
+            {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 4, 1})},
+            {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{2, 1, 1})}
+        };
+
+        assert(irreducibles == edfFactors);
+    }
+
+    {
+        Factors factors = {{4, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{1, 1, 0, 1, 1, 1, 0, 1, 1})} };
+        Factors edfFactors = PolynomChecker::EqualDegreeFactorization(factors);
+
+        Factors irreducibles = {
+            {4, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{1, 0, 0, 1, 1})},
+            {4, PolynomExt(FieldExt::GetInstance(2), std::vector<int>{1, 1, 0, 0, 1})}
+        };
+
+        assert(irreducibles == edfFactors);
+    }
+}
+
+void Tester::testCantorZassenhausFactorization()
+{
+    {
+        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{2, 1, 1, 1, 0, 0, 2, 1});
+        assert(PolynomChecker::CantorZassenhausTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
+        assert(PolynomChecker::CantorZassenhausTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1});
+        assert(PolynomChecker::CantorZassenhausFactorization(p).size() == 2);
+        assert(PolynomChecker::CantorZassenhausTest(p) == REDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(5), std::vector<int>{3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
+        Factors factors = PolynomChecker::CantorZassenhausFactorization(p);
+
+        Factors expectedFactors;
+
+        expectedFactors.insert({1, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 2, 1})});
+        expectedFactors.insert({2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 1})});
+        expectedFactors.insert({2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{2, 1, 1})});
+        expectedFactors.insert({5, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 1})});
+
+        assert(factors == expectedFactors);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(5), std::vector<int>{3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
+        Factors factors = PolynomChecker::CantorZassenhausFactorization(p);
+
+        Factors expectedFactors;
+
+        expectedFactors.insert({1, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 2, 1})});
+        expectedFactors.insert({2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 1})});
+        expectedFactors.insert({2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{2, 1, 1})});
+        expectedFactors.insert({5, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 1})});
+
+        assert(factors == expectedFactors);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(5), std::vector<int>{1, 2, 3, 4, 0, 0, 1});
+        Factors factors = PolynomChecker::CantorZassenhausFactorization(p);
+
+        Factors irreducibles = {
+            {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 0, 1})},
+            {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 4, 1})},
+            {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{2, 1, 1})}
+        };
+
+        assert(irreducibles == factors);
+    }
+}
+
+void Tester::testKaltofenShoupFactorization()
+{
+    {
+        PolynomExt p(FieldExt::GetInstance(5), std::vector<int>{3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
+        Factors factors = PolynomChecker::KaltofenShoupFactorization(p);
+
+        Factors expectedFactors;
+
+        expectedFactors.insert({1, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 2, 1})});
+        expectedFactors.insert({2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 1})});
+        expectedFactors.insert({2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{2, 1, 1})});
+        expectedFactors.insert({5, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 1})});
+
+        assert(factors == expectedFactors);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(5), std::vector<int>{3, 2, 0, 2, 0, 1, 2, 0, 3, 0, 3, 0, 0, 1});
+        Factors factors = PolynomChecker::KaltofenShoupFactorization(p);
+
+        Factors expectedFactors;
+
+        expectedFactors.insert({1, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 2, 1})});
+        expectedFactors.insert({2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 1})});
+        expectedFactors.insert({2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{2, 1, 1})});
+        expectedFactors.insert({5, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 1})});
+
+        assert(factors == expectedFactors);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(5), std::vector<int>{1, 2, 3, 4, 0, 0, 1});
+        Factors factors = PolynomChecker::KaltofenShoupFactorization(p);
+
+        Factors irreducibles = {
+            {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{3, 0, 1})},
+            {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{1, 4, 1})},
+            {2, PolynomExt(FieldExt::GetInstance(5), std::vector<int>{2, 1, 1})}
+        };
+
+        assert(irreducibles == factors);
+    }
+}
+
+void Tester::testCantorZassenhausTest()
+{
+    {
+        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{2, 1, 1, 1, 0, 0, 2, 1});
+        assert(PolynomChecker::CantorZassenhausTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 1});
+        assert(PolynomChecker::CantorZassenhausTest(p) == REDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
+        assert(PolynomChecker::CantorZassenhausTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1});
+        assert(PolynomChecker::CantorZassenhausTest(p) == REDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(7), std::vector<int>{6, 2, 0, 1, 2, 0, 6, 5, 0, 6, 0, 0, 0, 3});
+        assert(PolynomChecker::CantorZassenhausTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(7), std::vector<int>{5, 4, 0, 0, 4, 3, 1, 0, 0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 6});
+        assert(PolynomChecker::CantorZassenhausTest(p) == REDUCIBLE);
+    }
+}
+
+void Tester::testKaltofenShoupTest()
+{
+    {
+        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{2, 1, 1, 1, 0, 0, 2, 1});
+        assert(PolynomChecker::KaltofenShoupTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 1});
+        assert(PolynomChecker::KaltofenShoupTest(p) == REDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
+        assert(PolynomChecker::KaltofenShoupTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1});
+        assert(PolynomChecker::KaltofenShoupTest(p) == REDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(7), std::vector<int>{6, 2, 0, 1, 2, 0, 6, 5, 0, 6, 0, 0, 0, 3});
+        assert(PolynomChecker::KaltofenShoupTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(7), std::vector<int>{5, 4, 0, 0, 4, 3, 1, 0, 0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 6});
+        assert(PolynomChecker::KaltofenShoupTest(p) == REDUCIBLE);
+    }
+}
+
+void Tester::testBerlekampTest()
+{
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 0, 0, 1, 1});
+        assert(PolynomChecker::BerlekampTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{1, 2, 2, 2, 1, 0, 0, 1, 2, 1});
+        assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 1, 1, 1});
+        assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1});
+        assert(PolynomChecker::BerlekampTest(p) == REDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{1, 1, 2, 0, 0, 1});
+        assert(PolynomChecker::BerlekampTest(p) == IRREDUCIBLE);
+    }
+}
+
+void Tester::testRabinTest()
+{
+    {
+        PolynomExt p(FieldExt::GetInstance(3), std::vector<int>{2, 1, 1, 1, 0, 0, 2, 1});
+        assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 1});
+        assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1});
+        assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(2), std::vector<int>{0, 1, 0, 1, 1});
+        assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(7), std::vector<int>{6, 2, 0, 1, 2, 0, 6, 5, 0, 6, 0, 0, 0, 3});
+        assert(PolynomChecker::RabinsTest(p) == IRREDUCIBLE);
+    }
+
+    {
+        PolynomExt p(FieldExt::GetInstance(7), std::vector<int>{5, 4, 0, 0, 4, 3, 1, 0, 0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 6});
+        assert(PolynomChecker::RabinsTest(p) == REDUCIBLE);
     }
 }

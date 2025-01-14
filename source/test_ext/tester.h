@@ -13,6 +13,14 @@
 
 using namespace std;
 
+enum ErrorCode
+{
+    ERROR_LIB = 1,
+    ERROR_READ_CONF,
+    ERROR_READ_POLY,
+    ERROR_WRITE_POLY
+};
+
 ostream& operator<<(ostream& out, const Polynom& p);
 /**
  * \brief Основной класс оболочки библиотеки
@@ -30,8 +38,26 @@ public:
     void runTest();
 
     void testBigint();
+    void testPrimeDivisors();
+    void testMsb();
+    void testGauss();
+    void testField();
     void testFieldExtensions();
     void testPolynomGenerator();
+
+    void testGcd();
+    void testSff();
+    void testBinExp();
+    void testDdf();
+    void testDdfShoup();
+    void testEdf();
+
+    void testCantorZassenhausFactorization();
+    void testKaltofenShoupFactorization();
+    void testCantorZassenhausTest();
+    void testKaltofenShoupTest();
+    void testBerlekampTest();
+    void testRabinTest();
 };
 
 #endif
