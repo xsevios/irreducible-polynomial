@@ -388,9 +388,7 @@ PolynomState PolynomChecker::CantorZassenhausTest(const PolynomExt& f)
 
     for (int r = (n / 4) + 1; r <= n / 2; r++)
     {
-//        std::cout << "f: " << f << std::endl;
         PolynomExt sqr = x.BinExp(q, r, f);
-//        std::cout << "sqr: " << sqr << std::endl;
         sqr -= x;
         sqr %= f;
         PolynomExt g = gcd(f, sqr);
@@ -412,7 +410,6 @@ Factors PolynomChecker::CantorZassenhausFactorization(const PolynomExt& f)
 
     // Factors and the number (g, s) in which this factors should be powered in order to get f(x)
     // i.e. f(x) = Product of g_i(x) ^ s_i
-
     Factors sffFactors = SquareFreeFactorization(f);
     if (sffFactors.size() > 1 || (!sffFactors.empty() && sffFactors.begin()->first != 1))
     {
@@ -431,11 +428,85 @@ Factors PolynomChecker::CantorZassenhausFactorization(const PolynomExt& f)
     if (factors.empty())
     {
         factors.insert({f.GetDegree(), f});
-        return factors;
     }
 
     factors = EqualDegreeFactorization(factors);
     return factors;
+}
+
+Factors PolynomChecker::KaltofenShoupFactorization(const PolynomExt& f)
+{
+    Factors factors;
+
+    // Factors and the number (g, s) in which this factors should be powered in order to get f(x)
+    // i.e. f(x) = Product of g_i(x) ^ s_i
+    Factors sffFactors = SquareFreeFactorization(f);
+    if (sffFactors.size() > 1 || (!sffFactors.empty() && sffFactors.begin()->first != 1))
+    {
+        for (auto it = sffFactors.begin(); it != sffFactors.end(); it++)
+        {
+            auto completeFactors = CantorZassenhausFactorization(it->second);
+            for (auto & factor : completeFactors)
+                factors.insert({it->first, factor.second});
+        }
+
+        return factors;
+    }
+
+    // Each pair (g, r) represents a polynomial g(x) which is the product of deg(g)/r distinct irreducibles of degree r
+    factors = DistinctDegreeShoupFactorization(f);
+    if (factors.empty())
+    {
+        factors.insert({f.GetDegree(), f});
+    }
+
+    factors = EqualDegreeFactorization(factors);
+    return factors;
+}
+
+/**
+ Performs the Kaltofen-Shoup irreducibility test on a given polynomial.
+
+ This method verifies whether the input polynomial is irreducible over its associated field
+ using the Kaltofen-Shoup algorithm, which involves checks for square-freeness, distinct-degree
+ factorization, and equal-degree factorization.
+
+ @param f The polynomial to be tested for irreducibility.
+ @return The irreducibility state of the polynomial:
+ - IRREDUCIBLE: If the polynomial is proven to be irreducible.
+ - REDUCIBLE: If the polynomial is proven to be reducible.
+ */
+PolynomState PolynomChecker::KaltofenShoupTest(const PolynomExt& f)
+{
+    if (f.GetDegree() <= 1)
+    {
+        f.setIrreducible(IRREDUCIBLE);
+        return IRREDUCIBLE;
+    }
+
+    Factors factors;
+
+    if (!isSquareFree(f))
+    {
+        f.setIrreducible(REDUCIBLE);
+        return REDUCIBLE;
+    }
+
+    // Each pair (g, r) represents a polynomial g(x) which is the product of deg(g)/r distinct irreducibles of degree r
+    factors = DistinctDegreeShoupFactorization(f);
+    if (factors.empty())
+    {
+        factors.insert({f.GetDegree(), f});
+    }
+
+    if (factors.size() == 1 && factors.begin()->first == f.GetDegree())
+    {
+        f.setIrreducible(IRREDUCIBLE);
+        return IRREDUCIBLE;
+    }
+
+    f.setIrreducible(REDUCIBLE);
+    return REDUCIBLE;
 }
 
 ///  Square free factorization - разложение на кратные множители
@@ -513,6 +584,73 @@ Factors PolynomChecker::DistinctDegreeFactorization(const PolynomExt &p)
             g = gcd(h, f);
         }
     }
+
+    return factors;
+}
+
+Factors PolynomChecker::DistinctDegreeShoupFactorization(const PolynomExt &pol)
+{
+    PolynomExt f    = pol;
+    auto p          = f.GetPrime();
+    auto q          = f.GetDim();
+    auto n          = f.GetDegree();
+
+    auto B = n / 2;
+    auto l = static_cast<uint32_t>(sqrt(B));
+    auto m = (B + l - 1) / l;
+
+    std::vector<PolynomExt> h;
+    std::vector<PolynomExt> H;
+    std::vector<PolynomExt> I;
+
+    h.emplace_back(f.GetField(), std::vector<int>{0, 1});
+
+    // Step 1
+    h.push_back(h[0].BinExp(p, f));
+
+    // Step 2
+    for (int i = 2; i <= l; i++)
+        h.push_back(h[0].BinExp(p, i, f));
+
+    // Step 3
+    for (int j = 1; j <= m; j++)
+        H.push_back(h[0].BinExp(p, l * j, f));
+
+    // Step 4
+    for (int j = 1; j <= m; j++)
+    {
+        I.push_back((H[j - 1] - h[0]) % f);
+        for (int i = 1; i <= l - 1; i++)
+        {
+            I[j - 1] *= (H[j - 1] - h[i]) % f;
+        }
+    }
+
+    // Step 5
+    Factors factors;
+    auto one = PolynomExt(f.GetField(), std::vector<int>{1});
+    auto f_ = f;
+    for (int j = 1; j <= m; j++)
+    {
+        auto g = gcd(f_, I[j - 1]);
+        f_ = f_ / g;
+        for (int i = l - 1; i >= 0; i--)
+        {
+            auto u = gcd(g, H[j - 1] - h[i]);
+
+            if (u.GetDegree())
+            {
+                factors.insert({l * j - i, u});
+                g = g / u;
+            }
+
+            if (!g.GetDegree())
+                break;
+        }
+    }
+
+    if (f_ != 1)
+        factors.insert({f_.GetDegree(), f_});
 
     return factors;
 }

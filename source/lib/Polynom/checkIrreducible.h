@@ -41,10 +41,13 @@ public:
     // Cantor-Zassenhaus tools
     static PolynomState             CantorZassenhausTest            (const PolynomExt& f);
     static Factors                  CantorZassenhausFactorization   (const PolynomExt& f);
+    static PolynomState             KaltofenShoupTest               (const PolynomExt& f);
+    static Factors                  KaltofenShoupFactorization      (const PolynomExt& f);
     static bool                     isSquareFree                    (const PolynomExt& f);
     static Factors                  SquareFreeFactorization         (const PolynomExt& p);
     static Factors                  DistinctDegreeFactorization     (const PolynomExt& p);
-    static PolynomExt                  GenRandPolynom                  (const PolynomExt& p);
+    static Factors                  DistinctDegreeShoupFactorization(const PolynomExt& pol);
+    static PolynomExt               GenRandPolynom                  (const PolynomExt& p);
     static Factors                  EqualDegreeFactorization        (const PolynomExt& p, int d);
     static Factors                  EqualDegreeFactorization        (Factors factors);
 
@@ -52,7 +55,7 @@ public:
     static PolynomState             RabinsTest                      (const PolynomExt& f);
 
 private:
-    PolynomExt*                        polynom;
+    PolynomExt*                     polynom;
     pthread_mutex_t*                mutex;
     pthread_cond_t*                 cond;
 
