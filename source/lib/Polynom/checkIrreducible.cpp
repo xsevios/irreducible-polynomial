@@ -493,7 +493,7 @@ PolynomState PolynomChecker::KaltofenShoupTest(const PolynomExt& f)
     }
 
     // Each pair (g, r) represents a polynomial g(x) which is the product of deg(g)/r distinct irreducibles of degree r
-    factors = DistinctDegreeShoupFactorization(f);
+    factors = DistinctDegreeShoupFactorization(f, true);
     if (factors.empty())
     {
         factors.insert({f.GetDegree(), f});
@@ -588,11 +588,9 @@ Factors PolynomChecker::DistinctDegreeFactorization(const PolynomExt &p)
     return factors;
 }
 
-Factors PolynomChecker::DistinctDegreeShoupFactorization(const PolynomExt &pol)
+Factors PolynomChecker::DistinctDegreeShoupFactorization(const PolynomExt &f, bool test)
 {
-    PolynomExt f    = pol;
     auto p          = f.GetPrime();
-    auto q          = f.GetDim();
     auto n          = f.GetDegree();
 
     auto B = n / 2;
@@ -610,15 +608,18 @@ Factors PolynomChecker::DistinctDegreeShoupFactorization(const PolynomExt &pol)
 
     // Step 2
     for (int i = 2; i <= l; i++)
-        h.push_back(h[0].BinExp(p, i, f));
+        h.push_back(h[i - 1].BinExp(p, f));
 
-    // Step 3
-    for (int j = 1; j <= m; j++)
-        H.push_back(h[0].BinExp(p, l * j, f));
-
-    // Step 4
+    // Step 3, 4
     for (int j = 1; j <= m; j++)
     {
+        // Step 3
+        if (j == 1)
+            H.push_back(h[l]);
+        else
+            H.push_back(H[j - 2].BinExp(p, l, f));
+    
+        // Step 4
         I.push_back((H[j - 1] - h[0]) % f);
         for (int i = 1; i <= l - 1; i++)
         {
@@ -633,7 +634,10 @@ Factors PolynomChecker::DistinctDegreeShoupFactorization(const PolynomExt &pol)
     for (int j = 1; j <= m; j++)
     {
         auto g = gcd(f_, I[j - 1]);
-        f_ = f_ / g;
+
+        if (g.GetDegree())
+            f_ = f_ / g;
+
         for (int i = l - 1; i >= 0; i--)
         {
             auto u = gcd(g, H[j - 1] - h[i]);
@@ -641,6 +645,12 @@ Factors PolynomChecker::DistinctDegreeShoupFactorization(const PolynomExt &pol)
             if (u.GetDegree())
             {
                 factors.insert({l * j - i, u});
+
+                if (test)
+                {
+                    return factors;
+                }
+
                 g = g / u;
             }
 

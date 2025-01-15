@@ -46,7 +46,7 @@ public:
     static bool                     isSquareFree                    (const PolynomExt& f);
     static Factors                  SquareFreeFactorization         (const PolynomExt& p);
     static Factors                  DistinctDegreeFactorization     (const PolynomExt& p);
-    static Factors                  DistinctDegreeShoupFactorization(const PolynomExt& pol);
+    static Factors                  DistinctDegreeShoupFactorization(const PolynomExt& p, bool test = false);
     static PolynomExt               GenRandPolynom                  (const PolynomExt& p);
     static Factors                  EqualDegreeFactorization        (const PolynomExt& p, int d);
     static Factors                  EqualDegreeFactorization        (Factors factors);
