@@ -50,6 +50,8 @@ public:
     static PolynomExt               GenRandPolynom                  (const PolynomExt& p);
     static Factors                  EqualDegreeFactorization        (const PolynomExt& p, int d);
     static Factors                  EqualDegreeFactorization        (Factors factors);
+    static std::vector<PolynomExt>  hiPowers                     (const PolynomExt& XP, long bo, const PolynomExt& T, long p);
+    static PolynomExt               DDFShoupEval                  (const PolynomExt& Q, const std::vector<PolynomExt>& x, const PolynomExt& T, long p);
 
     // Rabin's Irreducibility Test
     static PolynomState             RabinsTest                      (const PolynomExt& f);

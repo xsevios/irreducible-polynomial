@@ -22,7 +22,26 @@ const PolynomExt* FieldExt::GetPolynom() const
     return m_pPolynom;
 }
 
-FieldExt::FieldExt(const int p) : m_p(p)
+const PolynomExt& FieldExt::GetZero() const
+{
+    return *m_zero;
+}
+
+const PolynomExt& FieldExt::GetOne() const
+{
+    return *m_one;
+}
+
+const PolynomExt& FieldExt::GetX() const
+{
+    return *m_x;
+}
+
+FieldExt::FieldExt(const int p) :
+    m_p(p),
+    m_zero(new PolynomExt(this, std::vector<int>{})),
+    m_one(new PolynomExt(this, std::vector<int>{ 1 })),
+    m_x(new PolynomExt(this, std::vector<int>{ 0, 1 }))
 {
     m_inversions.push_back(1);
 
@@ -30,14 +49,22 @@ FieldExt::FieldExt(const int p) : m_p(p)
     {
         m_inversions.push_back(GetMultInverse(i));
     }
+
 }
 
 FieldExt::FieldExt(const PolynomExt* f) :
-    m_pPolynom(new PolynomExt(*f)),
     m_p(f->GetField()->m_p),
-    m_k(f->GetField()->GetDegree() * f->GetDegree())
+    m_k(f->GetField()->GetDegree() * f->GetDegree()),
+    m_pPolynom(new PolynomExt(*f))
 {
+    ExtCoeffs coeffs;
+    m_zero = std::make_unique<PolynomExt>(this, coeffs);
 
+    coeffs.emplace(0, f->GetField()->GetOne());
+    m_one = std::make_unique<PolynomExt>(this, coeffs);
+
+    coeffs.emplace(0, f->GetField()->GetX());
+    m_x = std::make_unique<PolynomExt>(this, coeffs);
 }
 
 /// Расширенный алгоритм Евклида

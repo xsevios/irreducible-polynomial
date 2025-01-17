@@ -69,39 +69,16 @@ public:
         const PolynomExt& x    = *this;
         PolynomExt g           = *this;
 
-//        std::cout << "BinExp start: " << g << std::endl<char, std::char_traits<char>>;
-
         for (int j = msb(M) - 1; j >= 0; j--)
         {
-//            std::cout << "BinExp g: " << g << std::endl<char, std::char_traits<char>>;
             g *= g;
-
-//            std::cout << "BinExp 11: " << g << std::endl<char, std::char_traits<char>>;
-//            if (!g.CheckConsistensy())
-//                exit(0);
-
             g %= f;
-
-//            std::cout << "BinExp 12: " << g << std::endl<char, std::char_traits<char>>;
-//            if (!g.CheckConsistensy())
-//                exit(0);
 
             if (checkBit(M, j))
             {
                 g *= x;
-
-//                std::cout << "BinExp 21: " << g << std::endl<char, std::char_traits<char>>;
-//                if (!g.CheckConsistensy())
-//                    exit(0);
                 g %= f;
-
-//                std::cout << "BinExp 22: " << g << std::endl<char, std::char_traits<char>>;
-//                if (!g.CheckConsistensy())
-//                    exit(0);
             }
-
-//            if (!g.CheckConsistensy())
-//                exit(0);
         }
 
         return g;

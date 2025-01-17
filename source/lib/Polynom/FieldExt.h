@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <memory>
 
 class FieldExt;
 class PolynomExt;
@@ -27,6 +28,9 @@ public:
             bool                        IsPrimeField        ()                      const;
       const FieldExt *                  GetSubfield         ()                      const;
       const PolynomExt *                GetPolynom          ()                      const;
+      const PolynomExt &                GetZero             ()                      const;
+      const PolynomExt &                GetOne              ()                      const;
+      const PolynomExt &                GetX                ()                      const;
 
 
 private:
@@ -44,6 +48,9 @@ private:
       const PolynomExt *                m_pPolynom  = nullptr;  ///< Неприводимый многочлен степени n над текущим полем
 
             std::vector<int>            m_inversions;
+      std::unique_ptr<PolynomExt>       m_one;
+      std::unique_ptr<PolynomExt>       m_zero;
+      std::unique_ptr<PolynomExt>       m_x;
 };
 
 inline unsigned int FieldExt::GetPrime      ()          const { return m_p; }

@@ -152,7 +152,7 @@ PolynomState PolynomChecker::BerlekampTest(const PolynomExt& f)
     return f.isIrreducible();
 }
 
-/// Cоставляет матрицу для данного многочлена
+/// Составляет матрицу для данного многочлена
 /**
 Для того, чтобы избежать большого (близкого к n) количества делений, используется следующий алгоритм:
 Сначала в матрицу записываются коэффициенты всех многочленов вида x^(ip), для которых ip < n.
@@ -445,7 +445,7 @@ Factors PolynomChecker::KaltofenShoupFactorization(const PolynomExt& f)
     {
         for (auto it = sffFactors.begin(); it != sffFactors.end(); it++)
         {
-            auto completeFactors = CantorZassenhausFactorization(it->second);
+            auto completeFactors = KaltofenShoupFactorization(it->second);
             for (auto & factor : completeFactors)
                 factors.insert({it->first, factor.second});
         }
@@ -468,8 +468,8 @@ Factors PolynomChecker::KaltofenShoupFactorization(const PolynomExt& f)
  Performs the Kaltofen-Shoup irreducibility test on a given polynomial.
 
  This method verifies whether the input polynomial is irreducible over its associated field
- using the Kaltofen-Shoup algorithm, which involves checks for square-freeness, distinct-degree
- factorization, and equal-degree factorization.
+ using the Kaltofen-Shoup algorithm, which involves checks for square-freeness and distinct-degree
+ factorization.
 
  @param f The polynomial to be tested for irreducibility.
  @return The irreducibility state of the polynomial:
@@ -588,10 +588,87 @@ Factors PolynomChecker::DistinctDegreeFactorization(const PolynomExt &p)
     return factors;
 }
 
+/**
+ * @brief Optimizes the parameter p for the Brent-Kung algorithm to minimize computation cost.
+ *
+ * This function calculates the optimal value of the parameter p, which is used in the Brent-Kung
+ * parallel prefix algorithm to divide tasks into subproblems. The goal is to minimize the total
+ * computational cost based on the provided parameters depth, reductionCost, and propagationCost.
+ *
+ * The computational cost function is defined as:
+ *     cost = propagationCost * (p - 1) + reductionCost * floor((depth - 1) / p),
+ * where:
+ * - depth: The depth of computation or the total number of steps to perform.
+ * - reductionCost: The cost of reduction operations (combining intermediate results).
+ * - propagationCost: The cost of propagation operations (spreading results to dependent tasks).
+ *
+ * The function iterates over all possible values of p (from 2 to depth) and finds the value of p
+ * that minimizes the cost function.
+ *
+ * @param depth The depth of the computation (total steps).
+ * @param reductionCost The cost of reduction operations.
+ * @param propagationCost The cost of propagation operations.
+ * @return The optimal value of p that minimizes the computational cost.
+ *
+ * @example
+ * // Example usage
+ * long depth = 8, reductionCost = 10, propagationCost = 5;
+ * long optimal_p = BrentKungOptPow(depth, reductionCost, propagationCost);
+ * std::cout << "Optimal p: " << optimal_p << std::endl;
+ */
+long BrentKungOptPow(long depth, long reductionCost, long propagationCost) {
+    long optimalP = 1;
+    long minCost = reductionCost * (depth - 1); // Initial cost for p = 1
+
+    for (long currentP = 2; currentP <= depth; ++currentP) {
+        long currentCost = propagationCost * (currentP - 1) + reductionCost * ((depth - 1) / currentP);
+        if (currentCost < minCost) {
+            optimalP = currentP;
+            minCost = currentCost;
+        }
+    }
+    return optimalP;
+}
+
+/**
+ * @brief Finds the position of the most significant set bit in a number.
+ *
+ * Returns the zero-based index of the most significant set bit (1) in the binary representation
+ * of an unsigned long integer. If the input is 0, returns -1.
+ *
+ * @param number The input number to check.
+ * @return Zero-based index of the most significant set bit, or -1 if no bits are set.
+ */
+int FindMostSignificantSetBit(unsigned long number) {
+    if (number == 0) return -1; // No set bits
+    return static_cast<int>(std::log2(number)); // Floor of log2(number)
+}
+
+/**
+ * @brief Performs distinct-degree factorization of a polynomial.
+ *
+ * This method implements the Shoup distinct-degree factorization algorithm for decomposing
+ * a given polynomial over a finite field into factors of distinct degrees.
+ *
+ * @param f The input polynomial to be factorized.
+ * @param test A flag indicating whether to check for irreducibility or to make complete factorization.
+ * @return A structure of type `Factors`, containing the distinct-degree factors of the polynomial.
+ *
+ * The algorithm works by finding and separating irreducible factors of the input polynomial, grouped by their degrees.
+ * It is particularly efficient for finite field polynomials.
+ *
+ */
 Factors PolynomChecker::DistinctDegreeShoupFactorization(const PolynomExt &f, bool test)
 {
-    auto p          = f.GetPrime();
-    auto n          = f.GetDegree();
+    auto p = f.GetPrime();
+    auto n = f.GetDegree();
+    Factors factors;
+
+    if (n < 2)
+    {
+        factors.insert({n, f});
+        return factors;
+    }
 
     auto B = n / 2;
     auto l = static_cast<uint32_t>(sqrt(B));
@@ -607,17 +684,30 @@ Factors PolynomChecker::DistinctDegreeShoupFactorization(const PolynomExt &f, bo
     h.push_back(h[0].BinExp(p, f));
 
     // Step 2
-    for (int i = 2; i <= l; i++)
-        h.push_back(h[i - 1].BinExp(p, f));
+    auto bo = BrentKungOptPow(n, l-1, 1);
+    auto ro = l <= 1 ? 0 : (bo - 1) / (l - 1) + ((n - 1) / bo);
+    if (FindMostSignificantSetBit(p) <= ro)
+    {
+        for (int i = 2; i <= l; i++)
+            h.push_back(h[i - 1].BinExp(p, f));
+    }
+    else
+    {
+        auto xq = hiPowers(h[1], bo,  f, p);
+
+        for (int i = 3; i <= l+1; i++)
+            h.push_back(DDFShoupEval(h[i - 2], xq, f, p));
+    }
 
     // Step 3, 4
+    auto xq = hiPowers(h[l], BrentKungOptPow(n, m-1, 1),  f, p);
     for (int j = 1; j <= m; j++)
     {
-        // Step 3
+        // // Step 3
         if (j == 1)
-            H.push_back(h[l]);
+            H.push_back(xq[1]);
         else
-            H.push_back(H[j - 2].BinExp(p, l, f));
+            H.push_back(DDFShoupEval(H[j - 2], xq, f, p));
     
         // Step 4
         I.push_back((H[j - 1] - h[0]) % f);
@@ -628,7 +718,6 @@ Factors PolynomChecker::DistinctDegreeShoupFactorization(const PolynomExt &f, bo
     }
 
     // Step 5
-    Factors factors;
     auto one = PolynomExt(f.GetField(), std::vector<int>{1});
     auto f_ = f;
     for (int j = 1; j <= m; j++)
@@ -663,6 +752,131 @@ Factors PolynomChecker::DistinctDegreeShoupFactorization(const PolynomExt &f, bo
         factors.insert({f_.GetDegree(), f_});
 
     return factors;
+}
+
+std::vector<PolynomExt> PolynomChecker::hiPowers(const PolynomExt& XP, long bo, const PolynomExt& T, long p)
+{
+    int useSqr = 2 * XP.GetDegree() >= T.GetDegree();
+    std::vector<PolynomExt> V;
+
+    auto one = T.GetField()->GetOne();
+    V.push_back(one);
+
+    if (bo == 0)
+        return V;
+
+    V.push_back(XP);
+
+    if (bo == 1)
+        return V;
+
+    V.push_back(XP.BinExp(2, T));
+
+    if (useSqr)
+    {
+        for (int i = 4; i < bo + 2; i++)
+        {
+            if (i & 1)
+                V.push_back((V[((i + 1) >> 1) - 1]).BinExp(2, T));
+            else
+                V.push_back(V[i - 2] * XP % T);
+        }
+    }
+    else
+    {
+        for (int i = 4; i < bo + 2; i++)
+        {
+            V.push_back(V[i - 2] * XP % T);
+        }
+    }
+
+    return V;
+}
+
+std::vector<std::vector<int>> multiplyMatrices(
+    const std::vector<std::vector<int>>& A,
+    const std::vector<std::vector<int>>& B,
+    const int prime) {
+
+    int n = A.size();             // Rows in A
+    int m = A[0].size();          // Columns in A (or rows in B)
+    int p = B[0].size();          // Columns in B
+
+    std::vector<std::vector<int>> C(n, std::vector<int>(p, 0));
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < p; ++j) {
+            for (int k = 0; k < m; ++k) {
+                C[i][j] += A[i][k] * B[k][j];
+            }
+            C[i][j] %= prime;
+        }
+    }
+
+    return C;
+}
+
+PolynomExt PolynomChecker::DDFShoupEval(const PolynomExt& Q, const std::vector<PolynomExt>& x, const PolynomExt& T, long p)
+{
+    long m = T.GetDegree();
+
+    long l = x.size(), lQ = Q.GetDegree() + 1, n,  d;
+
+    if (lQ == 0)
+        return T.GetField()->GetZero();
+
+    if (lQ <= l)
+    {
+        n = l;
+        d = 1;
+    }
+    else
+    {
+        n = l - 1;
+        d = (lQ + n - 1) / n;
+    }
+
+    std::vector A(m, std::vector<int>(n));
+    std::vector B(n, std::vector<int>(d));
+
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++)
+            A[i][j] = x[j].getRefCoef().size() > i ? x[j][i] : 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < d; j++)
+        {
+            const size_t id = i + j * n;
+            B[i][j] = Q.getRefCoef().size() > id ?  Q[id] : 0;
+        }
+    }
+
+    auto C = multiplyMatrices(A, B, p);
+
+    const PolynomExt& g = x[l - 1];
+    auto Tn = T / T.GetLeadingCoef();
+
+    std::vector<int> coeffS;
+    for (int i = 0; i < m; i++)
+        coeffS.push_back(C[i][d - 1]);
+
+    PolynomExt S(Q.GetField(), coeffS);
+    S.RemoveLeadingZeros();
+
+    for (int i = d - 1; i > 0; i--)
+    {
+        std::vector<int> coeffS;
+        for (int j = 0; j < m; j++)
+            coeffS.push_back(C[j][i - 1]);
+
+        PolynomExt Ci(Q.GetField(), coeffS);
+        Ci.RemoveLeadingZeros();
+
+        S = S * g % Tn + Ci;
+    }
+
+    return S;
 }
 
 Factors PolynomChecker::EqualDegreeFactorization(Factors factors)
